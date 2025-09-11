@@ -66,7 +66,6 @@ namespace ApiVela
                 app.UseDeveloperExceptionPage();
             }
 
-
             app.UseSwagger();
             //UI indica dónde va a visualizar el usuario la documentación
             //generada por SWAGGER en nuestro servidor
