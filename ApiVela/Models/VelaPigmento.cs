@@ -11,7 +11,6 @@ namespace ApiVela.Models
     [Table("VelaPigmento")]
     public class VelaPigmento
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDVela")]
         public Guid IDVela { get; set; }
@@ -19,7 +18,6 @@ namespace ApiVela.Models
         [Column("Vela")]
         public Vela Vela { get; set; }
 
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDPig")]
         public Guid IDPig { get; set; }

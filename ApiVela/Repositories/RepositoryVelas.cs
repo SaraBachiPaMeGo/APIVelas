@@ -38,8 +38,8 @@ namespace ApiVela.Repository
         {
             Vela vela = new Vela();
 
-             vela.IDVela =Guid.NewGuid();
-            
+            vela.IDVela = Guid.NewGuid();
+
             vela.VelaNombre = vel.VelaNombre;
             vela.Endurecedor = vel.Endurecedor;
             vela.FechaVenta = DateTime.Now;
@@ -59,9 +59,9 @@ namespace ApiVela.Repository
             Fragancias = new List<VelaFragancia>();
 
             // Agregar pigmentos asociados
-            foreach (var pigmento in vel.Pigmentos)
+            foreach (var pigmento in vel.VelaPigmentos)
             {
-                vela.Pigmentos.Add(new VelaPigmento
+                vela.VelaPigmentos.Add(new VelaPigmento
                 {
                     IDVela = vela.IDVela,
                     IDPig = pigmento.IDPig,
@@ -71,9 +71,9 @@ namespace ApiVela.Repository
             }
 
             // Agregar fragancias asociadas
-            foreach (var fragancia in vel.Fragancias)
+            foreach (var fragancia in vel.VelaFragancias)
             {
-                vela.Fragancias.Add(new VelaFragancia
+                vela.VelaFragancias.Add(new VelaFragancia
                 {
                     IDVela = vela.IDVela,
                     IDFrag = fragancia.IDFrag,
@@ -148,8 +148,8 @@ namespace ApiVela.Repository
 
             // === Actualizar Pigmentos ===
             // Eliminar pigmentos que ya no estén
-            var pigmentosAEliminar = vela.Pigmentos
-                .Where(p => !vela.Pigmentos.Any(np => np.IDPig == p.IDPig))
+            var pigmentosAEliminar = vela.VelaPigmentos
+                .Where(p => !vela.VelaPigmentos.Any(np => np.IDPig == p.IDPig))
                 .ToList();
 
             //foreach (var pEliminar in pigmentosAEliminar)
@@ -158,9 +158,9 @@ namespace ApiVela.Repository
             //}
 
             // Agregar o actualizar pigmentos
-            foreach (var pigNuevo in vela.Pigmentos)
+            foreach (var pigNuevo in vela.VelaPigmentos)
             {
-                var pigExistente = vela.Pigmentos
+                var pigExistente = vela.VelaPigmentos
                     .FirstOrDefault(p => p.IDPig == pigNuevo.IDPig);
 
                 if (pigExistente != null)
@@ -179,8 +179,8 @@ namespace ApiVela.Repository
 
             // === Actualizar Fragancias ===
             // Eliminar fragancias que ya no estén
-            var fraganciasAEliminar = vela.Fragancias
-                .Where(f => !vela.Fragancias.Any(nf => nf.IDFrag == f.IDFrag))
+            var fraganciasAEliminar = vela.VelaFragancias
+                .Where(f => !vela.VelaFragancias.Any(nf => nf.IDFrag == f.IDFrag))
                 .ToList();
 
             //foreach (var fEliminar in fraganciasAEliminar)
@@ -189,9 +189,9 @@ namespace ApiVela.Repository
             //}
 
             // Agregar o actualizar fragancias
-            foreach (var fragNuevo in vela.Fragancias)
+            foreach (var fragNuevo in vela.VelaFragancias)
             {
-                var fragExistente = vela.Fragancias
+                var fragExistente = vela.VelaFragancias
                     .FirstOrDefault(f => f.IDFrag == fragNuevo.IDFrag);
 
                 if (fragExistente != null)
@@ -212,186 +212,6 @@ namespace ApiVela.Repository
             //this.context.SaveChanges();
         }
 
-        // ------------------------------------- VELAFRAGANCIA ---------------------------------------------
-        public void InsertarVelaFragancia(Guid idVela, Guid idFrag)
-        {
-            var vf = new VelaFragancia { IDVela = idVela, IDFrag = idFrag };
-
-            //context.VelaFragancia.Add(vf);
-           // context.SaveChanges();
-        }
-
-        public void EliminarRelacionesFragancias(Guid idVela)
-        {
-            //var rels = context.VelaFragancia.Where(vf => vf.IDVela == idVela);
-            //context.VelaFragancia.RemoveRange(rels);
-            //context.SaveChanges();
-        }
-
-        //public List<Fragancia> GetFraganciasPorVela(Guid idVela)
-        //{
-        //    return context.VelaFragancia
-        //        .Where(vf => vf.IDVela == idVela)
-        //        .Select(vf => vf.Fragancia) // Asumiendo que tienes la navegación Fragancia en VelaFragancia
-        //        .ToList();
-        //}
-        // ------------------------------------- VELAPIGMENTO ---------------------------------------------
-
-        public void InsertarVelaPigmento(Guid idVela, Guid idPig)
-        {
-            var vp = new VelaPigmento { IDVela = idVela, IDPig = idPig };
-            //context.VelaPigmento.Add(vp);
-            //context.SaveChanges();
-        }
-
-        public void EliminarRelacionesPigmentos(Guid idVela)
-        {
-            //var rels = context.VelaPigmento.Where(vp => vp.IDVela == idVela);
-            //context.VelaPigmento.RemoveRange(rels);
-            //context.SaveChanges();
-        }
-
-        //public List<Pigmento> GetPigmentosPorVela(Guid idVela)
-        //{
-        //    //return context.VelaPigmento
-        //    //    .Where(vp => vp.IDVela == idVela)
-        //    //    .Select(vp => vp.Pigmento)  // Asumiendo que tienes la propiedad de navegación Pigmento en VelaPigmento
-        //    //    .ToList();
-        //}
-                      
-        // ------------------------------------- COSTES ---------------------------------------------
-        //public void InsertarCoste(float tiempoprop, float horasLuz, float costeLuz, 
-        //    float costeTarj, float costeFrag, float costeMecha, float costePack, float costeCera,
-        //    float costeMolde, float costeVela, 
-        //    int idPig, int idFrag, int iDVela, int idMolde, int idMecha)
-        //{
-        //    Costes coste = new Costes();
-
-        //    int? count = (from datos in context.Costes
-        //                  select datos.IDMecha).Count();
-
-        //    if (count == 0)
-        //    {
-        //        //coste.Coste = Guid.NewGuid();
-        //    }
-        //    else
-        //    {
-        //        //Error
-        //    }
-
-        //    coste.TiempoProp = tiempoprop;
-        //    coste.HorasLuz = horasLuz;
-        //    coste.CosteLuz = costeLuz;
-        //    coste.CosteTarj = costeTarj;
-        //    coste.CosteFrag = costeFrag;
-        //    coste.CosteMecha = costeMecha;
-        //    coste.CostePack = costePack;
-        //    coste.CosteCera = costeCera;
-        //    coste.IDPig = idPig;
-        //    coste.IDFrag = idFrag;
-        //    coste.IDMolde = idMolde;
-        //    coste.IDMecha = idMecha;
-        //    coste.CosteMolde = costeMolde;
-        //    coste.CosteVela = costeVela;            
-        //    coste.IDVela = iDVela;
-
-        //    this.context.Costes.Add(coste);
-        //    this.context.SaveChanges();
-        //}
-
-        //public void ActualizarCoste(int idCoste, float tiempoprop, float horasLuz, float costeLuz,
-        //    float costeTarj, float costeFrag, float costeMecha, float costePack, float costeCera,
-        //    float costeMolde, float costeVela,
-        //    int idPig, int idFrag, int iDVela, int idMolde, int idMecha)
-        //{
-        //    Costes coste = BuscarCoste(idCoste);
-
-        //    if (tiempoprop != null)
-        //    {
-        //        coste.TiempoProp = tiempoprop;
-        //    }
-
-        //    if (horasLuz != null)
-        //    {
-        //        coste.HorasLuz = horasLuz;
-        //    }
-        //    coste.CosteCera = costeCera;
-
-        //    if (costeLuz != null)
-        //    {
-        //        coste.CosteLuz = costeLuz;
-        //    }
-
-        //    if (costeTarj != null)
-        //    {
-        //        coste.CosteTarj = costeTarj;
-        //    }
-
-        //    if (costeFrag != null)
-        //    {
-        //        coste.CosteFrag = costeFrag;
-        //    }
-
-        //    if (costeMecha != null)
-        //    {
-        //        coste.CosteMecha = costeMecha;
-        //    }
-
-        //    if (costePack != null)
-        //    {
-        //        coste.CostePack = costePack;
-        //    }
-
-        //    if (idPig != null)
-        //    {
-        //        coste.IDPig = idPig;
-        //    }
-
-        //    if (idFrag != null)
-        //    {
-        //        coste.IDFrag = idFrag;
-        //    }
-
-        //    if (idMolde != null)
-        //    {
-        //        coste.IDMolde = idMolde;
-        //    }
-
-        //    if (idMecha != null)
-        //    {
-        //        coste.IDMecha = idMecha;
-        //    }
-
-
-        //    if (costeMolde != null)
-        //    {
-        //        coste.CosteMolde = costeMolde;
-        //    }
-
-        //    if (costeVela != null)
-        //    {
-        //        coste.CosteVela = costeVela;
-        //    }
-
-        //    if (iDVela != null)
-        //    {
-        //        coste.IDVela = iDVela;
-        //    }
-
-        //    this.context.SaveChanges();
-        //}
-
-        //public List<Costes> GetCostes()
-        //{
-        //    return this.context.Costes.ToList();
-        //}
-
-        //public Costes BuscarCoste(int idCoste)
-        //{
-        //    return this.context.Costes.SingleOrDefault
-        //        (x => x.IDCoste == idCoste);
-        //}
-
-
     }
+
 }

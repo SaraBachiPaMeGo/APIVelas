@@ -58,7 +58,7 @@ namespace ApiVela.Models
         [Column("IDCera")]
         public Guid IDCera { get; set; }
 
-        public List<VelaPigmento> Pigmentos { get; set; }
-        public List<VelaFragancia> Fragancias { get; set; }
+        public List<VelaPigmento> VelaPigmentos { get; set; }
+        public List<VelaFragancia> VelaFragancias { get; set; }
     }
 }

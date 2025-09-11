@@ -26,5 +26,36 @@ namespace ApiVela.Data
 
         public DbSet<VelaPigmento> VelaPigmento { get; set; }
         public DbSet<VelaFragancia> VelaFragancia { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasKey(vf => new { vf.IDVela, vf.IDFrag });
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasOne(vf => vf.Vela)
+                .WithMany(v => v.VelaFragancias) // si tienes la colección en Vela
+                .HasForeignKey(vf => vf.IDVela);
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasOne(vf => vf.Fragancia)
+                .WithMany(f => f.VelaFragancia) // si tienes la colección en Fragancia
+                .HasForeignKey(vf => vf.IDFrag);
+
+            modelBuilder.Entity<VelaPigmento>()
+                .HasKey(vp => new { vp.IDVela, vp.IDPig });
+
+            modelBuilder.Entity<VelaPigmento>()
+                .HasOne(vp => vp.Vela)
+                .WithMany(v => v.VelaPigmentos) // si tienes la colección en Vela
+                .HasForeignKey(vp => vp.IDVela);
+
+            modelBuilder.Entity<VelaPigmento>()
+                .HasOne(vp => vp.Pigmento)
+                .WithMany(p => p.VelaPigmentos) // si tienes la colección en Pigmento
+                .HasForeignKey(vp => vp.IDPig);
+        }
     }
 }

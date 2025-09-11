@@ -25,7 +25,16 @@ namespace ApiVela.Controllers
         [HttpGet]
         public ActionResult<List<Cera>> GetCera()
         {
-            return repo.GetCeras();
+            try
+            {
+                return repo.GetCeras();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
         }
 
         // GET: api/Cera/5

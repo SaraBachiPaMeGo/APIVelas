@@ -10,7 +10,6 @@ namespace ApiVela.Models
     [Table("VelaFragancia")]
     public class VelaFragancia
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDVela")]
         public Guid IDVela { get; set; }
@@ -18,7 +17,6 @@ namespace ApiVela.Models
         [Column("Vela")]
         public Vela Vela { get; set; }
 
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDFrag")]
         public Guid IDFrag { get; set; }
