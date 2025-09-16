@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,47 +9,71 @@ namespace ApiVela.Controllers
     [ApiController]
     public class PigmentoController : ControllerBase
     {
-        RepositoryPigmentos repo;
+        private readonly RepositoryPigmentos repo;
 
         public PigmentoController(RepositoryPigmentos repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Pigmento
         [HttpGet]
-        public ActionResult<List<Pigmento>> GetPigmento()
+        public IActionResult GetPigmentos()
         {
-            return repo.GetPigmentos();
+            var resultado = repo.GetPigmentos();  // Debe devolver CustomApiResponse<List<Pigmento>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Pigmento/5
+        // GET: api/Pigmento/BuscarPigmento/{idPigmento}
         [HttpGet]
-
         [Route("[action]/{idPigmento}")]
-        public ActionResult<Pigmento> BuscarPigmento(Guid idPigmento)
+        public IActionResult BuscarPigmento(Guid idPigmento)
         {
-            return repo.BuscarPigmento(idPigmento);
+            var resultado = repo.BuscarPigmento<Pigmento>(idPigmento);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Pigmento
         [HttpPost]
-        public void InsertarPigmento(Pigmento Pigmento)
+        public IActionResult InsertarPigmento( Pigmento pigmento)
         {
-            repo.InsertarPigmento(Pigmento);
+            var resultado = repo.InsertarPigmento<Pigmento>(pigmento);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarPigmento), new { idPigmento = resultado.Object.IDPig }, resultado.Object);
         }
 
-        // PUT: api/Pigmento/5
+        // PUT: api/Pigmento/{id}
         [HttpPut("{id}")]
-        public void ActualizarPigmento(Pigmento Pigmento)
+        public IActionResult ActualizarPigmento(Guid id,  Pigmento pigmento)
         {
-            repo.ActualizarPigmento(Pigmento);
+            if (id != pigmento.IDPig)
+                return BadRequest("El ID del pigmento no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarPigmento<Pigmento>(pigmento);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Pigmento/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeletePigmento(Guid id)
         {
+            // Si implementas un método eliminar en tu repositorio:
+            // var resultado = repo.EliminarPigmento(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

@@ -4,99 +4,97 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryCeras
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryCeras(Contexto context)
+        public RepositoryCeras(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // ------------------------------------- CERA ---------------------------------------------
-        public void InsertarCera(Cera cer)
+        public CustomApiResponse<List<Cera>> GetCeras() 
         {
-            Cera cera = new Cera();
-
-            //int? count = (from datos in context.Mecha
-            //              select datos.IDMecha).Count();
-
-            //if (count == 0)
-            //{
-            //    cera.IDCera =Guid.NewGuid();
-            //}
-            //else
-            //{
-            //    //Error
-            //}
-            cera.IDCera = Guid.NewGuid();
-
-            cera.Tipo = cer.Tipo;
-            cera.CompradoEn = cer.CompradoEn;
-            cera.Firma = cer.Firma;
-            //cera.IDVela = Guid.NewGuid();
-            cera.Cantidad = cer.Cantidad;
-            cera.Coste = cer.Coste;
-
-            this.context.Cera.Add(cera);
-            this.context.SaveChanges();
+            var response = new CustomApiResponse<List<Cera>>();
+            try
+            {
+                var ceras = context.Cera.ToList();
+                response.Object = mapper.Map<List<Cera>>(ceras);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
         }
 
-        public void ActualizarCera(Cera cer)
+        public CustomApiResponse<Cera> BuscarCera(Guid idCera) 
         {
-            Cera cera = BuscarCera(cer.IDCera);
-
-
-            if (cer.Firma != cera.Firma)
+            var response = new CustomApiResponse<Cera>();
+            try
             {
-                cera.Firma = cer.Firma;
-
+                var cera = context.Cera.SingleOrDefault(x => x.IDCera == idCera);
+                if (cera == null) throw new Exception("Cera no encontrada");
+                response.Object = mapper.Map<Cera>(cera);
             }
-
-            if (cer.Tipo != cera.Tipo)
+            catch (Exception ex)
             {
-                cera.Tipo = cer.Tipo;
-
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
-
-            if (cer.CompradoEn != cera.CompradoEn)
-            {
-                cera.CompradoEn = cer.CompradoEn;
-            }
-
-            if (cer.IDVela != cera.IDVela)
-            {
-                cera.IDVela = cer.IDVela;
-            }
-
-            if (cer.Coste != cera.Coste)
-            {
-                cera.Coste = cer.Coste;
-
-            }
-
-            if (cer.Cantidad != cera.Cantidad)
-            {
-                cera.Cantidad = cer.Cantidad;
-
-            }
-
-            //this.context.SaveChanges();
+            return response;
         }
 
-        public List<Cera> GetCeras()
+        public CustomApiResponse<Cera> InsertarCera(Cera cer) 
         {
-            return this.context.Cera.ToList();
+            var response = new CustomApiResponse<Cera>();
+            try
+            {
+                var cera = mapper.Map<Cera>(cer);
+                cera.IDCera = Guid.NewGuid();
+
+                context.Cera.Add(cera);
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Cera>(cera);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
         }
 
-        public Cera BuscarCera(Guid idCera)
+        public CustomApiResponse<Cera> ActualizarCera(Cera cer) 
         {
-            return this.context.Cera.SingleOrDefault
-                (x => x.IDCera == idCera);
-        }
+            var response = new CustomApiResponse<Cera>();
+            try
+            {
+                var ceraExistente = context.Cera.SingleOrDefault(x => x.IDCera == cer.IDCera);
+                if (ceraExistente == null) throw new Exception("Cera no encontrada");
 
+                // Actualiza solo las propiedades que desees (puedes ajustar según tu lógica)
+                if (cer.Firma != ceraExistente.Firma) ceraExistente.Firma = cer.Firma;
+                if (cer.Tipo != ceraExistente.Tipo) ceraExistente.Tipo = cer.Tipo;
+                if (cer.CompradoEn != ceraExistente.CompradoEn) ceraExistente.CompradoEn = cer.CompradoEn;
+                if (cer.IDVela != ceraExistente.IDVela) ceraExistente.IDVela = cer.IDVela;
+                if (cer.Coste != ceraExistente.Coste) ceraExistente.Coste = cer.Coste;
+                if (cer.Cantidad != ceraExistente.Cantidad) ceraExistente.Cantidad = cer.Cantidad;
+
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Cera>(ceraExistente);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
     }
 }

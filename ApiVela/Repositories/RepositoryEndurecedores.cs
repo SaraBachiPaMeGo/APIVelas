@@ -4,98 +4,132 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryEndurecedores
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryEndurecedores(Contexto context)
+        public RepositoryEndurecedores(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // ------------------------------------- ENDURECEDOR ---------------------------------------------
-        public void InsertarEndurecedor(Endurecedor cer)
+        // Insertar Endurecedor
+        public CustomApiResponse<T> InsertarEndurecedor<T>(Endurecedor cer) where T : class
         {
-            Endurecedor cera = new Endurecedor();
+            var response = new CustomApiResponse<T>();
 
-            //int? count = (from datos in context.Mecha
-            //              select datos.IDMecha).Count();
+            try
+            {
+                var cera = new Endurecedor
+                {
+                    IDEndurecedor = Guid.NewGuid(),
+                    Tipo = cer.Tipo,
+                    CompradoEn = cer.CompradoEn,
+                    Firma = cer.Firma,
+                    Cantidad = cer.Cantidad,
+                    Coste = cer.Coste,
+                    IDVela = cer.IDVela
+                };
 
-            //if (count == 0)
-            //{
-            //    cera.IDEndurecedor =Guid.NewGuid();
-            //}
-            //else
-            //{
-            //    //Error
-            //}
-            cera.IDEndurecedor = Guid.NewGuid();
+                context.Endurecedor.Add(cera);
+                context.SaveChanges();
 
-            cera.Tipo = cer.Tipo;
-            cera.CompradoEn = cer.CompradoEn;
-            cera.Firma = cer.Firma;
-            //cera.IDVela = Guid.NewGuid();
-            cera.Cantidad = cer.Cantidad;
-            cera.Coste = cer.Coste;
+                response.Object = mapper.Map<T>(cera);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
 
-            this.context.Endurecedor.Add(cera);
-            this.context.SaveChanges();
+            return response;
         }
 
-        public void ActualizarEndurecedor(Endurecedor cer)
+        // Actualizar Endurecedor
+        public CustomApiResponse<T> ActualizarEndurecedor<T>(Endurecedor cer) where T : class
         {
-            Endurecedor cera = BuscarEndurecedor(cer.IDEndurecedor);
+            var response = new CustomApiResponse<T>();
 
-
-            if (cer.Firma != cera.Firma)
+            try
             {
-                cera.Firma = cer.Firma;
+                var cera = BuscarEndurecedorEntity(cer.IDEndurecedor);
+                if (cera == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Endurecedor no encontrado" };
+                    return response;
+                }
 
-            }
-
-            if (cer.Tipo != cera.Tipo)
-            {
-                cera.Tipo = cer.Tipo;
-
-            }
-
-            if (cer.CompradoEn != cera.CompradoEn)
-            {
-                cera.CompradoEn = cer.CompradoEn;
-            }
-
-            if (cer.IDVela != cera.IDVela)
-            {
-                cera.IDVela = cer.IDVela;
-            }
-
-            if (cer.Coste != cera.Coste)
-            {
+                cera.Firma = cer.Firma ?? cera.Firma;
+                cera.Tipo = cer.Tipo ?? cera.Tipo;
+                cera.CompradoEn = cer.CompradoEn ?? cera.CompradoEn;
+                cera.IDVela = cer.IDVela != Guid.Empty ? cer.IDVela : cera.IDVela;
                 cera.Coste = cer.Coste;
-
-            }
-
-            if (cer.Cantidad != cera.Cantidad)
-            {
                 cera.Cantidad = cer.Cantidad;
 
+                context.SaveChanges();
+                response.Object = mapper.Map<T>(cera);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
 
-            this.context.SaveChanges();
+            return response;
         }
 
-        public List<Endurecedor> GetEndurecedor()
+        // Obtener todos los endurecedores
+        public CustomApiResponse<List<T>> GetEndurecedor<T>() where T : class
         {
-            return this.context.Endurecedor.ToList();
+            var response = new CustomApiResponse<List<T>>();
+
+            try
+            {
+                var datos = context.Endurecedor.ToList();
+                response.Object = mapper.Map<List<T>>(datos);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
         }
 
-        public Endurecedor BuscarEndurecedor(Guid idEndurecedor)
+        // Buscar uno por ID
+        public CustomApiResponse<T> BuscarEndurecedor<T>(Guid idEndurecedor) where T : class
         {
-            return this.context.Endurecedor.SingleOrDefault
-                (x => x.IDEndurecedor == idEndurecedor);
+            var response = new CustomApiResponse<T>();
+
+            try
+            {
+                var entidad = context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
+
+                if (entidad == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Endurecedor no encontrado" };
+                    return response;
+                }
+
+                response.Object = mapper.Map<T>(entidad);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
+
+        // Método privado si quieres reutilizarlo sin mapeo
+        private Endurecedor BuscarEndurecedorEntity(Guid idEndurecedor)
+        {
+            return context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
         }
     }
 }
+

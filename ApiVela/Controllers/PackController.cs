@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,47 +9,71 @@ namespace ApiVela.Controllers
     [ApiController]
     public class PackController : ControllerBase
     {
-        RepositoryPacks repo;
+        private readonly RepositoryPacks repo;
 
         public PackController(RepositoryPacks repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Pack
         [HttpGet]
-        public ActionResult<List<Pack>> GetPack()
+        public IActionResult GetPacks()
         {
-            return repo.GetPacks();
+            var resultado = repo.GetPacks(); // CustomApiResponse<List<Pack>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Pack/5
+        // GET: api/Pack/BuscarPack/{idPack}
         [HttpGet]
-
         [Route("[action]/{idPack}")]
-        public ActionResult<Pack> BuscarPack(Guid idPack)
+        public IActionResult BuscarPack(Guid idPack)
         {
-            return repo.BuscarPack(idPack);
+            var resultado = repo.BuscarPack(idPack);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Pack
         [HttpPost]
-        public void InsertarPack(Pack Pack)
+        public IActionResult InsertarPack( Pack pack)
         {
-            repo.InsertarPack(Pack);
+            var resultado = repo.InsertarPack(pack);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarPack), new { idPack = resultado.Object.IDPack }, resultado.Object);
         }
 
-        // PUT: api/Pack/5
+        // PUT: api/Pack/{id}
         [HttpPut("{id}")]
-        public void ActualizarPack(Pack Pack)
+        public IActionResult ActualizarPack(Guid id,  Pack pack)
         {
-            repo.ActualizarPack(Pack);
+            if (id != pack.IDPack)
+                return BadRequest("El ID del Pack no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarPack(pack);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Pack/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeletePack(Guid id)
         {
+            // Si implementas un método eliminar en tu repositorio:
+            // var resultado = repo.EliminarPack(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,47 +9,71 @@ namespace ApiVela.Controllers
     [ApiController]
     public class EndurecedorController : ControllerBase
     {
-
-        RepositoryEndurecedores repo;
+        private readonly RepositoryEndurecedores repo;
 
         public EndurecedorController(RepositoryEndurecedores repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
+
         // GET: api/Endurecedor
         [HttpGet]
-        public ActionResult<List<Endurecedor>> GetEndurecedor()
+        public IActionResult GetEndurecedores()
         {
-            return repo.GetEndurecedor();
+            var result = repo.GetEndurecedor<Endurecedor>();  // supongo devuelve CustomApiResponse<List<Endurecedor>>
+            if (result.Error != null)
+                return BadRequest(result.Error.Mensaje);
+
+            return Ok(result.Object);
         }
 
-        // GET: api/Endurecedor/5
+        // GET: api/Endurecedor/BuscarEndurecedor/{idend}
         [HttpGet]
-
         [Route("[action]/{idend}")]
-        public ActionResult<Endurecedor> BuscarEndurecedor(Guid idend)
+        public IActionResult BuscarEndurecedor(Guid idend)
         {
-            return repo.BuscarEndurecedor(idend);
+            var result = repo.BuscarEndurecedor<Endurecedor>(idend);
+            if (result.Error != null)
+                return NotFound(result.Error.Mensaje);
+
+            return Ok(result.Object);
         }
 
         // POST: api/Endurecedor
         [HttpPost]
-        public void InsertarEndurecedor(Endurecedor end)
+        public IActionResult InsertarEndurecedor( Endurecedor ent)
         {
-            repo.InsertarEndurecedor(end);
+            var result = repo.InsertarEndurecedor<Endurecedor>(ent);
+            if (result.Error != null)
+                return BadRequest(result.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarEndurecedor), new { idend = result.Object.IDEndurecedor }, result.Object);
         }
 
-        // PUT: api/Endurecedor/5
+        // PUT: api/Endurecedor/{id}
         [HttpPut("{id}")]
-        public void ActualizarEndurecedor(Endurecedor end)
+        public IActionResult ActualizarEndurecedor(Guid id,  Endurecedor ent)
         {
-            repo.ActualizarEndurecedor(end);
+            if (id != ent.IDEndurecedor)
+                return BadRequest("El ID del endurecedor no coincide con el parámetro.");
+
+            var result = repo.ActualizarEndurecedor<Endurecedor>(ent);
+            if (result.Error != null)
+                return BadRequest(result.Error.Mensaje);
+
+            return Ok(result.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Endurecedor/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteEndurecedor(Guid id)
         {
+            // Si tienes algún método eliminar en tu repositorio:
+            // var result = repo.EliminarEndurecedor(id);
+            // if (result.Error != null) return BadRequest(result.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,46 +9,67 @@ namespace ApiVela.Controllers
     [ApiController]
     public class VelaController : ControllerBase
     {
-        RepositoryVelas repo;
+        private readonly RepositoryVelas repo;
 
         public VelaController(RepositoryVelas repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Vela
         [HttpGet]
-        public ActionResult<List<Vela>> GetVela()
+        public IActionResult GetVelas()
         {
-            return repo.GetVelas();
+            var resultado = repo.GetVelas(); // CustomApiResponse<List<Vela>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Vela/5
+        // GET: api/Vela/BuscarVela/{idVela}
         [HttpGet]
         [Route("[action]/{idVela}")]
-        public ActionResult<Vela> BuscarVela(Guid idVela)
+        public IActionResult BuscarVela(Guid idVela)
         {
-            return repo.BuscarVela(idVela);
+            var resultado = repo.BuscarVela(idVela);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Vela
         [HttpPost]
-        public void InsertarVela(Vela Vela)
+        public IActionResult InsertarVela( Vela vela)
         {
-            repo.InsertarVela(Vela);
+            var resultado = repo.InsertarVela(vela);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarVela), new { idVela = resultado.Object.IDVela }, resultado.Object);
         }
 
-        // PUT: api/Vela/5
+        // PUT: api/Vela/{id}
         [HttpPut("{id}")]
-        public void ActualizarVela(Vela Vela)
+        public IActionResult ActualizarVela(Guid id,  Vela vela)
         {
-            repo.Actualizarvela(Vela);
+            if (id != vela.IDVela)
+                return BadRequest("El ID de la vela no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarVela(vela);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Vela/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(Guid id)
         {
+            // Puedes implementar la lógica de eliminar aquí si la tienes en el repositorio
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

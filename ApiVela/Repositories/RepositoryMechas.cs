@@ -1,98 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryMechas
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryMechas(Contexto context)
+        public RepositoryMechas(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // ------------------------------------- MECHA ---------------------------------------------
-
-        public void InsertarMecha(Mecha mech)
+        public CustomApiResponse<List<Mecha>> GetMechas()
         {
-            Mecha mecha = new Mecha();
-
-            int? count = (from datos in context.Mecha
-                          select datos.IDMecha).Count();
-
-            if (count == 0)
+            var response = new CustomApiResponse<List<Mecha>>();
+            try
             {
+                var mechas = context.Mecha.ToList();
+                response.Object = mapper.Map<List<Mecha>>(mechas);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
+
+        public CustomApiResponse<Mecha> BuscarMecha(Guid idMecha)
+        {
+            var response = new CustomApiResponse<Mecha>();
+            try
+            {
+                var mecha = context.Mecha.SingleOrDefault(m => m.IDMecha == idMecha);
+                if (mecha == null) throw new Exception("Mecha no encontrada");
+                response.Object = mapper.Map<Mecha>(mecha);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
+
+        public CustomApiResponse<Mecha> InsertarMecha(Mecha mech)
+        {
+            var response = new CustomApiResponse<Mecha>();
+            try
+            {
+                // Puedes agregar validaciones aquí si es necesario, por ejemplo permitir solo una mecha:
+                // if (context.Mecha.Any()) throw new Exception("Solo se permite una mecha");
+
+                var mecha = mapper.Map<Mecha>(mech);
                 mecha.IDMecha = Guid.NewGuid();
+
+                context.Mecha.Add(mecha);
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Mecha>(mecha);
             }
-            else
+            catch (Exception ex)
             {
-                //Error
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
-
-            mecha.Tipo = mech.Tipo;
-            mecha.CompradoEn = mech.CompradoEn;
-            mecha.Firma = mech.Firma;
-            mecha.IDVela = mech.IDVela;
-            mecha.Cantidad = mech.Cantidad;
-            mecha.Coste = mech.Coste;
-
-            this.context.Mecha.Add(mecha);
-            this.context.SaveChanges();
+            return response;
         }
 
-        public void ActualizarMecha(Mecha mech)
+        public CustomApiResponse<Mecha> ActualizarMecha(Mecha mech)
         {
-            Mecha mecha = BuscarMecha(mech.IDMecha);
-
-            if (mech.Firma != mecha.Firma)
+            var response = new CustomApiResponse<Mecha>();
+            try
             {
-                mecha.Firma = mech.Firma;
+                var mechaExistente = context.Mecha.SingleOrDefault(m => m.IDMecha == mech.IDMecha);
+                if (mechaExistente == null) throw new Exception("Mecha no encontrada");
 
+                // Actualiza solo los campos que hayan cambiado
+                if (mech.Firma != mechaExistente.Firma) mechaExistente.Firma = mech.Firma;
+                if (mech.Tipo != mechaExistente.Tipo) mechaExistente.Tipo = mech.Tipo;
+                if (mech.CompradoEn != mechaExistente.CompradoEn) mechaExistente.CompradoEn = mech.CompradoEn;
+                if (mech.IDVela != mechaExistente.IDVela) mechaExistente.IDVela = mech.IDVela;
+                if (mech.Cantidad != mechaExistente.Cantidad) mechaExistente.Cantidad = mech.Cantidad;
+                if (mech.Coste != mechaExistente.Coste) mechaExistente.Coste = mech.Coste;
+
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Mecha>(mechaExistente);
             }
-
-            if (mech.Tipo != mecha.Tipo)
+            catch (Exception ex)
             {
-                mecha.Tipo = mech.Tipo;
-
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
-
-            if (mech.CompradoEn != mecha.CompradoEn)
-            {
-                mecha.CompradoEn = mech.CompradoEn;
-            }
-
-            if (mech.IDVela != mecha.IDVela)
-            {
-                mecha.IDVela = mech.IDVela;
-            }
-
-            if (mech.Cantidad != mecha.Cantidad)
-            {
-                mecha.Cantidad = mech.Cantidad;
-            }
-
-            if (mech.Coste != mecha.Coste)
-            {
-                mecha.Coste = mech.Coste;
-            }
-
-            this.context.SaveChanges();
-        }
-
-        public List<Mecha> GetMechas()
-        {
-            return this.context.Mecha.ToList();
-        }
-
-        public Mecha BuscarMecha(Guid idMecha)
-        {
-            return this.context.Mecha.SingleOrDefault
-                (x => x.IDMecha == idMecha);
+            return response;
         }
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -14,48 +11,54 @@ namespace ApiVela.Controllers
     [ApiController]
     public class VelaFraganciaController : ControllerBase
     {
-        RepositoryVelaFragancia repo;
+        private readonly RepositoryVelaFragancia repo;
 
         public VelaFraganciaController(RepositoryVelaFragancia repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        // GET: api/VelaFragancia
+        // GET: api/VelaFragancia/GetFraganciasPorVela/{idVela}
         [HttpGet]
         [Route("[action]/{idVela}")]
-
-        public ActionResult<List<Fragancia>> GetFraganciasPorVela(Guid idVela)
+        public IActionResult GetFraganciasPorVela(Guid idVela)
         {
-            return repo.GetFraganciasPorVela(idVela);
+            var resultado = repo.GetFraganciasPorVela(idVela); // CustomApiResponse<List<Fragancia>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
-
-        // GET: api/VelaFragancia/5
-        //[HttpGet]
-
-        //[Route("[action]/{idVelaFragancia}")]
-        //public ActionResult<VelaFragancia> BuscarVelaFragancia(Guid idVelaFragancia)
-        //{
-           // return repo.BuscarVelaFragancia(idVelaFragancia);
-        //}
 
         // POST: api/VelaFragancia
         [HttpPost]
-        public void InsertarVelaFragancia(Guid idVela, Guid idFrag)
+        public IActionResult InsertarVelaFragancia(Guid idVela, Guid idFrag)
         {
-            repo.InsertarVelaFragancia(idVela, idFrag);
+            var resultado = repo.InsertarVelaFragancia(idVela, idFrag);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // PUT: api/VelaFragancia/5
-        [HttpPut("{id}")]
-        public void ActualizarVelaFragancia(VelaFragancia VelaFragancia)
-        {
-            //repo.ActualizarVelaFragancia(VelaFragancia);
-        }
-        // DELETE: api/ApiWithActions/5
+        // PUT: api/VelaFragancia/{id}
+        //[HttpPut("{id}")]
+        //public IActionResult ActualizarVelaFragancia( VelaFragancia velaFragancia)
+        //{
+        //    // Si tienes método para actualizar en repo, usarlo aquí, ejemplo:
+        //    var resultado = repo.(velaFragancia);
+        //    if (resultado.Error != null)
+        //        return BadRequest(resultado.Error.Mensaje);
+
+        //    return Ok(resultado.Object);
+        //}
+
+        // DELETE: api/VelaFragancia/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            // Aquí implementa la lógica si tienes para eliminar.
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

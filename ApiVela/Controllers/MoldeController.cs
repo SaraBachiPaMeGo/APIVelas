@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,47 +9,71 @@ namespace ApiVela.Controllers
     [ApiController]
     public class MoldeController : ControllerBase
     {
-        RepositoryMoldes repo;
+        private readonly RepositoryMoldes repo;
 
         public MoldeController(RepositoryMoldes repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Molde
         [HttpGet]
-        public ActionResult<List<Molde>> GetMolde()
+        public IActionResult GetMoldes()
         {
-            return repo.GetMoldes();
+            var resultado = repo.GetMoldes();  // CustomApiResponse<List<Molde>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Molde/5
+        // GET: api/Molde/BuscarMolde/{idMolde}
         [HttpGet]
-
         [Route("[action]/{idMolde}")]
-        public ActionResult<Molde> BuscarMolde(Guid idMolde)
+        public IActionResult BuscarMolde(Guid idMolde)
         {
-            return repo.BuscarMolde(idMolde);
+            var resultado = repo.BuscarMolde(idMolde);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Molde
         [HttpPost]
-        public void InsertarMolde(Molde Molde)
+        public IActionResult InsertarMolde( Molde molde)
         {
-            repo.InsertarMolde(Molde);
+            var resultado = repo.InsertarMolde(molde);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarMolde), new { idMolde = resultado.Object.IDMolde }, resultado.Object);
         }
 
-        // PUT: api/Molde/5
+        // PUT: api/Molde/{id}
         [HttpPut("{id}")]
-        public void ActualizarMolde(Molde Molde)
+        public IActionResult ActualizarMolde(Guid id,  Molde molde)
         {
-            repo.ActualizarMolde(Molde);
+            if (id != molde.IDMolde)
+                return BadRequest("El ID del molde no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarMolde(molde);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Molde/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteMolde(Guid id)
         {
+            // Si en tu repo tienes método para eliminar:
+            // var resultado = repo.EliminarMolde(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
+using ApiVela.Profile;
 using ApiVela.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,6 +55,8 @@ namespace ApiVela
             services.AddTransient<RepositoryPedidos>();
             services.AddTransient<RepositoryPigmentos>();
             services.AddTransient<RepositoryVelas>();
+
+            services.AddAutoMapper(typeof(AutoMapperProfile));
 
             services.AddControllers();
         }

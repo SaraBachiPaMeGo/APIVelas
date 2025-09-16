@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,47 +9,71 @@ namespace ApiVela.Controllers
     [ApiController]
     public class MechaController : ControllerBase
     {
-        RepositoryMechas repo;
+        private readonly RepositoryMechas repo;
 
         public MechaController(RepositoryMechas repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Mecha
         [HttpGet]
-        public ActionResult<List<Mecha>> GetMecha()
+        public IActionResult GetMechas()
         {
-            return repo.GetMechas();
+            var resultado = repo.GetMechas();  // CustomApiResponse<List<Mecha>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Mecha/5
+        // GET: api/Mecha/BuscarMecha/{idMecha}
         [HttpGet]
-
         [Route("[action]/{idMecha}")]
-        public ActionResult<Mecha> BuscarMecha(Guid idMecha)
+        public IActionResult BuscarMecha(Guid idMecha)
         {
-            return repo.BuscarMecha(idMecha);
+            var resultado = repo.BuscarMecha(idMecha);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Mecha
         [HttpPost]
-        public void InsertarMecha(Mecha Mecha)
+        public IActionResult InsertarMecha( Mecha mech)
         {
-            repo.InsertarMecha(Mecha);
+            var resultado = repo.InsertarMecha(mech);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return CreatedAtAction(nameof(BuscarMecha), new { idMecha = resultado.Object.IDMecha }, resultado.Object);
         }
 
-        // PUT: api/Mecha/5
+        // PUT: api/Mecha/{id}
         [HttpPut("{id}")]
-        public void ActualizarMecha(Mecha Mecha)
+        public IActionResult ActualizarMecha(Guid id,  Mecha mech)
         {
-            repo.ActualizarMecha(Mecha);
+            if (id != mech.IDMecha)
+                return BadRequest("El ID de la Mecha no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarMecha(mech);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Mecha/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteMecha(Guid id)
         {
+            // Si tienes un método eliminar en el repositorio:
+            // var resultado = repo.EliminarMecha(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Método DELETE no implementado.");
         }
     }
 }

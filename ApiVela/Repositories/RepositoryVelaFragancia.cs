@@ -1,47 +1,87 @@
-﻿using ApiVela.Data;
-using ApiVela.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using ApiVela.Data;
+using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repositories
 {
     public class RepositoryVelaFragancia
     {
-
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryVelaFragancia(Contexto context)
+        public RepositoryVelaFragancia(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public List<VelaFragancia> Fragancias { get; set; }
-
-
-        // ------------------------------------- VELAFRAGANCIA ---------------------------------------------
-        public void InsertarVelaFragancia(Guid idVela, Guid idFrag)
+        // ---------------------------- INSERTAR RELACIÓN ----------------------------
+        public CustomApiResponse<VelaFragancia> InsertarVelaFragancia(Guid idVela, Guid idFrag) 
         {
-            var vf = new VelaFragancia { IDVela = idVela, IDFrag = idFrag };
+            var response = new CustomApiResponse<VelaFragancia>();
 
-            context.VelaFragancia.Add(vf);
-            context.SaveChanges();
+            try
+            {
+                var vf = new VelaFragancia { IDVela = idVela, IDFrag = idFrag };
+                context.VelaFragancia.Add(vf);
+                context.SaveChanges();
+
+                // Mapear el objeto agregado, si quieres devolver la entidad de unión
+                response.Object = mapper.Map<VelaFragancia>(vf);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
         }
 
-        public void EliminarRelacionesFragancias(Guid idVela)
+        // ---------------------------- ELIMINAR RELACIONES EXISTENTES ----------------------------
+        public CustomApiResponse<bool> EliminarRelacionesFragancias(Guid idVela)
         {
-            var rels = context.VelaFragancia.Where(vf => vf.IDVela == idVela);
-            context.VelaFragancia.RemoveRange(rels);
-            context.SaveChanges();
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var rels = context.VelaFragancia.Where(vf => vf.IDVela == idVela).ToList();
+                context.VelaFragancia.RemoveRange(rels);
+                context.SaveChanges();
+
+                response.Object = true;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+                response.Object = false;
+            }
+
+            return response;
         }
 
-        public List<Fragancia> GetFraganciasPorVela(Guid idVela)
+        // ---------------------------- OBTENER FRAGANCIAS POR VELA ----------------------------
+        public CustomApiResponse<List<Fragancia>> GetFraganciasPorVela(Guid idVela)
         {
-            return context.VelaFragancia
-                .Where(vf => vf.IDVela == idVela)
-                .Select(vf => vf.Fragancia) // Asumiendo que tienes la navegación Fragancia en VelaFragancia
-                .ToList();
+            var response = new CustomApiResponse<List<Fragancia>>();
+
+            try
+            {
+                var fragancias = context.VelaFragancia
+                    .Where(vf => vf.IDVela == idVela)
+                    .Select(vf => vf.Fragancia)
+                    .ToList();
+
+                response.Object = mapper.Map<List<Fragancia>>(fragancias);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
         }
     }
 }

@@ -1,93 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryClientes
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryClientes(Contexto context)
+        public RepositoryClientes(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-         //------------------------------------- CLIENTE ---------------------------------------------
-        public void InsertarCliente(Cliente clie)
+        public CustomApiResponse<List<Cliente>> GetClientes()
         {
-            Cliente cli = new Cliente();
-
-            int? count = (from datos in context.Cliente
-                          select datos.IDCliente).Count();
-
-            if (count == 0)
+            var response = new CustomApiResponse<List<Cliente>>();
+            try
             {
-                cli.IDCliente = Guid.NewGuid();
+                var clientes = context.Cliente.ToList();
+                response.Object = mapper.Map<List<Cliente>>(clientes);
             }
-            else
+            catch (Exception ex)
             {
-                //Error
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
-
-            cli.Nombre = clie.Nombre;
-            cli.Direccion = clie.Direccion;
-            cli.Telf = clie.Telf;
-            cli.Email = clie.Email;
-            cli.IDPedido = clie.IDPedido;
-
-            //this.context.Cliente.Add(cli);
-            //this.context.SaveChanges();
+            return response;
         }
 
-        public void ActualizarCliente(Cliente clie)
+        public CustomApiResponse<Cliente> BuscarCliente(Guid idCliente)
         {
-            Cliente cli = BuscarCliente(clie.IDCliente);
-
-
-            if (clie.Nombre != cli.Nombre)
+            var response = new CustomApiResponse<Cliente>();
+            try
             {
-                cli.Nombre = clie.Nombre;
-
+                var cliente = context.Cliente.SingleOrDefault(c => c.IDCliente == idCliente);
+                if (cliente == null) throw new Exception("Cliente no encontrado");
+                response.Object = mapper.Map<Cliente>(cliente);
             }
-
-            if (clie.Direccion != cli.Direccion)
+            catch (Exception ex)
             {
-                cli.Direccion = clie.Direccion;
-
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
-
-            if (clie.Telf != cli.Telf)
-            {
-                cli.Telf = clie.Telf;
-            }
-
-            if (clie.Email != cli.Email)
-            {
-                cli.Email = clie.Email;
-            }
-
-            if (clie.IDPedido != cli.IDPedido)
-            {
-                cli.IDPedido = clie.IDPedido;
-            }
-
-            //this.context.SaveChanges();
+            return response;
         }
 
-        public List<Cliente> GetClientes()
+        public CustomApiResponse<Cliente> InsertarCliente(Cliente clie)
         {
-            return this.context.Cliente.ToList();
+            var response = new CustomApiResponse<Cliente>();
+            try
+            {
+                // Por ejemplo, si solo quieres permitir un cliente, lo verificas acá:
+                if (context.Cliente.Any())
+                    throw new Exception("Solo se permite un cliente");
+
+                var cliente = mapper.Map<Cliente>(clie);
+                cliente.IDCliente = Guid.NewGuid();
+
+                context.Cliente.Add(cliente);
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Cliente>(cliente);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
         }
 
-        public Cliente BuscarCliente(Guid idCliente)
+        public CustomApiResponse<Cliente> ActualizarCliente(Cliente cli)
         {
-            return this.context.Cliente.SingleOrDefault
-                (x => x.IDCliente == idCliente);
-        }
+            var response = new CustomApiResponse<Cliente>();
+            try
+            {
+                var cliente = context.Cliente.SingleOrDefault(c => c.IDCliente == cli.IDCliente);
+                if (cliente == null) throw new Exception("Cliente no encontrado");
 
+                mapper.Map(cliente, cliente);
+
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Cliente>(cliente);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
     }
 }

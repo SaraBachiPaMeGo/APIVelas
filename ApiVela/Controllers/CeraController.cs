@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ApiVela.Controllers
 {
@@ -13,8 +10,7 @@ namespace ApiVela.Controllers
     [ApiController]
     public class CeraController : ControllerBase
     {
-
-        RepositoryCeras repo;
+        private readonly RepositoryCeras repo;
 
         public CeraController(RepositoryCeras repo)
         {
@@ -23,47 +19,68 @@ namespace ApiVela.Controllers
 
         // GET: api/Cera
         [HttpGet]
-        public ActionResult<List<Cera>> GetCera()
+        public IActionResult GetCeras()
         {
-            try
-            {
-                return repo.GetCeras();
-            }
-            catch (Exception ex)
-            {
+            var resultado = repo.GetCeras();  // supongo que devuelve CustomApiResponse<List>
 
-                throw ex;
-            }
-            
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Cera/5
+        // GET: api/Cera/BuscarCera/{idCera}
         [HttpGet]
-
         [Route("[action]/{idCera}")]
-        public ActionResult<Cera> BuscarCera(Guid idCera)
+        public IActionResult BuscarCera(Guid idCera)
         {
-            return repo.BuscarCera(idCera);
+            var resultado = repo.BuscarCera(idCera);
+
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Cera
         [HttpPost]
-        public void InsertarCera(Cera cera)
+        public IActionResult InsertarCera( Cera cera)
         {
-            repo.InsertarCera(cera);
+            var resultado = repo.InsertarCera(cera);
+
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            // Si quieres, puedes devolver CreatedAtAction, si tienes ruta para BuscarCera
+            return CreatedAtAction(nameof(BuscarCera), new { idCera = resultado.Object.IDCera }, resultado.Object);
         }
 
-        // PUT: api/Cera/5
+        // PUT: api/Cera/{id}
         [HttpPut("{id}")]
-        public void ActualizarCera(Cera cera)
+        public IActionResult ActualizarCera(Guid id,  Cera cera)
         {
-            repo.ActualizarCera(cera);
+            if (id != cera.IDCera)
+                return BadRequest("El ID de la Cera no coincide con el parámetro.");
+
+            var resultado = repo.ActualizarCera(cera);
+
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        // DELETE: api/Cera/{id}
+        //[HttpDelete("{id}")]
+        //public IActionResult DeleteCera(Guid id)
+        //{
+        //    // Si implementas eliminar en el repositorio:
+        //    var resultado = repo.EliminarCera(id);  // suponiendo que tienes este método
+
+        //    if (resultado.Error != null)
+        //        return BadRequest(resultado.Error.Mensaje);
+
+        //    return NoContent();  // o Ok, dependiendo de lo que quieras
+        //}
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,48 +9,88 @@ namespace ApiVela.Controllers
     [ApiController]
     public class PedidoController : ControllerBase
     {
-        RepositoryPedidos repo;
+        private readonly RepositoryPedidos repo;
 
         public PedidoController(RepositoryPedidos repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Pedido
         [HttpGet]
-        public ActionResult<List<Pedido>> GetPedido()
+        public IActionResult GetPedidos()
         {
-            return repo.GetPedidos();
+            var resultado = repo.GetPedidos();  // CustomApiResponse<List<Pedido>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Pedido/5
+        // GET: api/Pedido/BuscarPedido/{idPedido}
         [HttpGet]
-
         [Route("[action]/{idPedido}")]
-        public ActionResult<Pedido> BuscarPedido(Guid idPedido)
+        public IActionResult BuscarPedido(Guid idPedido)
         {
-            return repo.BuscarPedido(idPedido);
+            var resultado = repo.BuscarPedido(idPedido);
+            if (resultado.Error != null)
+                return NotFound(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Pedido
         [HttpPost]
-        public void InsertarPedido(Guid idCliente, Guid iDVela)
+        public IActionResult InsertarPedido( InsertPedidoRequest request)
         {
-            repo.InsertarPedido(idCliente, iDVela);
+            // Supongo que haces un DTO o Request object para recibir los datos
+            var resultado = repo.InsertarPedido(request.IDCliente, request.IDVela);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            // En este caso, Pedido tiene un GUID nuevo generado, asumiré que Object contiene esa nueva entidad
+            return CreatedAtAction(nameof(BuscarPedido), new { idPedido = resultado.Object.IDPedido }, resultado.Object);
         }
 
-        // PUT: api/Pedido/5
+        // PUT: api/Pedido/{id}
         [HttpPut("{id}")]
-        public void ActualizarPedido(Guid idPedo, DateTime fechaEntrega, Guid idCliente,
-            Guid iDVela)
+        public IActionResult ActualizarPedido(Guid id,  UpdatePedidoRequest request)
         {
-            repo.ActualizarPedido(idPedo, fechaEntrega, idCliente, iDVela);
+            if (id != request.IDPedido)
+                return BadRequest("El ID del pedido no coincide.");
+
+            var resultado = repo.ActualizarPedido(request.IDPedido, request.FechaEntrega, request.IDCliente, request.IDVela);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Pedido/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeletePedido(Guid id)
         {
+            // Si implementas un método de eliminar en el repositorio:
+            // var resultado = repo.EliminarPedido(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "Eliminación no implementada");
         }
+    }
+
+    // DTOs que podrían servir:
+    public class InsertPedidoRequest
+    {
+        public Guid IDCliente { get; set; }
+        public Guid IDVela { get; set; }
+    }
+
+    public class UpdatePedidoRequest
+    {
+        public Guid IDPedido { get; set; }
+        public DateTime FechaEntrega { get; set; }
+        public Guid IDCliente { get; set; }
+        public Guid IDVela { get; set; }
     }
 }

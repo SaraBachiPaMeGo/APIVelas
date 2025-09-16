@@ -1,101 +1,124 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryPacks
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryPacks(Contexto context)
+        public RepositoryPacks(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // ------------------------------------- PACK ---------------------------------------------
-        public void InsertarPack(Pack pack)
+        // ---------------------------- INSERTAR ----------------------------
+        public CustomApiResponse<Pack> InsertarPack(Pack pack) 
         {
-            Pack packa = new Pack();
+            var response = new CustomApiResponse<Pack>();
+            try
+            {
+                var packEntity = new Pack
+                {
+                    IDPack = Guid.NewGuid(),
+                    Tipo = pack.Tipo,
+                    CompradoEn = pack.CompradoEn,
+                    Firma = pack.Firma,
+                    IDVela = pack.IDVela,
+                    Cantidad = pack.Cantidad,
+                    Coste = pack.Coste
+                };
 
-            //int? count = (from datos in context.Mecha
-            //              select datos.IDMecha).Count();
+                context.Pack.Add(packEntity);
+                context.SaveChanges();
 
-            //if (count == 0)
-            //{
-            //    packa.IDCera =Guid.NewGuid();
-            //}
-            //else
-            //{
-            //    //Error
-            //}
-            packa.IDPack = Guid.NewGuid();
+                response.Object = mapper.Map<Pack>(packEntity);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
 
-            packa.Tipo = pack.Tipo;
-            packa.CompradoEn = pack.CompradoEn;
-            packa.Firma = pack.Firma;
-            //packa.IDVela = Guid.NewGuid();
-            packa.Cantidad = pack.Cantidad;
-            packa.Coste = pack.Coste;
-
-            this.context.Pack.Add(packa);
-            this.context.SaveChanges();
+            return response;
         }
 
-        public void ActualizarPack(Pack pack)
+        // ---------------------------- ACTUALIZAR ----------------------------
+        public CustomApiResponse<Pack> ActualizarPack(Pack pack) 
         {
-            Pack packa = BuscarPack(pack.IDPack);
-
-
-            if (pack.Firma != packa.Firma)
+            var response = new CustomApiResponse<Pack>();
+            try
             {
-                packa.Firma = pack.Firma;
+                var existing = context.Pack.SingleOrDefault(p => p.IDPack == pack.IDPack);
+                if (existing == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Pack no encontrado" };
+                    return response;
+                }
 
+                // Actualizar solo lo que sea distinto o que tenga sentido
+                existing.Firma = pack.Firma ?? existing.Firma;
+                existing.Tipo = pack.Tipo ?? existing.Tipo;
+                existing.CompradoEn = pack.CompradoEn ?? existing.CompradoEn;
+                existing.IDVela = pack.IDVela != Guid.Empty ? pack.IDVela : existing.IDVela;
+                existing.Coste = pack.Coste;
+                existing.Cantidad = pack.Cantidad;
+
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Pack>(existing);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
 
-            if (pack.Tipo != packa.Tipo)
-            {
-                packa.Tipo = pack.Tipo;
-
-            }
-
-            if (pack.CompradoEn != packa.CompradoEn)
-            {
-                packa.CompradoEn = pack.CompradoEn;
-            }
-
-            if (pack.IDVela != packa.IDVela)
-            {
-                packa.IDVela = pack.IDVela;
-            }
-
-            if (pack.Coste != packa.Coste)
-            {
-                packa.Coste = pack.Coste;
-
-            }
-
-            if (pack.Cantidad != packa.Cantidad)
-            {
-                packa.Cantidad = pack.Cantidad;
-
-            }
-
-            this.context.SaveChanges();
+            return response;
         }
 
-        public List<Pack> GetPacks()
+        // ---------------------------- OBTENER TODOS ----------------------------
+        public CustomApiResponse<List<Pack>> GetPacks() 
         {
-            return this.context.Pack.ToList();
+            var response = new CustomApiResponse<List<Pack>>();
+            try
+            {
+                var list = context.Pack.ToList();
+                response.Object = mapper.Map<List<Pack>>(list);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
         }
 
-        public Pack BuscarPack(Guid idPack)
+        // ---------------------------- BUSCAR POR ID ----------------------------
+        public CustomApiResponse<Pack> BuscarPack(Guid idPack) 
         {
-            return this.context.Pack.SingleOrDefault
-                (x => x.IDPack == idPack);
+            var response = new CustomApiResponse<Pack>();
+            try
+            {
+                var packEntity = context.Pack.SingleOrDefault(p => p.IDPack == idPack);
+                if (packEntity == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Pack no encontrado" };
+                    return response;
+                }
+
+                response.Object = mapper.Map<Pack>(packEntity);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
         }
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,49 +10,64 @@ namespace ApiVela.Controllers
     [ApiController]
     public class FraganciaController : ControllerBase
     {
-
-        RepositoryFragancias repo;
+        private readonly RepositoryFragancias repo;
 
         public FraganciaController(RepositoryFragancias repo)
         {
-            this.repo = repo;
+            this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
         // GET: api/Fragancia
         [HttpGet]
-
-        public ActionResult<List<Fragancia>> GetFragancias()
+        public IActionResult GetFragancias()
         {
-            return repo.GetFragancias();
+            var resultado = repo.GetFragancias();
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Fragancia/5
+        // GET: api/Fragancia/BuscarFragancia/{idFrag}
         [HttpGet]
-        
         [Route("[action]/{idFrag}")]
-        public ActionResult<Fragancia> BuscarFragancia(Guid idFrag)
+        public IActionResult BuscarFragancia(Guid idFrag)
         {
-            return repo.BuscarFragancia(idFrag);
+            var resultado = repo.BuscarFragancia(idFrag);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
         // POST: api/Fragancia
         [HttpPost]
-        public void InsertarFragancia(Fragancia frag)
+        public IActionResult InsertarFragancia(Fragancia frag)
         {
-            repo.InsertarFragancia(frag);
+            var resultado = repo.InsertarFragancia(frag);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // PUT: api/Fragancia/5
+        // PUT: api/Fragancia/{id}
         [HttpPut("{id}")]
-        public void ActualizarFragancia(Fragancia frag)
+        public IActionResult ActualizarFragancia( Fragancia frag)
         {
-            repo.ActualizarFragancia(frag);
+            var resultado = repo.ActualizarFragancia(frag);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Fragancia/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            // Implementar eliminación si se requiere
+            return StatusCode(501, "Eliminación no implementada");
         }
     }
 }

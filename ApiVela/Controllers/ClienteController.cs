@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
@@ -13,8 +9,7 @@ namespace ApiVela.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-
-        RepositoryClientes repo;
+        private readonly RepositoryClientes repo;
 
         public ClienteController(RepositoryClientes repo)
         {
@@ -23,39 +18,69 @@ namespace ApiVela.Controllers
 
         // GET: api/Cliente
         [HttpGet]
-        public ActionResult<List<Cliente>> GetClientes()
+        public IActionResult GetClientes()
         {
-            return repo.GetClientes();
+            var resultado = repo.GetClientes();  // debería devolver CustomApiResponse<List<Cliente>>
+            if (resultado.Error != null)
+            {
+                return BadRequest(resultado.Error.Mensaje);
+            }
+            return Ok(resultado.Object);
         }
 
-        // GET: api/Cliente/5
+        // GET: api/Cliente/BuscarCliente/{idCliente}
         [HttpGet]
-        
         [Route("[action]/{idCliente}")]
-        public ActionResult<Cliente> BuscarCliente(Guid idCliente)
+        public IActionResult BuscarCliente(Guid idCliente)
         {
-            return repo.BuscarCliente(idCliente);
+            var resultado = repo.BuscarCliente(idCliente);  // CustomApiResponse<Cliente>
+            if (resultado.Error != null)
+            {
+                return NotFound(resultado.Error.Mensaje);
+            }
+            return Ok(resultado.Object);
         }
 
         // POST: api/Cliente
         [HttpPost]
-        public void InsertarCliente(Cliente cli)
+        public IActionResult InsertarCliente( Cliente cli)
         {
-            repo.InsertarCliente(cli);
+            var resultado = repo.InsertarCliente(cli);  // CustomApiResponse<Cliente>
+            if (resultado.Error != null)
+            {
+                return BadRequest(resultado.Error.Mensaje);
+            }
+            // Retornar Created con la ruta para obtener el nuevo cliente
+            return CreatedAtAction(nameof(BuscarCliente), new { idCliente = resultado.Object.IDCliente }, resultado.Object);
         }
 
-
-        // PUT: api/Cliente/5
+        // PUT: api/Cliente/{id}
         [HttpPut("{id}")]
-        public void ActualizarCliente(Cliente cli)
+        public IActionResult ActualizarCliente(Guid id,  Cliente cli)
         {
-            repo.ActualizarCliente(cli);
+            if (id != cli.IDCliente)
+            {
+                return BadRequest("El ID del cliente no coincide.");
+            }
+
+            var resultado = repo.ActualizarCliente(cli);  // CustomApiResponse<Cliente>
+            if (resultado.Error != null)
+            {
+                return BadRequest(resultado.Error.Mensaje);
+            }
+            return Ok(resultado.Object);
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Cliente/{id}
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteCliente(Guid id)
         {
+            // Si agregas un método de eliminar en repo, lo usarías así:
+            // var resultado = repo.EliminarCliente(id);
+            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+            // return NoContent();
+
+            return StatusCode(501, "El método DELETE no está implementado");
         }
     }
 }

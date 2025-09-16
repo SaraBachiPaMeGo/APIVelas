@@ -4,113 +4,133 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
+using AutoMapper;
 
 namespace ApiVela.Repository
 {
     public class RepositoryFragancias
     {
         private readonly Contexto context;
+        private readonly IMapper mapper;
 
-        public RepositoryFragancias(Contexto context)
+        public RepositoryFragancias(Contexto context, IMapper mapper)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // ------------------------------------- FRAGANCIA ---------------------------------------------
-
-        public void InsertarFragancia(Fragancia fragan)
+        // Insertar Fragancia
+        public CustomApiResponse<Fragancia> InsertarFragancia(Fragancia fragan) 
         {
-            //String fragNombre, String tipo,
-            //String compradoEn, String firma, int iDVela, int idCoste
-            Fragancia frag = new Fragancia();
+            var response = new CustomApiResponse<Fragancia>();
 
-            //int? count = (from datos in context.Fragancia
-            //              select datos.IDFrag).Count();
+            try
+            {
+                var frag = new Fragancia
+                {
+                    IDFrag = Guid.NewGuid(),
+                    FragNombre = fragan.FragNombre,
+                    Tipo = fragan.Tipo,
+                    CompradoEn = fragan.CompradoEn,
+                    Firma = fragan.Firma,
+                    IDVela = fragan.IDVela,
+                    Coste = fragan.Coste,
+                    Cantidad = fragan.Cantidad
+                };
 
-            //if (count == 0)
-            //{
-            //    frag.IDFrag = Guid.NewGuid();
-            //}
-            //else
-            //{
-            //    //Error
-            //}
+                context.Fragancia.Add(frag);
+                context.SaveChanges();
 
-            frag.IDFrag = Guid.NewGuid();
-            frag.FragNombre = fragan.FragNombre;
-            frag.Tipo = fragan.Tipo;
-            frag.CompradoEn = fragan.CompradoEn;
-            frag.Firma = fragan.Firma;
-            frag.IDVela = fragan.IDVela;
-            frag.Coste = fragan.Coste;
-            frag.Cantidad = fragan.Cantidad;
+                response.Object = mapper.Map<Fragancia>(frag);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
 
-
-            this.context.Fragancia.Add(frag);
-            this.context.SaveChanges();
+            return response;
         }
 
-        public void ActualizarFragancia(Fragancia fragan)
+        // Actualizar Fragancia
+        public CustomApiResponse<Fragancia> ActualizarFragancia(Fragancia fragan) 
         {
-            Fragancia frag = BuscarFragancia(fragan.IDFrag);
+            var response = new CustomApiResponse<Fragancia>();
 
-            if (fragan.Firma != frag.Firma)
+            try
             {
-                frag.Firma = fragan.Firma;
+                var frag = BuscarFraganciaEntity(fragan.IDFrag);
+                if (frag == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Fragancia no encontrada" };
+                    return response;
+                }
 
-            }
-
-            if (fragan.Tipo != frag.Tipo)
-            {
-                frag.Tipo = fragan.Tipo;
-
-            }
-
-            if (fragan.CompradoEn != frag.CompradoEn)
-            {
-                frag.CompradoEn = fragan.CompradoEn;
-            }
-
-            if (fragan.IDVela != frag.IDVela)
-            {
-                frag.IDVela = fragan.IDVela;
-            }
-
-            if (fragan.FragNombre != frag.FragNombre)
-            {
-                frag.FragNombre = fragan.FragNombre;
-            }
-
-            if (fragan.Coste != frag.Coste)
-            {
+                frag.Firma = fragan.Firma ?? frag.Firma;
+                frag.Tipo = fragan.Tipo ?? frag.Tipo;
+                frag.CompradoEn = fragan.CompradoEn ?? frag.CompradoEn;
+                frag.FragNombre = fragan.FragNombre ?? frag.FragNombre;
+                frag.IDVela = fragan.IDVela != Guid.Empty ? fragan.IDVela : frag.IDVela;
                 frag.Coste = fragan.Coste;
-            }
-
-            if (fragan.Cantidad != frag.Cantidad)
-            {
                 frag.Cantidad = fragan.Cantidad;
+
+                context.SaveChanges();
+                response.Object = mapper.Map<Fragancia>(frag);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
 
-
-            this.context.SaveChanges();
+            return response;
         }
 
-        public List<Fragancia> GetFragancias()
+        // Obtener todas las fragancias
+        public CustomApiResponse<List<Fragancia>> GetFragancias() 
         {
-            int? count = (from datos in context.Fragancia
-                          select datos.IDFrag).Count();
+            var response = new CustomApiResponse<List<Fragancia>>();
 
-            Fragancia frag = this.context.Fragancia.FirstOrDefault();
+            try
+            {
+                var frags = context.Fragancia.ToList();
+                response.Object = mapper.Map<List<Fragancia>>(frags);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
 
-            List<Fragancia> frags = this.context.Fragancia.ToList();
-
-            return frags;
+            return response;
         }
 
-        public Fragancia BuscarFragancia(Guid idFragancia)
+        // Buscar una fragancia por ID
+        public CustomApiResponse<Fragancia> BuscarFragancia(Guid idFragancia) 
         {
-            return this.context.Fragancia.SingleOrDefault
-                (x => x.IDFrag == idFragancia);
+            var response = new CustomApiResponse<Fragancia>();
+
+            try
+            {
+                var frag = context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
+
+                if (frag == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Fragancia no encontrada" };
+                    return response;
+                }
+
+                response.Object = mapper.Map<Fragancia>(frag);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
+
+        // Método interno privado (sin mapeo)
+        private Fragancia BuscarFraganciaEntity(Guid idFragancia)
+        {
+            return context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
         }
     }
 }
