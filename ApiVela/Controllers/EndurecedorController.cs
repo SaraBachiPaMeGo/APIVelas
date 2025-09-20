@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Endurecedor
         [HttpGet]
+        [Route("api/GetEndurecedores")]
+
         public IActionResult GetEndurecedores()
         {
             var result = repo.GetEndurecedor<Endurecedor>();  // supongo devuelve CustomApiResponse<List<Endurecedor>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Endurecedor
         [HttpPost]
+        [Route("api/InsertarEndurecedor")]
+
         public IActionResult InsertarEndurecedor( Endurecedor ent)
         {
             var result = repo.InsertarEndurecedor<Endurecedor>(ent);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Endurecedor/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarEndurecedor")]
+
         public IActionResult ActualizarEndurecedor(Guid id,  Endurecedor ent)
         {
             if (id != ent.IDEndurecedor)

@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Pigmento
         [HttpGet]
+        [Route("api/GetPigmentos")]
+
         public IActionResult GetPigmentos()
         {
             var resultado = repo.GetPigmentos();  // Debe devolver CustomApiResponse<List<Pigmento>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Pigmento
         [HttpPost]
+        [Route("api/InsertarPigmento")]
+
         public IActionResult InsertarPigmento( Pigmento pigmento)
         {
             var resultado = repo.InsertarPigmento<Pigmento>(pigmento);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pigmento/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarPigmento")]
+
         public IActionResult ActualizarPigmento(Guid id,  Pigmento pigmento)
         {
             if (id != pigmento.IDPig)

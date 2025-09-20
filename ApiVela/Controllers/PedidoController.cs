@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Pedido
         [HttpGet]
+        [Route("api/GetPedidos")]
+
         public IActionResult GetPedidos()
         {
             var resultado = repo.GetPedidos();  // CustomApiResponse<List<Pedido>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Pedido
         [HttpPost]
+        [Route("api/InsertarPedido")]
+
         public IActionResult InsertarPedido( InsertPedidoRequest request)
         {
             // Supongo que haces un DTO o Request object para recibir los datos
@@ -54,6 +58,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pedido/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarPedido")]
+
         public IActionResult ActualizarPedido(Guid id,  UpdatePedidoRequest request)
         {
             if (id != request.IDPedido)

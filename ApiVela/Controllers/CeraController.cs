@@ -19,6 +19,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Cera
         [HttpGet]
+        [Route("api/GetCeras")]
         public IActionResult GetCeras()
         {
             var resultado = repo.GetCeras();  // supongo que devuelve CustomApiResponse<List>
@@ -44,6 +45,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Cera
         [HttpPost]
+        [Route("api/InsertarCera")]
+
         public IActionResult InsertarCera( Cera cera)
         {
             var resultado = repo.InsertarCera(cera);
@@ -57,6 +60,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Cera/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarCera")]
+
         public IActionResult ActualizarCera(Guid id,  Cera cera)
         {
             if (id != cera.IDCera)

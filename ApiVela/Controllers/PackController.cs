@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Pack
         [HttpGet]
+        [Route("api/GetPacks")]
+
         public IActionResult GetPacks()
         {
             var resultado = repo.GetPacks(); // CustomApiResponse<List<Pack>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Pack
         [HttpPost]
+        [Route("api/InsertarPack")]
+
         public IActionResult InsertarPack( Pack pack)
         {
             var resultado = repo.InsertarPack(pack);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pack/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarPack")]
+
         public IActionResult ActualizarPack(Guid id,  Pack pack)
         {
             if (id != pack.IDPack)

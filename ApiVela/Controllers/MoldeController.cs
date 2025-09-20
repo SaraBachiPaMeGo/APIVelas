@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Molde
         [HttpGet]
+        [Route("api/GetMoldes")]
+
         public IActionResult GetMoldes()
         {
             var resultado = repo.GetMoldes();  // CustomApiResponse<List<Molde>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Molde
         [HttpPost]
+        [Route("api/InsertarMolde")]
+
         public IActionResult InsertarMolde( Molde molde)
         {
             var resultado = repo.InsertarMolde(molde);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Molde/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarMolde")]
+
         public IActionResult ActualizarMolde(Guid id,  Molde molde)
         {
             if (id != molde.IDMolde)

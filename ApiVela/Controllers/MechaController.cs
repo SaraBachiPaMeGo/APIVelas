@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Mecha
         [HttpGet]
+        [Route("api/GetMechas")]
+
         public IActionResult GetMechas()
         {
             var resultado = repo.GetMechas();  // CustomApiResponse<List<Mecha>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Mecha
         [HttpPost]
+        [Route("api/InsertarMecha")]
+
         public IActionResult InsertarMecha( Mecha mech)
         {
             var resultado = repo.InsertarMecha(mech);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Mecha/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarMecha")]
+
         public IActionResult ActualizarMecha(Guid id,  Mecha mech)
         {
             if (id != mech.IDMecha)

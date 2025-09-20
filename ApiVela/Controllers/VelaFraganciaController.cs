@@ -32,6 +32,8 @@ namespace ApiVela.Controllers
 
         // POST: api/VelaFragancia
         [HttpPost]
+        [Route("api/InsertarVelaFragancia")]
+
         public IActionResult InsertarVelaFragancia(Guid idVela, Guid idFrag)
         {
             var resultado = repo.InsertarVelaFragancia(idVela, idFrag);

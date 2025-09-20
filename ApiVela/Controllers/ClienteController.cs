@@ -18,6 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Cliente
         [HttpGet]
+        [Route("api/GetClientes")]
         public IActionResult GetClientes()
         {
             var resultado = repo.GetClientes();  // debería devolver CustomApiResponse<List<Cliente>>
@@ -43,6 +44,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Cliente
         [HttpPost]
+        [Route("api/InsertarCliente")]
+
         public IActionResult InsertarCliente( Cliente cli)
         {
             var resultado = repo.InsertarCliente(cli);  // CustomApiResponse<Cliente>
@@ -56,6 +59,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Cliente/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarCliente")]
+
         public IActionResult ActualizarCliente(Guid id,  Cliente cli)
         {
             if (id != cli.IDCliente)

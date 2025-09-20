@@ -19,6 +19,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Fragancia
         [HttpGet]
+        [Route("api/GetFragancias")]
+
         public IActionResult GetFragancias()
         {
             var resultado = repo.GetFragancias();
@@ -42,6 +44,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Fragancia
         [HttpPost]
+        [Route("api/InsertarFragancia")]
+
         public IActionResult InsertarFragancia(Fragancia frag)
         {
             var resultado = repo.InsertarFragancia(frag);
@@ -53,6 +57,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Fragancia/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarFragancia")]
+
         public IActionResult ActualizarFragancia( Fragancia frag)
         {
             var resultado = repo.ActualizarFragancia(frag);

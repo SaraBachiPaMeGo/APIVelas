@@ -18,6 +18,8 @@ namespace ApiVela.Controllers
 
         // GET: api/Vela
         [HttpGet]
+        [Route("api/GetVelas")]
+
         public IActionResult GetVelas()
         {
             var resultado = repo.GetVelas(); // CustomApiResponse<List<Vela>>
@@ -41,6 +43,8 @@ namespace ApiVela.Controllers
 
         // POST: api/Vela
         [HttpPost]
+        [Route("api/InsertarVela")]
+
         public IActionResult InsertarVela( Vela vela)
         {
             var resultado = repo.InsertarVela(vela);
@@ -52,6 +56,8 @@ namespace ApiVela.Controllers
 
         // PUT: api/Vela/{id}
         [HttpPut("{id}")]
+        [Route("api/ActualizarVela")]
+
         public IActionResult ActualizarVela(Guid id,  Vela vela)
         {
             if (id != vela.IDVela)
