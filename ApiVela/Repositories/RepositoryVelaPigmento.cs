@@ -18,6 +18,22 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        public CustomApiResponse<VelaPigmento> BuscarVelaPigmento(Guid idVela)
+        {
+            var response = new CustomApiResponse<VelaPigmento>();
+            try
+            {
+                var vela = context.VelaPigmento.SingleOrDefault(x => x.IDVela == idVela);
+                if (vela == null) throw new Exception("VelaPigmento no encontrada");
+                response.Object = mapper.Map<VelaPigmento>(vela);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
+
         // Insertar relación Vela-Pigmento
         public CustomApiResponse<Pigmento> InsertarVelaPigmento(Guid idVela, Guid idPig)
         {

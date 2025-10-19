@@ -21,9 +21,21 @@ namespace ApiVela.Controllers
         // GET: api/VelaFragancia/GetFraganciasPorVela/{idVela}
         [HttpGet]
         [Route("[action]/{idVela}")]
-        public IActionResult GetFraganciasPorVela(Guid idVela)
+        public IActionResult GetVelaFraganciasPorVela(Guid idVela)
         {
             var resultado = repo.GetFraganciasPorVela(idVela); // CustomApiResponse<List<Fragancia>>
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
+        }
+
+        // GET: api/BuscarVelaFragancia/GetFraganciasPorVela/{idVela}
+        [HttpGet]
+        [Route("[action]/{idVelaFragancia}")]
+        public IActionResult BuscarVelaFraganciasPorVela(Guid idVela)
+        {
+            var resultado = repo.BuscarVelaFragancia(idVela); // CustomApiResponse<List<Fragancia>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -43,12 +55,12 @@ namespace ApiVela.Controllers
             return Ok(resultado.Object);
         }
 
-        // PUT: api/VelaFragancia/{id}
+        //PUT: api/VelaFragancia/{idVelaFragancia}
         //[HttpPut("{id}")]
-        //public IActionResult ActualizarVelaFragancia( VelaFragancia velaFragancia)
+        //public IActionResult ActualizarVelaFragancia(VelaFragancia velaFragancia)
         //{
         //    // Si tienes método para actualizar en repo, usarlo aquí, ejemplo:
-        //    var resultado = repo.(velaFragancia);
+        //    var resultado = repo.ac(velaFragancia);
         //    if (resultado.Error != null)
         //        return BadRequest(resultado.Error.Mensaje);
 
@@ -56,11 +68,14 @@ namespace ApiVela.Controllers
         //}
 
         // DELETE: api/VelaFragancia/{id}
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("[action]/{idvelaFragancia}")]
+        public IActionResult EliminarVelaFragancia(Guid id)
         {
-            // Aquí implementa la lógica si tienes para eliminar.
-            return StatusCode(501, "Eliminación no implementada");
+            var resultado = repo.EliminarRelacionesFragancias(id);
+            if (resultado.Error != null)
+                return BadRequest(resultado.Error.Mensaje);
+
+            return Ok(resultado.Object);
         }
     }
 }

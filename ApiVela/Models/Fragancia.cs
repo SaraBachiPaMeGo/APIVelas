@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDFrag")]
-        public Guid IDFrag { get; set; }
+        public Guid? IDFrag { get; set; }
 
         [Column("FragNombre")]
         public string FragNombre { get; set; }
@@ -32,10 +32,10 @@ namespace ApiVela.Models
         public Guid? IDVela { get; set; }
 
         [Column("Cantidad")]
-        public decimal Cantidad { get; set; }
+        public decimal?  Cantidad { get; set; }
 
         [Column("Coste")]
-        public decimal Coste { get; set; }
+        public decimal?  Coste { get; set; }
 
         public List<VelaFragancia> VelaFragancia { get; set; }
 

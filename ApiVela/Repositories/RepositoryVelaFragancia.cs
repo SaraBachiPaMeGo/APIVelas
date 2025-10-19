@@ -18,6 +18,22 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        public CustomApiResponse<VelaFragancia> BuscarVelaFragancia(Guid idVela)
+        {
+            var response = new CustomApiResponse<VelaFragancia>();
+            try
+            {
+                var vela = context.VelaFragancia.SingleOrDefault(x => x.IDVela == idVela);
+                if (vela == null) throw new Exception("VelaFragancia no encontrada");
+                response.Object = mapper.Map<VelaFragancia>(vela);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+            return response;
+        }
+
         // ---------------------------- INSERTAR RELACIÓN ----------------------------
         public CustomApiResponse<VelaFragancia> InsertarVelaFragancia(Guid idVela, Guid idFrag) 
         {

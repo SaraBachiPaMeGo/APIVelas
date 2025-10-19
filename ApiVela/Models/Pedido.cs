@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDPedido")]
-        public Guid IDPedido { get; set; }
+        public Guid? IDPedido { get; set; }
 
         [Column("FechaPedi")]
         public DateTime FechaPedi { get; set; }

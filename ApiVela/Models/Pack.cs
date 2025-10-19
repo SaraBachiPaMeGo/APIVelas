@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDPack")]
-        public Guid IDPack { get; set; }
+        public Guid? IDPack { get; set; }
 
         [Column("Firma")]
         public string Firma { get; set; }
@@ -26,10 +26,10 @@ namespace ApiVela.Models
         public string CompradoEn { get; set; }
 
         [Column("Cantidad")]
-        public decimal Cantidad { get; set; }
+        public decimal? Cantidad { get; set; }
 
         [Column("Coste")]
-        public decimal Coste { get; set; }
+        public decimal? Coste { get; set; }
 
         [Column("IDVela")]
         public Guid? IDVela { get; set; }

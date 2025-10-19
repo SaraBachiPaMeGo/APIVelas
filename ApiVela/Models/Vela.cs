@@ -14,10 +14,13 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDVela")]
-        public Guid IDVela { get; set; }
+        public Guid? IDVela { get; set; }
 
         [Column("VelaNombre")]
         public string VelaNombre { get; set; }
+
+        [Column("Image")]
+        public string Image { get; set; }
 
         [Column("Observ")]
         public string Observ { get; set; }
@@ -32,31 +35,31 @@ namespace ApiVela.Models
         public DateTime FechaVenta { get; set; }
 
         [Column("GradFrag")]
-        public decimal GradFrag { get; set; }
+        public decimal? GradFrag { get; set; }
 
         [Column("GradPig")]
-        public decimal GradPig { get; set; }
+        public decimal? GradPig { get; set; }
 
         [Column("IDFrag")]
-        public Guid IDFrag { get; set; }
+        public Guid? IDFrag { get; set; }
 
         [Column("IDMolde")]
-        public Guid IDMolde { get; set; }
+        public Guid? IDMolde { get; set; }
 
         [Column("IDPig")]
-        public Guid IDPig { get; set; }
+        public Guid? IDPig { get; set; }
 
         [Column("Coste")]
-        public decimal Coste { get; set; }
+        public decimal? Coste { get; set; }
 
         [Column("IDPedido")]
-        public Guid IDPedido { get; set; }
+        public Guid? IDPedido { get; set; }
 
         [Column("IDMecha")]
-        public Guid IDMecha { get; set; }
+        public Guid? IDMecha { get; set; }
 
         [Column("IDCera")]
-        public Guid IDCera { get; set; }
+        public Guid? IDCera { get; set; }
 
         public List<VelaPigmento> VelaPigmentos { get; set; }
         public List<VelaFragancia> VelaFragancias { get; set; }

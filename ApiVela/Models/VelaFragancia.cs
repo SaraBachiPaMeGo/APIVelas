@@ -12,14 +12,14 @@ namespace ApiVela.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDVela")]
-        public Guid IDVela { get; set; }
+        public Guid? IDVela { get; set; }
 
         [Column("Vela")]
         public Vela Vela { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDFrag")]
-        public Guid IDFrag { get; set; }
+        public Guid? IDFrag { get; set; }
 
         [Column("Fragancia")]
         public Fragancia Fragancia { get; set; }

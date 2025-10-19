@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDMolde")]
-        public Guid IDMolde { get; set; }
+        public Guid? IDMolde { get; set; }
 
         [Column("MoldeNombre")]
         public string MoldeNombre { get; set; }
