@@ -58,8 +58,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Cliente/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarCliente")]
+        [HttpPut]
+        [Route("api/ActualizarCliente/{id}")]
 
         public IActionResult ActualizarCliente(Guid id,  Cliente cli)
         {

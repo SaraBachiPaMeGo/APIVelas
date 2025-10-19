@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Mecha/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarMecha")]
+        [HttpPut]
+        [Route("api/ActualizarMecha/{id}")]
 
         public IActionResult ActualizarMecha(Guid id,  Mecha mech)
         {

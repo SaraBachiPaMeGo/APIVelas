@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Vela/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarVela")]
+        [HttpPut]
+        [Route("api/ActualizarVela/{id}")]
 
         public IActionResult ActualizarVela(Guid id,  Vela vela)
         {

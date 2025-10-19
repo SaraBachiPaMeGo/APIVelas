@@ -126,7 +126,7 @@ namespace ApiVela.Repository
         }
 
         // Método privado si quieres reutilizarlo sin mapeo
-        private Endurecedor BuscarEndurecedorEntity(Guid idEndurecedor)
+        private Endurecedor BuscarEndurecedorEntity(Guid? idEndurecedor)
         {
             return context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
         }

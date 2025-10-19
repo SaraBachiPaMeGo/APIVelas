@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Pack/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarPack")]
+        [HttpPut]
+        [Route("api/ActualizarPack/{id}")]
 
         public IActionResult ActualizarPack(Guid id,  Pack pack)
         {

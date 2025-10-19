@@ -56,8 +56,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Fragancia/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarFragancia")]
+        [HttpPut]
+        [Route("api/ActualizarFragancia/{id}")]
 
         public IActionResult ActualizarFragancia( Fragancia frag)
         {

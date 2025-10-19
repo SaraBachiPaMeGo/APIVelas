@@ -77,7 +77,7 @@ namespace ApiVela
                     //varias rutas
                     //Debemos configurar la url del servidor para la documentación
                     c.SwaggerEndpoint(
-                        url: "swagger/v1/swagger.json",
+                        url: "/swagger/v1/swagger.json",
                         name: "Api velas v1"
                         );
                     c.RoutePrefix = "";

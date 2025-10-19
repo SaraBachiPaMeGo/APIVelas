@@ -59,8 +59,7 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Cera/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarCera")]
+        [HttpPut("api/ActualizarCera/{id}")]
 
         public IActionResult ActualizarCera(Guid id,  Cera cera)
         {

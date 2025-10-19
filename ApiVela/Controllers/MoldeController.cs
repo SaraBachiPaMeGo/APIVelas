@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Molde/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarMolde")]
+        [HttpPut]
+        [Route("api/ActualizarMolde/{id}")]
 
         public IActionResult ActualizarMolde(Guid id,  Molde molde)
         {

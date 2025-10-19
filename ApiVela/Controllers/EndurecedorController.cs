@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Endurecedor/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarEndurecedor")]
+        [HttpPut]
+        [Route("api/ActualizarEndurecedor/{id}")]
 
         public IActionResult ActualizarEndurecedor(Guid id,  Endurecedor ent)
         {

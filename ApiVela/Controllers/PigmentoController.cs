@@ -55,8 +55,8 @@ namespace ApiVela.Controllers
         }
 
         // PUT: api/Pigmento/{id}
-        [HttpPut("{id}")]
-        [Route("api/ActualizarPigmento")]
+        [HttpPut]
+        [Route("api/ActualizarPigmento/{id}")]
 
         public IActionResult ActualizarPigmento(Guid id,  Pigmento pigmento)
         {

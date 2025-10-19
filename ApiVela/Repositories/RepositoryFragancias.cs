@@ -128,7 +128,7 @@ namespace ApiVela.Repository
         }
 
         // Método interno privado (sin mapeo)
-        private Fragancia BuscarFraganciaEntity(Guid idFragancia)
+        private Fragancia BuscarFraganciaEntity(Guid? idFragancia)
         {
             return context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
         }
