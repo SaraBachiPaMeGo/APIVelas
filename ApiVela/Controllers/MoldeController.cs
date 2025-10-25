@@ -18,7 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Molde
         [HttpGet]
-        [Route("api/GetMoldes")]
+        [Route("GetMoldes")]
 
         public IActionResult GetMoldes()
         {
@@ -43,7 +43,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Molde
         [HttpPost]
-        [Route("api/InsertarMolde")]
+        [Route("InsertarMolde")]
 
         public IActionResult InsertarMolde( Molde molde)
         {
@@ -56,7 +56,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Molde/{id}
         [HttpPut]
-        [Route("api/ActualizarMolde/{id}")]
+        [Route("ActualizarMolde/{id}")]
 
         public IActionResult ActualizarMolde(Guid id,  Molde molde)
         {

@@ -18,7 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Pack
         [HttpGet]
-        [Route("api/GetPacks")]
+        [Route("GetPacks")]
 
         public IActionResult GetPacks()
         {
@@ -43,7 +43,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Pack
         [HttpPost]
-        [Route("api/InsertarPack")]
+        [Route("InsertarPack")]
 
         public IActionResult InsertarPack( Pack pack)
         {
@@ -56,7 +56,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pack/{id}
         [HttpPut]
-        [Route("api/ActualizarPack/{id}")]
+        [Route("ActualizarPack/{id}")]
 
         public IActionResult ActualizarPack(Guid id,  Pack pack)
         {

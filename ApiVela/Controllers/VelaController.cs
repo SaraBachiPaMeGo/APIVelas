@@ -18,7 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Vela
         [HttpGet]
-        [Route("api/GetVelas")]
+        [Route("GetVelas")]
 
         public IActionResult GetVelas()
         {
@@ -43,7 +43,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Vela
         [HttpPost]
-        [Route("api/InsertarVela")]
+        [Route("InsertarVela")]
 
         public IActionResult InsertarVela( Vela vela)
         {
@@ -56,7 +56,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Vela/{id}
         [HttpPut]
-        [Route("api/ActualizarVela/{id}")]
+        [Route("ActualizarVela/{id}")]
 
         public IActionResult ActualizarVela(Guid id,  Vela vela)
         {

@@ -44,7 +44,7 @@ namespace ApiVela.Controllers
 
         // POST: api/VelaFragancia
         [HttpPost]
-        [Route("api/InsertarVelaFragancia")]
+        [Route("InsertarVelaFragancia")]
 
         public IActionResult InsertarVelaFragancia(Guid idVela, Guid idFrag)
         {

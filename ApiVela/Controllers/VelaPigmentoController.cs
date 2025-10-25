@@ -44,7 +44,7 @@ namespace ApiVela.Controllers
 
         // POST: api/VelaPigmento
         [HttpPost]
-        [Route("api/InsertarVelaPigmento")]
+        [Route("InsertarVelaPigmento")]
 
         public IActionResult InsertarVelaPigmento(Guid idVela, Guid idPig)
         {

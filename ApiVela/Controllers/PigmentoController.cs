@@ -18,7 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Pigmento
         [HttpGet]
-        [Route("api/GetPigmentos")]
+        [Route("GetPigmentos")]
 
         public IActionResult GetPigmentos()
         {
@@ -43,7 +43,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Pigmento
         [HttpPost]
-        [Route("api/InsertarPigmento")]
+        [Route("InsertarPigmento")]
 
         public IActionResult InsertarPigmento( Pigmento pigmento)
         {
@@ -56,7 +56,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pigmento/{id}
         [HttpPut]
-        [Route("api/ActualizarPigmento/{id}")]
+        [Route("ActualizarPigmento/{id}")]
 
         public IActionResult ActualizarPigmento(Guid id,  Pigmento pigmento)
         {

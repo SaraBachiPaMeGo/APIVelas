@@ -19,7 +19,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Fragancia
         [HttpGet]
-        [Route("api/GetFragancias")]
+        [Route("GetFragancias")]
 
         public IActionResult GetFragancias()
         {
@@ -44,7 +44,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Fragancia
         [HttpPost]
-        [Route("api/InsertarFragancia")]
+        [Route("InsertarFragancia")]
 
         public IActionResult InsertarFragancia(Fragancia frag)
         {
@@ -57,7 +57,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Fragancia/{id}
         [HttpPut]
-        [Route("api/ActualizarFragancia/{id}")]
+        [Route("ActualizarFragancia/{id}")]
 
         public IActionResult ActualizarFragancia( Fragancia frag)
         {

@@ -18,7 +18,7 @@ namespace ApiVela.Controllers
 
         // GET: api/Pedido
         [HttpGet]
-        [Route("api/GetPedidos")]
+        [Route("GetPedidos")]
 
         public IActionResult GetPedidos()
         {
@@ -43,7 +43,7 @@ namespace ApiVela.Controllers
 
         // POST: api/Pedido
         [HttpPost]
-        [Route("api/InsertarPedido")]
+        [Route("InsertarPedido")]
 
         public IActionResult InsertarPedido( InsertPedidoRequest request)
         {
@@ -58,7 +58,7 @@ namespace ApiVela.Controllers
 
         // PUT: api/Pedido/{id}
         [HttpPut]
-        [Route("api/ActualizarPedido/{id}")]
+        [Route("ActualizarPedido/{id}")]
 
         public IActionResult ActualizarPedido(Guid id,  UpdatePedidoRequest request)
         {
