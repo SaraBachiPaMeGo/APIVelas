@@ -59,6 +59,14 @@ namespace ApiVela.Repository
                 vela.FechaVenta = DateTime.Now;
                 vela.FechaReal = DateTime.Now;
 
+                // 🔹 Validar que el pedido asociado exista
+                if (Guid.Empty == vela.IDPedido)
+                {
+                    var pedidoExiste = context.Pedido.Any(p => p.IDPedido == vela.IDPedido);
+                    if (!pedidoExiste)
+                        throw new Exception($"No se encontró el pedido con ID {vela.IDPedido}");
+                }
+
                 // Asegurar FK en pigmentos y fragancias
                 if (vela.VelaPigmentos != null)
                     vela.VelaPigmentos.ForEach(vp => vp.IDVela = vela.IDVela);

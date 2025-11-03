@@ -4,6 +4,7 @@ using System.Linq;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiVela.Repository
 {
@@ -28,10 +29,19 @@ namespace ApiVela.Repository
                 var pedi = mapper.Map<Pedido>(pedid);
                 pedi.IDPedido = Guid.NewGuid();
 
-                context.Pedido.Add(pedi);
-                context.SaveChanges();
+                // 🔹 Si el pedido incluye velas, asignarles el IDPedido
+                if (pedi.Velas != null && pedi.Velas.Any())
+                {
+                    foreach (var vela in pedi.Velas)
+                    {
+                        vela.IDPedido = pedi.IDPedido;
+                        vela.IDVela = Guid.NewGuid();
+                    }
+                }
 
-                response.Object = mapper.Map<Pedido>(pedi);
+                var clienteExiste = context.Cliente.Any(c => c.IDCliente == pedi.IDCliente);
+                if (!clienteExiste)
+                    response.Error.Mensaje = "No se encontró el cliente con ID" + pedi.IDCliente;
 
                 context.Pedido.Add(pedi);
                 context.SaveChanges();
@@ -47,23 +57,49 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- ACTUALIZAR ----------------------------
-        public CustomApiResponse<Pedido> ActualizarPedido(Pedido pedi) 
+        public CustomApiResponse<Pedido> ActualizarPedido(Pedido pedi)
         {
             var response = new CustomApiResponse<Pedido>();
 
             try
             {
-                var existing = context.Pedido.SingleOrDefault(p => p.IDPedido == pedi.IDPedido);
+                var existing = context.Pedido
+                    .Include(p => p.Velas) // Incluye las velas relacionadas
+                    .SingleOrDefault(p => p.IDPedido == pedi.IDPedido);
+
                 if (existing == null)
                 {
                     response.Error = new ErrorViewModel { Mensaje = "Pedido no encontrado" };
                     return response;
                 }
 
-                // Actualizar solo si cambian
-                existing.FechaEntrega = pedi.FechaEntrega != default(DateTime) ? pedi.FechaEntrega : existing.FechaEntrega;
-                existing.IDCliente = pedi.IDCliente != Guid.Empty ? pedi.IDCliente : existing.IDCliente;
-                existing.IDVela = pedi.IDVela != Guid.Empty ? pedi.IDVela : existing.IDVela;
+               
+                // ✅ Nuevo campo "Vendido"
+                existing.Vendido = pedi.Vendido;
+
+                // ✅ Actualización de la lista de Velas
+                if (pedi.Velas != null && pedi.Velas.Any())
+                {
+                    // Elimina las relaciones antiguas si es necesario
+                    existing.Velas.Clear();
+
+                    // Asocia las nuevas velas al pedido
+                    foreach (var vela in pedi.Velas)
+                    {
+                        var velaExistente = context.Vela.FirstOrDefault(v => v.IDVela == vela.IDVela);
+                        if (velaExistente != null)
+                        {
+                            existing.Velas.Add(velaExistente);
+                        }
+                        else
+                        {
+                            // Si es una vela nueva, la agregamos
+                            vela.IDVela = Guid.NewGuid();
+                            context.Vela.Add(vela);
+                            existing.Velas.Add(vela);
+                        }
+                    }
+                }
 
                 context.SaveChanges();
 
@@ -76,6 +112,7 @@ namespace ApiVela.Repository
 
             return response;
         }
+
 
         // ---------------------------- OBTENER TODOS ----------------------------
         public CustomApiResponse<List<Pedido>> GetPedidos() 

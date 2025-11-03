@@ -63,7 +63,7 @@ namespace ApiVela.Controllers
         public IActionResult ActualizarPedido(Guid id, Pedido pedi)
         {
 
-            if (pedi.IDPedido != pedi.IDPedido)
+            if (id != pedi.IDPedido)
                 return BadRequest("El ID del pedido no coincide.");
 
             var resultado = repo.ActualizarPedido(pedi);

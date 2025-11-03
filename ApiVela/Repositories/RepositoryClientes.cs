@@ -54,10 +54,6 @@ namespace ApiVela.Repository
             var response = new CustomApiResponse<Cliente>();
             try
             {
-                // Por ejemplo, si solo quieres permitir un cliente, lo verificas acá:
-                if (context.Cliente.Any())
-                    throw new Exception("Solo se permite un cliente");
-
                 var cliente = mapper.Map<Cliente>(clie);
                 cliente.IDCliente = Guid.NewGuid();
 

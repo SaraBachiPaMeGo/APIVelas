@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDCliente")]
-        public Guid? IDCliente { get; set; }
+        public Guid IDCliente { get; set; }
 
         [Column("Nombre")]
         public string Nombre { get; set; }
@@ -29,6 +29,9 @@ namespace ApiVela.Models
         public string Email { get; set; }
 
         [Column("IDPedido")]
-        public Guid? IDPedido { get; set; }
+        public Guid IDPedido { get; set; }
+
+        // 🔗 Relación 1 Cliente -> N Pedidos
+        public virtual List<Pedido> Pedidos { get; set; } = new List<Pedido>();
     }
 }

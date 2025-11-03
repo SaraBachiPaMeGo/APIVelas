@@ -12,20 +12,28 @@ namespace ApiVela.Models
     public class Pedido
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("IDPedido")]
-        public Guid? IDPedido { get; set; }
+        public Guid IDPedido { get; set; }
 
         [Column("FechaPedi")]
-        public DateTime? FechaPedi { get; set; }
+        public DateTime FechaPedi { get; set; }
 
         [Column("FechaEntrega")]
-        public DateTime? FechaEntrega { get; set; }
+        public DateTime FechaEntrega { get; set; }
 
-        [Column("IDVela")]
-        public Guid? IDVela { get; set; }
+        // ✅ Nuevo campo: indica si el pedido ha sido vendido
+        [Column("Vendido")]
+        public bool Vendido { get; set; }
 
+        // 🔗 Relación con Cliente (muchos pedidos -> un cliente)
+        [ForeignKey(nameof(Cliente))]
         [Column("IDCliente")]
-        public Guid? IDCliente { get; set; }
+        public Guid IDCliente { get; set; }
+
+        public virtual Cliente Cliente { get; set; }
+
+        // 🔗 Relación con Velas (un pedido -> muchas velas)
+        public virtual ICollection<Vela> Velas { get; set; } = new List<Vela>();
     }
 }
