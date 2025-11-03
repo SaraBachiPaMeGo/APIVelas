@@ -24,7 +24,7 @@ namespace ApiVela.Models
 
         // ✅ Nuevo campo: indica si el pedido ha sido vendido
         [Column("Vendido")]
-        public bool Vendido { get; set; }
+        public bool? Vendido { get; set; }
 
         // 🔗 Relación con Cliente (muchos pedidos -> un cliente)
         [ForeignKey(nameof(Cliente))]
