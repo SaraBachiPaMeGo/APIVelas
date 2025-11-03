@@ -17,15 +17,15 @@ namespace ApiVela.Models
         public Guid? IDPedido { get; set; }
 
         [Column("FechaPedi")]
-        public DateTime FechaPedi { get; set; }
+        public DateTime? FechaPedi { get; set; }
 
         [Column("FechaEntrega")]
-        public DateTime FechaEntrega { get; set; }
+        public DateTime? FechaEntrega { get; set; }
 
         [Column("IDVela")]
         public Guid? IDVela { get; set; }
 
         [Column("IDCliente")]
-        public Guid IDCliente { get; set; }
+        public Guid? IDCliente { get; set; }
     }
 }

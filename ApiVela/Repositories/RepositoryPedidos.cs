@@ -19,19 +19,19 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- INSERTAR ----------------------------
-        public CustomApiResponse<Pedido> InsertarPedido(Guid idCliente, Guid idVela) 
+        public CustomApiResponse<Pedido> InsertarPedido(Pedido pedid) 
         {
             var response = new CustomApiResponse<Pedido>();
 
             try
             {
-                var pedi = new Pedido
-                {
-                    IDPedido = Guid.NewGuid(),
-                    IDCliente = idCliente,
-                    IDVela = idVela
-                    // Si tienes otras propiedades, ponerlas también
-                };
+                var pedi = mapper.Map<Pedido>(pedid);
+                pedi.IDPedido = Guid.NewGuid();
+
+                context.Pedido.Add(pedi);
+                context.SaveChanges();
+
+                response.Object = mapper.Map<Pedido>(pedi);
 
                 context.Pedido.Add(pedi);
                 context.SaveChanges();
@@ -47,16 +47,13 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- ACTUALIZAR ----------------------------
-        public CustomApiResponse<Pedido> ActualizarPedido(Guid idPedido,
-                                                        DateTime fechaEntrega,
-                                                        Guid idCliente,
-                                                        Guid idVela) 
+        public CustomApiResponse<Pedido> ActualizarPedido(Pedido pedi) 
         {
             var response = new CustomApiResponse<Pedido>();
 
             try
             {
-                var existing = context.Pedido.SingleOrDefault(p => p.IDPedido == idPedido);
+                var existing = context.Pedido.SingleOrDefault(p => p.IDPedido == pedi.IDPedido);
                 if (existing == null)
                 {
                     response.Error = new ErrorViewModel { Mensaje = "Pedido no encontrado" };
@@ -64,9 +61,9 @@ namespace ApiVela.Repository
                 }
 
                 // Actualizar solo si cambian
-                existing.FechaEntrega = fechaEntrega != default(DateTime) ? fechaEntrega : existing.FechaEntrega;
-                existing.IDCliente = idCliente != Guid.Empty ? idCliente : existing.IDCliente;
-                existing.IDVela = idVela != Guid.Empty ? idVela : existing.IDVela;
+                existing.FechaEntrega = pedi.FechaEntrega != default(DateTime) ? pedi.FechaEntrega : existing.FechaEntrega;
+                existing.IDCliente = pedi.IDCliente != Guid.Empty ? pedi.IDCliente : existing.IDCliente;
+                existing.IDVela = pedi.IDVela != Guid.Empty ? pedi.IDVela : existing.IDVela;
 
                 context.SaveChanges();
 

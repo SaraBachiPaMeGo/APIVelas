@@ -45,10 +45,10 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarPedido")]
 
-        public IActionResult InsertarPedido( InsertPedidoRequest request)
+        public IActionResult InsertarPedido( Pedido pedi)
         {
             // Supongo que haces un DTO o Request object para recibir los datos
-            var resultado = repo.InsertarPedido(request.IDCliente, request.IDVela);
+            var resultado = repo.InsertarPedido(pedi);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -60,12 +60,13 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarPedido/{id}")]
 
-        public IActionResult ActualizarPedido(Guid id,  UpdatePedidoRequest request)
+        public IActionResult ActualizarPedido(Guid id, Pedido pedi)
         {
-            if (id != request.IDPedido)
+
+            if (pedi.IDPedido != pedi.IDPedido)
                 return BadRequest("El ID del pedido no coincide.");
 
-            var resultado = repo.ActualizarPedido(request.IDPedido, request.FechaEntrega, request.IDCliente, request.IDVela);
+            var resultado = repo.ActualizarPedido(pedi);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -85,18 +86,4 @@ namespace ApiVela.Controllers
         }
     }
 
-    // DTOs que podrían servir:
-    public class InsertPedidoRequest
-    {
-        public Guid IDCliente { get; set; }
-        public Guid IDVela { get; set; }
-    }
-
-    public class UpdatePedidoRequest
-    {
-        public Guid IDPedido { get; set; }
-        public DateTime FechaEntrega { get; set; }
-        public Guid IDCliente { get; set; }
-        public Guid IDVela { get; set; }
-    }
 }
