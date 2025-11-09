@@ -94,9 +94,6 @@ namespace ApiVela.Repository
                 var vela = context.Vela.SingleOrDefault(v => v.IDVela == vel.IDVela);
                 if (vela == null) throw new Exception("La vela no existe");
 
-                // Actualizar campos simples con AutoMapper
-                mapper.Map(vela, vela);
-
                 // Actualizar pigmentos
                 var pigmentosActuales = context.VelaPigmento.Where(vp => vp.IDVela == vela.IDVela).ToList();
                 var pigmentos = vela.VelaPigmentos ?? new List<VelaPigmento>();

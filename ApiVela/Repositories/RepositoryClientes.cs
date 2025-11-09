@@ -77,7 +77,11 @@ namespace ApiVela.Repository
                 var cliente = context.Cliente.SingleOrDefault(c => c.IDCliente == cli.IDCliente);
                 if (cliente == null) throw new Exception("Cliente no encontrado");
 
-                mapper.Map(cliente, cliente);
+                // Actualiza solo las propiedades que desees (puedes ajustar según tu lógica)
+                if (cli.Direccion != cliente.Direccion) cliente.Direccion = cli.Direccion;
+                if (cli.Email != cliente.Email) cliente.Email = cli.Email;
+                if (cli.Telf != cliente.Telf) cliente.Telf = cli.Telf;
+                if (cli.Nombre != cliente.Nombre) cliente.Nombre = cli.Nombre;
 
                 context.SaveChanges();
 

@@ -76,7 +76,11 @@ namespace ApiVela.Repository
             try
             {
                 var ceraExistente = context.Cera.SingleOrDefault(x => x.IDCera == cer.IDCera);
-                if (ceraExistente == null) throw new Exception("Cera no encontrada");
+                if (ceraExistente == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Cera no encontrada" };
+                    return response;
+                }
 
                 // Actualiza solo las propiedades que desees (puedes ajustar según tu lógica)
                 if (cer.Firma != ceraExistente.Firma) ceraExistente.Firma = cer.Firma;

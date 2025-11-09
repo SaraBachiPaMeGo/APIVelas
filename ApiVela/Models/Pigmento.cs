@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDPig")]
-        public Guid? IDPig { get; set; }
+        public Guid IDPig { get; set; }
 
         [Column("Firma")]
         public string Firma { get; set; }

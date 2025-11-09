@@ -71,6 +71,7 @@ namespace ApiVela.Repository
                 }
 
                 // Actualizar sólo si es diferente / no nulo
+                existing.MoldeNombre = mol.MoldeNombre ?? existing.MoldeNombre;
                 existing.Firma = mol.Firma ?? existing.Firma;
                 existing.Tipo = mol.Tipo ?? existing.Tipo;
                 existing.CompradoEn = mol.CompradoEn ?? existing.CompradoEn;
