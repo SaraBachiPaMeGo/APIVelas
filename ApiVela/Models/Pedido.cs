@@ -35,5 +35,6 @@ namespace ApiVela.Models
 
         // 🔗 Relación con Velas (un pedido -> muchas velas)
         public virtual ICollection<Vela> Velas { get; set; } = new List<Vela>();
+        public ICollection<Documento>? Documentos { get; set; }
     }
 }

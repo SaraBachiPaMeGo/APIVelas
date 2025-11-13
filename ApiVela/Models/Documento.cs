@@ -39,6 +39,12 @@ namespace ApiVela.Models
         [Column("IDMolde")] 
         public Guid IDMolde { get; set; }
 
+        [Column("IDPedido")] 
+        public Guid IDPedido { get; set; }
+
+        [ForeignKey(nameof(IDPedido))]
+        public Pedido pedido { get; set; }
+
         [ForeignKey(nameof(IDVela))]
      
         public Vela Vela { get; set; }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Profile;
+using ApiVela.Repositories;
 using ApiVela.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -47,6 +48,7 @@ namespace ApiVela
 
             services.AddTransient<RepositoryCeras>();
             services.AddTransient<RepositoryClientes>();
+            services.AddTransient<RespositoryDocumentos>();
             services.AddTransient<RepositoryEndurecedores>();
             services.AddTransient<RepositoryFragancias>();
             services.AddTransient<RepositoryMechas>();
