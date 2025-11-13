@@ -16,6 +16,7 @@ namespace ApiVela.Data
         public DbSet<Pack> Pack { get; set; }
         public DbSet<Endurecedor> Endurecedor { get; set; }
         public DbSet<Cliente> Cliente { get; set; }
+        public DbSet<Documento> Documento { get; set; }
         
         public DbSet<Fragancia> Fragancia { get; set; }
         public DbSet<Mecha> Mecha { get; set; }

@@ -61,6 +61,8 @@ namespace ApiVela.Models
         [ForeignKey("Pedido")]
         public Guid? IDPedido { get; set; }
 
+        public ICollection<Documento>? Documentos { get; set; }
+
         public virtual Pedido Pedido { get; set; }
 
         public List<VelaPigmento> VelaPigmentos { get; set; }
