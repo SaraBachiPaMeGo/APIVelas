@@ -32,7 +32,7 @@ namespace ApiVela.Controllers
 
         // GET: api/BuscarVelaFragancia/{idVela}
         [HttpGet]
-        [Route("[action]/{idVelaPigmento}")]
+        [Route("[action]/{idVela}")]
         public IActionResult BuscarVelaPigmentoPorVela(Guid idVela)
         {
             var resultado = repo.BuscarVelaPigmento(idVela);
