@@ -49,6 +49,9 @@ namespace ApiVela.Models
         [Column("IDPig")]
         public Guid? IDPig { get; set; }
 
+        [Column("IDPack")]
+        public Guid? IDPack { get; set; }
+
         [Column("Coste")]
         public decimal? Coste { get; set; }
 
@@ -60,6 +63,26 @@ namespace ApiVela.Models
 
         [ForeignKey("Pedido")]
         public Guid? IDPedido { get; set; }
+
+        [Column("CantidadCera")]
+        public decimal? CantidadCera { get; set; }
+
+        [Column("CantidadMecha")]
+        public decimal? CantidadMecha { get; set; }
+
+        [Column("CantidadFrag")]
+        public decimal? CantidadFrag { get; set; }
+
+        [Column("CantidadPig")]
+        public decimal? CantidadPig { get; set; }
+
+        [Column("CantidadEnd")]
+        public decimal? CantidadEnd { get; set; }
+
+
+        [Column("CantidadPack")]
+        public decimal? CantidadPack { get; set; }
+
 
         public ICollection<Documento>? Documentos { get; set; }
 
