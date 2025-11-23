@@ -25,8 +25,8 @@ namespace ApiVela.Models
         [Column("Observ")]
         public string Observ { get; set; }
 
-        [Column("Endurecedor")]
-        public bool Endurecedor { get; set; }
+        [Column("IDEndurecedor")]
+        public Guid? IDEndurecedor { get; set; }
 
         [Column("FechaReal")]
         public DateTime FechaReal { get; set; }
@@ -36,6 +36,9 @@ namespace ApiVela.Models
 
         [Column("GradFrag")]
         public decimal? GradFrag { get; set; }
+
+        [Column("GradEnd")]
+        public decimal? GradEnd { get; set; }
 
         [Column("GradPig")]
         public decimal? GradPig { get; set; }
@@ -48,10 +51,7 @@ namespace ApiVela.Models
 
         [Column("IDPig")]
         public Guid? IDPig { get; set; }
-
-        [Column("IDPack")]
-        public Guid? IDPack { get; set; }
-
+        
         [Column("Coste")]
         public decimal? Coste { get; set; }
 
@@ -61,10 +61,7 @@ namespace ApiVela.Models
         [Column("IDCera")]
         public Guid IDCera { get; set; }
 
-        [ForeignKey("Pedido")]
-        public Guid? IDPedido { get; set; }
-
-        [Column("CantidadCera")]
+       [Column("CantidadCera")]
         public decimal? CantidadCera { get; set; }
 
         [Column("CantidadMecha")]
@@ -79,14 +76,10 @@ namespace ApiVela.Models
         [Column("CantidadEnd")]
         public decimal? CantidadEnd { get; set; }
 
-
         [Column("CantidadPack")]
         public decimal? CantidadPack { get; set; }
 
-
         public ICollection<Documento>? Documentos { get; set; }
-
-        public virtual Pedido Pedido { get; set; }
 
         public List<VelaPigmento> VelaPigmentos { get; set; }
 

@@ -13,6 +13,7 @@ namespace ApiVela.Data
         public Contexto(DbContextOptions<Contexto> options) : base(options)
         { }
         public DbSet<Cera> Cera { get; set; }
+        public DbSet<VelaFinalizada> VelaFinalizada { get; set; }
         public DbSet<Pack> Pack { get; set; }
         public DbSet<Endurecedor> Endurecedor { get; set; }
         public DbSet<Cliente> Cliente { get; set; }
@@ -39,10 +40,10 @@ namespace ApiVela.Data
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Pedido>()
-                .HasMany(p => p.Velas)
+                .HasMany(p => p.VelaFin)
                 .WithOne(v => v.Pedido)
                 .HasForeignKey(v => v.IDPedido)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull); // una vela puede no tener pedido
 
             modelBuilder.Entity<VelaFragancia>()
                 .HasKey(vf => new { vf.IDVela, vf.IDFrag });

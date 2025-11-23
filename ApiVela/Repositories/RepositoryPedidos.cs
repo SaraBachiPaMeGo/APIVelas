@@ -30,9 +30,9 @@ namespace ApiVela.Repository
                 pedi.IDPedido = Guid.NewGuid();
 
                 // 🔹 Si el pedido incluye velas, asignarles el IDPedido
-                if (pedi.Velas != null && pedi.Velas.Any())
+                if (pedi.VelaFin != null && pedi.VelaFin.Any())
                 {
-                    foreach (var vela in pedi.Velas)
+                    foreach (var vela in pedi.VelaFin)
                     {
                         vela.IDPedido = pedi.IDPedido;
                         vela.IDVela = Guid.NewGuid();
@@ -64,7 +64,7 @@ namespace ApiVela.Repository
             try
             {
                 var existing = context.Pedido
-                    .Include(p => p.Velas) // Incluye las velas relacionadas
+                    .Include(p => p.VelaFin) // Incluye las velas relacionadas
                     .SingleOrDefault(p => p.IDPedido == pedi.IDPedido);
 
                 if (existing == null)
@@ -77,26 +77,26 @@ namespace ApiVela.Repository
                 // ✅ Nuevo campo "Vendido"
                 existing.Vendido = pedi.Vendido;
 
-                // ✅ Actualización de la lista de Velas
-                if (pedi.Velas != null && pedi.Velas.Any())
+                // ✅ Actualización de la lista de VelaFin
+                if (pedi.VelaFin != null && pedi.VelaFin.Any())
                 {
                     // Elimina las relaciones antiguas si es necesario
-                    existing.Velas.Clear();
+                    existing.VelaFin.Clear();
 
-                    // Asocia las nuevas velas al pedido
-                    foreach (var vela in pedi.Velas)
+                    // Asocia las nuevas VelaFin al pedido
+                    foreach (var vela in pedi.VelaFin)
                     {
-                        var velaExistente = context.Vela.FirstOrDefault(v => v.IDVela == vela.IDVela);
+                        var velaExistente = context.VelaFinalizada.FirstOrDefault(v => v.IDVelaFin == vela.IDVelaFin);
                         if (velaExistente != null)
                         {
-                            existing.Velas.Add(velaExistente);
+                            existing.VelaFin.Add(velaExistente);
                         }
                         else
                         {
                             // Si es una vela nueva, la agregamos
                             vela.IDVela = Guid.NewGuid();
-                            context.Vela.Add(vela);
-                            existing.Velas.Add(vela);
+                            context.VelaFinalizada.Add(vela);
+                            existing.VelaFin.Add(vela);
                         }
                     }
                 }

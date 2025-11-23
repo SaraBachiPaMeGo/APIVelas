@@ -31,10 +31,14 @@ namespace ApiVela.Models
         [Column("IDCliente")]
         public Guid IDCliente { get; set; }
 
+        [ForeignKey(nameof(VelaFinalizada))]
+        [Column("IDVelaFin")]
+        public Guid IDVelaFin { get; set; }
+
         public virtual Cliente Cliente { get; set; }
 
         // 🔗 Relación con Velas (un pedido -> muchas velas)
-        public virtual ICollection<Vela> Velas { get; set; } = new List<Vela>();
+        public virtual ICollection<VelaFinalizada> VelaFin { get; set; } = new List<VelaFinalizada>();
         public ICollection<Documento>? Documentos { get; set; }
     }
 }

@@ -59,6 +59,7 @@ namespace ApiVela
             services.AddTransient<RepositoryVelas>();
             services.AddTransient<RepositoryVelaFragancia>();
             services.AddTransient<RepositoryVelaPigmento>();
+            services.AddTransient<RepositoryVelaFin>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
