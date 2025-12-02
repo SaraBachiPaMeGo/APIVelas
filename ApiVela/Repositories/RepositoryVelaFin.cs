@@ -1,6 +1,8 @@
 ﻿using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +57,11 @@ namespace ApiVela.Repositories
             var response = new CustomApiResponse<VelaFinalizada>();
             try
             {
+                context.Database.ExecuteSqlRawAsync(
+                     "EXEC sp_CalcularVelaFinalizada @IDVela={0}, @IDPedido={1}, @IDPack={2}",
+                     vel.IDVela, vel.IDPedido, vel.IDPack
+                 );
+
                 var VelaFinalizada = mapper.Map<VelaFinalizada>(vel);
                 VelaFinalizada.IDVelaFin = Guid.NewGuid();
                 VelaFinalizada.FechaFin = DateTime.Now;

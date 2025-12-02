@@ -34,16 +34,16 @@ namespace ApiVela.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Cliente>()
-            .HasMany(c => c.Pedidos)
-            .WithOne(p => p.Cliente)
-            .HasForeignKey(p => p.IDCliente)
-            .OnDelete(DeleteBehavior.Cascade);
+                .HasMany(c => c.Pedidos)
+                .WithOne(p => p.Cliente)
+                .HasForeignKey(p => p.IDCliente)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Pedido>()
-                .HasMany(p => p.VelaFin)
-                .WithOne(v => v.Pedido)
+            modelBuilder.Entity<VelaFinalizada>()
+                .HasOne(v => v.Pedido)
+                .WithMany(p => p.VelaFin)
                 .HasForeignKey(v => v.IDPedido)
-                .OnDelete(DeleteBehavior.SetNull); // una vela puede no tener pedido
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<VelaFragancia>()
                 .HasKey(vf => new { vf.IDVela, vf.IDFrag });

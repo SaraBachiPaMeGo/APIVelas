@@ -52,6 +52,10 @@ namespace ApiVela.Profile
             // 🕯️ Vela
             CreateMap<Vela, CustomApiResponse<Vela>>();
             CreateMap<List<Vela>, CustomApiResponse<List<Vela>>>();
+            
+            // 🕯️ Vela Fin
+            CreateMap<VelaFinalizada, CustomApiResponse<VelaFinalizada>>();
+            CreateMap<List<VelaFinalizada>, CustomApiResponse<List<VelaFinalizada>>>();
 
             // 🌺 VelaFragancia
             CreateMap<VelaFragancia, CustomApiResponse<VelaFragancia>>();

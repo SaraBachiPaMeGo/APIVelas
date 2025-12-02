@@ -31,7 +31,8 @@ namespace ApiVela.Models
         [Column("IDCliente")]
         public Guid IDCliente { get; set; }
 
-        [ForeignKey(nameof(VelaFinalizada))]
+        // 🔗 Relación con VelaFinalizada (muchos velasFin -> un Pedido)
+
         [Column("IDVelaFin")]
         public Guid IDVelaFin { get; set; }
 

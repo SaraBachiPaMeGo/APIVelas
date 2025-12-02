@@ -31,14 +31,16 @@ namespace ApiVela.Models
         [Column("PVP")]
         public decimal? PVP { get; set; }
 
-        [ForeignKey("IDPedido")]
         [Column("IDPedido")]
         public Guid? IDPedido { get; set; }
 
         [Column("FechaFin")]
         public DateTime FechaFin { get; set; }
 
-        // 🔗 NAVEGACIÓN A PEDIDO
-        public Pedido? Pedido { get; set; }
+        public List<Pack> Pack { get; set; }
+
+        [ForeignKey(nameof(IDPedido))]
+        public Pedido Pedido { get; set; }
+
     }
 }
