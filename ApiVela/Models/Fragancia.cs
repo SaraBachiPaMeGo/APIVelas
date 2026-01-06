@@ -38,7 +38,7 @@ namespace ApiVela.Models
         public decimal?  Coste { get; set; }
       
 
-        public List<VelaFragancia> VelaFragancia { get; set; }
+       //  public List<VelaFragancia> VelaFragancia { get; set; }
 
     }
 }

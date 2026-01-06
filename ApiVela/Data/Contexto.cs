@@ -53,10 +53,10 @@ namespace ApiVela.Data
                 .WithMany(v => v.VelaFragancias) // si tienes la colección en Vela
                 .HasForeignKey(vf => vf.IDVela);
 
-            modelBuilder.Entity<VelaFragancia>()
-                .HasOne(vf => vf.Fragancia)
-                .WithMany(f => f.VelaFragancia) // si tienes la colección en Fragancia
-                .HasForeignKey(vf => vf.IDFrag);
+            //modelBuilder.Entity<VelaFragancia>()
+            //    .HasOne(vf => vf.Fragancia)
+            //    .WithMany(f => f.VelaFragancia) // si tienes la colección en Fragancia
+            //    .HasForeignKey(vf => vf.IDFrag);
 
             modelBuilder.Entity<VelaPigmento>()
                 .HasKey(vp => new { vp.IDVela, vp.IDPig });
@@ -66,10 +66,10 @@ namespace ApiVela.Data
                 .WithMany(v => v.VelaPigmentos) // si tienes la colección en Vela
                 .HasForeignKey(vp => vp.IDVela);
 
-            modelBuilder.Entity<VelaPigmento>()
-                .HasOne(vp => vp.Pigmento)
-                .WithMany(p => p.VelaPigmentos) // si tienes la colección en Pigmento
-                .HasForeignKey(vp => vp.IDPig);
+            //modelBuilder.Entity<VelaPigmento>()
+            //    .HasOne(vp => vp.Pigmento)
+            //    .WithMany(p => p.VelaPigmentos) // si tienes la colección en Pigmento
+            //    .HasForeignKey(vp => vp.IDPig);
 
             // VelaFinalizada -> Velas (1 - N)
             modelBuilder.Entity<VelaFinalizada>()

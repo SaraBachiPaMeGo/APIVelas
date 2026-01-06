@@ -39,6 +39,6 @@ namespace ApiVela.Models
       
 
 
-        public List<VelaPigmento> VelaPigmentos { get; set; }
+      //  public List<VelaPigmento> VelaPigmentos { get; set; }
     }
 }
