@@ -79,11 +79,11 @@ namespace ApiVela.Data
                 .OnDelete(DeleteBehavior.SetNull); // o Cascade según tu lógica
 
             // VelaFinalizada -> Packs (1 - N)
-            modelBuilder.Entity<VelaFinalizada>()
-                .HasMany(vf => vf.Packs)
-                .WithOne(p => p.VelaFinalizada)
-                .HasForeignKey(p => p.IDVelaFin)
-                .OnDelete(DeleteBehavior.SetNull); // o Cascade
+            //modelBuilder.Entity<VelaFinalizada>()
+            //    .HasMany(vf => vf.Packs)
+            //    .WithOne(p => p.VelaFinalizada)
+            //    .HasForeignKey(p => p.IDVelaFin)
+            //    .OnDelete(DeleteBehavior.SetNull); // o Cascade
         }
     }
 }
