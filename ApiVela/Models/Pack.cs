@@ -33,7 +33,15 @@ namespace ApiVela.Models
 
         [Column("IDVela")]
         public Guid? IDVela { get; set; }
-        public ICollection<Documento>? Documentos { get; set; }
+      
+
+
+        // FK opcional hacia VelaFinalizada
+        [Column("IDVelaFin")]
+        public Guid? IDVelaFin { get; set; }
+
+        [ForeignKey(nameof(IDVelaFin))]
+        public virtual VelaFinalizada? VelaFinalizada { get; set; }
 
     }
 }

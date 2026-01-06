@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ApiVela.Data;
 using ApiVela.Models;
+using ApiVela.Models.DTO;
 using AutoMapper;
 
 namespace ApiVela.Repository
@@ -18,13 +19,13 @@ namespace ApiVela.Repository
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Vela>> GetVelas()
+        public CustomApiResponse<List<VelaDTO>> GetVelas1()
         {
-            var response = new CustomApiResponse<List<Vela>>();
+            var response = new CustomApiResponse<List<VelaDTO>>();
             try
             {
                 var velas = context.Vela.ToList();
-                response.Object = mapper.Map<List<Vela>>(velas);
+                response.Object = mapper.Map<List<VelaDTO>>(velas);
             }
             catch (Exception ex)
             {
@@ -33,14 +34,64 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Vela> BuscarVela(Guid idVela)
+        public CustomApiResponse<List<VelaDTO>> GetVelas()
         {
-            var response = new CustomApiResponse<Vela>();
+            var response = new CustomApiResponse<List<VelaDTO>>();
+
+            try
+            {
+                var velas = context.Vela
+                    .Select(v => new VelaDTO
+                    {
+                        IDVela = v.IDVela,
+                        VelaNombre = v.VelaNombre,
+                        Image = v.Image,
+                        FechaReal = v.FechaReal,
+                        Coste = v.Coste,
+
+                        CantidadCera = v.CantidadCera,
+                        CantidadMecha = v.CantidadMecha,
+                        CantidadEnd = v.CantidadEnd,
+
+                        Pigmentos = v.VelaPigmentos
+                            .Select(vp => new VelaPigmentoDTO
+                            {
+                                IDPig = vp.IDPig,
+                                NombrePigmento = vp.Pigmento.ColorNombre, // 👈 NOMBRE
+                                Cantidad = vp.Cantidad,
+                                Coste = vp.Coste
+                            }).ToList(),
+
+                        Fragancias = v.VelaFragancias
+                            .Select(vf => new VelaFraganciaDTO
+                            {
+                                IDFrag = vf.IDFrag,
+                                NombreFragancia = vf.Fragancia.FragNombre, // 👈 NOMBRE
+                        Cantidad = vf.Cantidad,
+                                Coste = vf.Coste
+                            }).ToList()
+                    })
+                    .ToList();
+
+                response.Object = velas;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
+
+
+        public CustomApiResponse<VelaDTO> BuscarVela(Guid idVela)
+        {
+            var response = new CustomApiResponse<VelaDTO>();
             try
             {
                 var vela = context.Vela.SingleOrDefault(x => x.IDVela == idVela);
                 if (vela == null) throw new Exception("Vela no encontrada");
-                response.Object = mapper.Map<Vela>(vela);
+                response.Object = mapper.Map<VelaDTO>(vela);
             }
             catch (Exception ex)
             {
@@ -49,14 +100,13 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Vela> InsertarVela(Vela vel)
+        public CustomApiResponse<VelaDTO> InsertarVela(Vela vel)
         {
-            var response = new CustomApiResponse<Vela>();
+            var response = new CustomApiResponse<VelaDTO>();
             try
             {
                 var vela = mapper.Map<Vela>(vel);
                 vela.IDVela = Guid.NewGuid();
-                vela.FechaVenta = DateTime.Now;
                 vela.FechaReal = DateTime.Now;
                                 
                 // Asegurar FK en pigmentos y fragancias
@@ -69,7 +119,7 @@ namespace ApiVela.Repository
                 context.Vela.Add(vela);
                 context.SaveChanges();
 
-                response.Object = mapper.Map<Vela>(vela);
+                response.Object = mapper.Map<VelaDTO>(vela);
             }
             catch (Exception ex)
             {
@@ -78,9 +128,9 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Vela> ActualizarVela(Vela vel)
+        public CustomApiResponse<VelaDTO> ActualizarVela(Vela vel)
         {
-            var response = new CustomApiResponse<Vela>();
+            var response = new CustomApiResponse<VelaDTO>();
             try
             {
                 var vela = context.Vela.SingleOrDefault(v => v.IDVela == vel.IDVela);
@@ -138,7 +188,7 @@ namespace ApiVela.Repository
 
                 context.SaveChanges();
 
-                response.Object = mapper.Map<Vela>(vela);
+                response.Object = mapper.Map<VelaDTO>(vela);
             }
             catch (Exception ex)
             {

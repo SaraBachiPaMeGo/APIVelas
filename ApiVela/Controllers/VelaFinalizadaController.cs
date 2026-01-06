@@ -26,7 +26,7 @@ namespace ApiVela.Controllers
 
             public IActionResult GetVelaFinalizadas()
             {
-                var resultado = repo.GetVelaFin();  // CustomApiResponse<List<VelaFinalizada>>
+                var resultado = repo.GetVelaFin1();  // CustomApiResponse<List<VelaFinalizada>>
                 if (resultado.Error != null)
                     return BadRequest(resultado.Error.Mensaje);
 

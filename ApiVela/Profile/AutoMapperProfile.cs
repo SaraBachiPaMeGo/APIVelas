@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace ApiVela.Profile
 {
     using ApiVela.Models;
+    using ApiVela.Models.DTO;
     using AutoMapper;
     using NPOI.SS.Formula.Functions;
 
@@ -52,7 +53,11 @@ namespace ApiVela.Profile
             // 🕯️ Vela
             CreateMap<Vela, CustomApiResponse<Vela>>();
             CreateMap<List<Vela>, CustomApiResponse<List<Vela>>>();
-            
+
+            // 🕯️ VelaDTO
+            CreateMap<VelaDTO, CustomApiResponse<VelaDTO>>();
+            CreateMap<List<VelaDTO>, CustomApiResponse<List<VelaDTO>>>();
+
             // 🕯️ Vela Fin
             CreateMap<VelaFinalizada, CustomApiResponse<VelaFinalizada>>();
             CreateMap<List<VelaFinalizada>, CustomApiResponse<List<VelaFinalizada>>>();

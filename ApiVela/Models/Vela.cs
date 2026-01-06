@@ -16,6 +16,9 @@ namespace ApiVela.Models
         [Column("IDVela")]
         public Guid IDVela { get; set; }
 
+        [Column("IDVelaFin")]
+        public Guid IDVelaFin { get; set; }
+
         [Column("VelaNombre")]
         public string VelaNombre { get; set; }
 
@@ -30,9 +33,6 @@ namespace ApiVela.Models
 
         [Column("FechaReal")]
         public DateTime FechaReal { get; set; }
-
-        [Column("FechaVenta")]
-        public DateTime FechaVenta { get; set; }
 
         [Column("GradFrag")]
         public decimal? GradFrag { get; set; }
@@ -76,10 +76,10 @@ namespace ApiVela.Models
         [Column("CantidadEnd")]
         public decimal? CantidadEnd { get; set; }
 
-        [Column("CantidadPack")]
-        public decimal? CantidadPack { get; set; }
+        [ForeignKey(nameof(IDVelaFin))]
+        public virtual VelaFinalizada? VelaFinalizada { get; set; }
 
-        public ICollection<Documento>? Documentos { get; set; }
+      
 
         public List<VelaPigmento> VelaPigmentos { get; set; }
 

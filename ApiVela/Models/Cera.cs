@@ -34,7 +34,7 @@ namespace ApiVela.Models
         [Column("IDVela")]
         public Guid? IDVela { get; set; }
 
-        public ICollection<Documento>? Documentos { get; set; }
+      
 
     }
 

@@ -22,7 +22,7 @@ namespace ApiVela.Controllers
 
         public IActionResult GetVelas()
         {
-            var resultado = repo.GetVelas(); // CustomApiResponse<List<Vela>>
+            var resultado = repo.GetVelas(); // CustomApiResponse<List<VelaDTO>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 

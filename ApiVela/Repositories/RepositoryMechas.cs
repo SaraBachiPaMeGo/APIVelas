@@ -57,6 +57,7 @@ namespace ApiVela.Repository
                 // Puedes agregar validaciones aquí si es necesario, por ejemplo permitir solo una mecha:
                 // if (context.Mecha.Any()) throw new Exception("Solo se permite una mecha");
 
+                mech.IDVela = mech.IDVela != Guid.Empty ? mech.IDVela : mech.IDVela;
                 var mecha = mapper.Map<Mecha>(mech);
                 mecha.IDMecha = Guid.NewGuid();
 

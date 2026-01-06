@@ -16,12 +16,6 @@ namespace ApiVela.Models
         [Column("IDVelaFin")]
         public Guid IDVelaFin { get; set; }
 
-        [Column("IDVela")]
-        public Guid IDVela { get; set; }
-
-        [Column("IDPack")]
-        public Guid? IDPack { get; set; }
-
         [Column("Coste")]
         public decimal? Coste { get; set; }
 
@@ -31,16 +25,28 @@ namespace ApiVela.Models
         [Column("PVP")]
         public decimal? PVP { get; set; }
 
+        [Column("IDVela")]
+        public Guid? IDVela { get; set; }
+
+        [Column("IDPack")]
+        public Guid? IDPack { get; set; }
+
         [Column("IDPedido")]
         public Guid? IDPedido { get; set; }
 
         [Column("FechaFin")]
         public DateTime FechaFin { get; set; }
 
-        public List<Pack> Pack { get; set; }
+        [ForeignKey(nameof(IDPack))]
+
+        public virtual List<Pack> Packs { get; set; }
+
+        [ForeignKey(nameof(IDVela))]
+
+        public virtual List<Vela> Velas{ get; set; }
 
         [ForeignKey(nameof(IDPedido))]
-        public Pedido Pedido { get; set; }
+        public virtual Pedido Pedido { get; set; }
 
     }
 }

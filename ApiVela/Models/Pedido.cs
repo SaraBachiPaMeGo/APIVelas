@@ -40,6 +40,6 @@ namespace ApiVela.Models
 
         // 🔗 Relación con Velas (un pedido -> muchas velas)
         public virtual ICollection<VelaFinalizada> VelaFin { get; set; } = new List<VelaFinalizada>();
-        public ICollection<Documento>? Documentos { get; set; }
+      
     }
 }

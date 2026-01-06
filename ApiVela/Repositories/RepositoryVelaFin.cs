@@ -1,5 +1,6 @@
 ﻿using ApiVela.Data;
 using ApiVela.Models;
+using ApiVela.Models.DTO;
 using AutoMapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<VelaFinalizada>> GetVelaFin()
+        public CustomApiResponse<List<VelaFinalizada>> GetVelaFin1()
         {
             var response = new CustomApiResponse<List<VelaFinalizada>>();
             try
@@ -35,6 +36,68 @@ namespace ApiVela.Repositories
             }
             return response;
         }
+
+        public CustomApiResponse<List<VelaFinDTO>> GetVelasFinalizadas()
+        {
+            var response = new CustomApiResponse<List<VelaFinDTO>>();
+
+            try
+            {
+                var list = context.VelaFinalizada
+                    .Include(vf => vf.Pedido)
+                    .Include(vf => vf.Velas)   // carga las velas relacionadas
+                    .Include(vf => vf.Packs)   // carga los packs relacionados
+                    .AsNoTracking()
+                    .Select(vf => new VelaFinDTO
+                    {
+                        IDVelaFin = vf.IDVelaFin,
+                        Coste = vf.Coste,
+                        Beneficio = vf.Beneficio,
+                        PVP = vf.PVP,
+                        FechaFin = vf.FechaFin,
+
+                        Velas = vf.Velas.Select(v => new VelaDTO
+                        {
+                            IDVela = v.IDVela,
+                            VelaNombre = v.VelaNombre,
+                            Image = v.Image,
+                            FechaReal = v.FechaReal,
+                            Coste = v.Coste,
+                            CantidadCera = v.CantidadCera,
+                            CantidadMecha = v.CantidadMecha,
+                            CantidadEnd = v.CantidadEnd,
+                    // NO incluyas Documentos binarios enteros si no los necesitas aquí
+                }).ToList(),
+
+                        Packs = vf.Packs.Select(p => new PackDTO
+                        {
+                            IDPack = p.IDPack,
+                            Tipo = p.Tipo,
+                            Firma = p.Firma,
+                            Coste = p.Coste
+                        }).ToList(),
+
+                        Pedido = vf.Pedido == null ? null : new PedidoDTO
+                        {
+                            IDPedido = vf.Pedido.IDPedido,
+                            FechaPedi = vf.Pedido.FechaPedi,
+                            FechaEntrega = vf.Pedido.FechaEntrega,
+                            Vendido = vf.Pedido.Vendido
+                        }
+                    })
+                    .ToList();
+
+                response.Object = list;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
+
+
 
         public CustomApiResponse<VelaFinalizada> BuscarVelaFinalizada(Guid idVelaFinalizada)
         {
