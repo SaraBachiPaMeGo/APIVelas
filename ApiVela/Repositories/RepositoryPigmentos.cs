@@ -127,7 +127,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPigAsync(Guid idPig)
+        public CustomApiResponse<bool> EliminarPig(Guid idPig)
         {
             var response = new CustomApiResponse<bool>();
 

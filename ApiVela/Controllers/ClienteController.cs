@@ -77,15 +77,23 @@ namespace ApiVela.Controllers
         }
 
         // DELETE: api/Cliente/{id}
-        [HttpDelete("{id}")]
-        public IActionResult DeleteCliente(Guid id)
+        [HttpDelete("Eliminar/{id}")]
+        public IActionResult Eliminar(Guid id)
         {
-            // Si agregas un método de eliminar en repo, lo usarías así:
-            // var resultado = repo.EliminarCliente(id);
-            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
-            // return NoContent();
+            var eliminado = repo.EliminarCliente(id);
 
-            return StatusCode(501, "El método DELETE no está implementado");
+            if (!eliminado.Object)
+            {
+                return NotFound(new
+                {
+                    mensaje = "No se encontró el registro a eliminar"
+                });
+            }
+
+            return Ok(new
+            {
+                mensaje = "Registro eliminado correctamente"
+            });
         }
     }
 }

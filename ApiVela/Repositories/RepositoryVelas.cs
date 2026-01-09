@@ -197,7 +197,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarVelaAsync(Guid idVela)
+        public CustomApiResponse<bool> EliminarVela(Guid idVela)
         {
             var response = new CustomApiResponse<bool>();
 

@@ -99,7 +99,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarDocumentoAsync(Guid idDocumento)
+        public CustomApiResponse<bool> EliminarDocumento(Guid idDocumento)
         {
             var response = new CustomApiResponse<bool>();
 

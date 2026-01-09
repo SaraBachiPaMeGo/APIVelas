@@ -94,7 +94,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarClienteAsync(Guid idCliente)
+        public CustomApiResponse<bool> EliminarCliente(Guid idCliente)
         {
             var response = new CustomApiResponse<bool>();
 

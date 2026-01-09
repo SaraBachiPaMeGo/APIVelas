@@ -71,15 +71,23 @@ namespace ApiVela.Controllers
         }
 
         // DELETE: api/Mecha/{id}
-        [HttpDelete("{id}")]
-        public IActionResult DeleteMecha(Guid id)
+        [HttpDelete("Eliminar/{id}")]
+        public IActionResult Eliminar(Guid id)
         {
-            // Si tienes un método eliminar en el repositorio:
-            // var resultado = repo.EliminarMecha(id);
-            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
-            // return NoContent();
+            var eliminado = repo.EliminarMecha(id);
 
-            return StatusCode(501, "Método DELETE no implementado.");
+            if (!eliminado.Object)
+            {
+                return NotFound(new
+                {
+                    mensaje = "No se encontró el registro a eliminar"
+                });
+            }
+
+            return Ok(new
+            {
+                mensaje = "Registro eliminado correctamente"
+            });
         }
     }
 }

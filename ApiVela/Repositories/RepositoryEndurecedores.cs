@@ -131,7 +131,7 @@ namespace ApiVela.Repository
             return context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
         }
 
-        public CustomApiResponse<bool> EliminarEndurecedorAsync(Guid idEndurecedor)
+        public CustomApiResponse<bool> EliminarEndurecedor(Guid idEndurecedor)
         {
             var response = new CustomApiResponse<bool>();
 

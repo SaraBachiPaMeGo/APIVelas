@@ -75,16 +75,23 @@ namespace ApiVela.Controllers
         }
 
         // DELETE: api/Cera/{id}
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteCera(Guid id)
-        //{
-        //    // Si implementas eliminar en el repositorio:
-        //    var resultado = repo.EliminarCera(id);  // suponiendo que tienes este método
+        [HttpDelete("Eliminar/{id}")]
+        public IActionResult Eliminar(Guid id)
+        {
+            var eliminado = repo.EliminarCera(id);
 
-        //    if (resultado.Error != null)
-        //        return BadRequest(resultado.Error.Mensaje);
+            if (!eliminado.Object)
+            {
+                return NotFound(new
+                {
+                    mensaje = "No se encontró el registro a eliminar"
+                });
+            }
 
-        //    return NoContent();  // o Ok, dependiendo de lo que quieras
-        //}
+            return Ok(new
+            {
+                mensaje = "Registro eliminado correctamente"
+            });
+        }
     }
 }

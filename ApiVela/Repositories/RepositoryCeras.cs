@@ -101,7 +101,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarCeraAsync(Guid idCera)
+        public CustomApiResponse<bool> EliminarCera(Guid idCera)
         {
             var response = new CustomApiResponse<bool>();
 

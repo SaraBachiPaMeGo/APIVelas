@@ -121,7 +121,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPackAsync(Guid idPack)
+        public CustomApiResponse<bool> EliminarPack(Guid idPack)
         {
             var response = new CustomApiResponse<bool>();
 

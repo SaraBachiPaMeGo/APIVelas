@@ -156,7 +156,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPedidoAsync(Guid idPedido)
+        public CustomApiResponse<bool> EliminarPedido(Guid idPedido)
         {
             var response = new CustomApiResponse<bool>();
 

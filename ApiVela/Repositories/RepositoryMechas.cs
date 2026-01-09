@@ -100,7 +100,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarMechaAsync(Guid idMecha)
+        public CustomApiResponse<bool> EliminarMecha(Guid idMecha)
         {
             var response = new CustomApiResponse<bool>();
 

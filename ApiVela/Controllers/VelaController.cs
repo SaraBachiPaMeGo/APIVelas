@@ -71,11 +71,23 @@ namespace ApiVela.Controllers
         }
 
         // DELETE: api/Vela/{id}
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        [HttpDelete("Eliminar/{id}")]
+        public IActionResult Eliminar(Guid id)
         {
-            // Puedes implementar la lógica de eliminar aquí si la tienes en el repositorio
-            return StatusCode(501, "Eliminación no implementada");
+            var eliminado = repo.EliminarVela(id);
+
+            if (!eliminado.Object)
+            {
+                return NotFound(new
+                {
+                    mensaje = "No se encontró el registro a eliminar"
+                });
+            }
+
+            return Ok(new
+            {
+                mensaje = "Registro eliminado correctamente"
+            });
         }
     }
 }

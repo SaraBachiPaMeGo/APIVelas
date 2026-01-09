@@ -133,7 +133,7 @@ namespace ApiVela.Repository
             return context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
         }
 
-        public CustomApiResponse<bool> EliminarFragAsync(Guid idFrag)
+        public CustomApiResponse<bool> EliminarFrag(Guid idFrag)
         {
             var response = new CustomApiResponse<bool>();
 
