@@ -126,5 +126,34 @@ namespace ApiVela.Repository
 
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarPigAsync(Guid idPig)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Pig = context.Pigmento.SingleOrDefault(x => x.IDPig == idPig);
+
+                if (Pig == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Pig no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Pigmento>().Remove(Pig);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

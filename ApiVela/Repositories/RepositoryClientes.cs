@@ -93,5 +93,34 @@ namespace ApiVela.Repository
             }
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarClienteAsync(Guid idCliente)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Cliente = context.Cliente.SingleOrDefault(x => x.IDCliente == idCliente);
+
+                if (Cliente == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Cliente no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Cliente>().Remove(Cliente);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

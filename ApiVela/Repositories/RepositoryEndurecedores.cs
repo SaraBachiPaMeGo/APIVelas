@@ -130,6 +130,37 @@ namespace ApiVela.Repository
         {
             return context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
         }
+
+        public CustomApiResponse<bool> EliminarEndurecedorAsync(Guid idEndurecedor)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Endurecedor = context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
+
+                if (Endurecedor == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Endurecedor no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Endurecedor>().Remove(Endurecedor);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
+
+
     }
 }
 

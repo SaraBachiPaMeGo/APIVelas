@@ -183,5 +183,34 @@ namespace ApiVela.Repositories
             }
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarVelaFinalizadaAsync(Guid idVelaFinalizada)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var VelaFinalizada = context.VelaFinalizada.SingleOrDefault(x => x.IDVelaFinalizada == idVelaFinalizada);
+
+                if (VelaFinalizada == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "VelaFinalizada no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<VelaFinalizada>().Remove(VelaFinalizada);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

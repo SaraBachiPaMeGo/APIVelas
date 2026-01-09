@@ -100,5 +100,34 @@ namespace ApiVela.Repository
             }
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarCeraAsync(Guid idCera)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var cera = context.Cera.SingleOrDefault(x => x.IDCera == idCera);
+
+                if (cera == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Cera no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Cera>().Remove(cera);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

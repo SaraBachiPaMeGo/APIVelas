@@ -120,5 +120,34 @@ namespace ApiVela.Repository
 
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarPackAsync(Guid idPack)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Pack = context.Pack.SingleOrDefault(x => x.IDPack == idPack);
+
+                if (Pack == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Pack no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Pack>().Remove(Pack);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

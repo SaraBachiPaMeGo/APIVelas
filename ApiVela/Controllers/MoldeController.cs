@@ -74,11 +74,12 @@ namespace ApiVela.Controllers
         public IActionResult DeleteMolde(Guid id)
         {
             // Si en tu repo tienes método para eliminar:
-            // var resultado = repo.EliminarMolde(id);
-            // if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
-            // return NoContent();
+            var resultado = repo.EliminarMolde(id);
 
-            return StatusCode(501, "Eliminación no implementada");
+            if (resultado.Error != null) return BadRequest(resultado.Error.Mensaje);
+
+            return NoContent();
+
         }
     }
 }

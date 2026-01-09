@@ -98,5 +98,34 @@ namespace ApiVela.Repositories
             }
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarDocumentoAsync(Guid idDocumento)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Documento = context.Documento.SingleOrDefault(x => x.IDDocumento == idDocumento);
+
+                if (Documento == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Documento no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Documento>().Remove(Documento);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

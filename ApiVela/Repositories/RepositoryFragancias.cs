@@ -132,5 +132,34 @@ namespace ApiVela.Repository
         {
             return context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
         }
+
+        public CustomApiResponse<bool> EliminarFragAsync(Guid idFrag)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Frag = context.Fragancia.SingleOrDefault(x => x.IDFrag == idFrag);
+
+                if (Frag == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Frag no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Fragancia>().Remove(Frag);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

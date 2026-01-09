@@ -99,5 +99,34 @@ namespace ApiVela.Repository
             }
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarMechaAsync(Guid idMecha)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Mecha = context.Mecha.SingleOrDefault(x => x.IDMecha == idMecha);
+
+                if (Mecha == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Mecha no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Mecha>().Remove(Mecha);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }

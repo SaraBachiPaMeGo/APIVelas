@@ -155,5 +155,34 @@ namespace ApiVela.Repository
 
             return response;
         }
+
+        public CustomApiResponse<bool> EliminarPedidoAsync(Guid idPedido)
+        {
+            var response = new CustomApiResponse<bool>();
+
+            try
+            {
+                var Pedido = context.Pedido.SingleOrDefault(x => x.IDPedido == idPedido);
+
+                if (Pedido == null)
+                {
+                    response.Error = new ErrorViewModel { Mensaje = "Pedido no encontrado" };
+                    response.Object = false;
+                }
+                else
+                {
+                    context.Set<Pedido>().Remove(Pedido);
+                    context.SaveChangesAsync();
+                    response.Object = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return response;
+        }
     }
 }
