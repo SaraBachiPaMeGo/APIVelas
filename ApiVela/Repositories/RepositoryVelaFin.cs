@@ -190,7 +190,7 @@ namespace ApiVela.Repositories
 
             try
             {
-                var VelaFinalizada = context.VelaFinalizada.SingleOrDefault(x => x.IDVelaFinalizada == idVelaFinalizada);
+                var VelaFinalizada = context.VelaFinalizada.SingleOrDefault(x => x.IDVelaFin == idVelaFinalizada);
 
                 if (VelaFinalizada == null)
                 {

@@ -105,7 +105,7 @@ namespace ApiVela.Repositories
 
             try
             {
-                var Documento = context.Documento.SingleOrDefault(x => x.IDDocumento == idDocumento);
+                var Documento = context.Documento.SingleOrDefault(x => x.IDDoc == idDocumento);
 
                 if (Documento == null)
                 {
