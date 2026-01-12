@@ -70,6 +70,9 @@ namespace ApiVela.Profile
             CreateMap<VelaPigmento, CustomApiResponse<VelaPigmento>>();
             CreateMap<List<VelaPigmento>, CustomApiResponse<List<VelaPigmento>>>();
 
+            CreateMap<Inventario, CustomApiResponse<Inventario>>();
+            CreateMap<List<Inventario>, CustomApiResponse<List<Inventario>>>();
+
             // Puedes añadir más mapeos según tus modelos y DTOs
         }
     }

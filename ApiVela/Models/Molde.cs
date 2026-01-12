@@ -51,7 +51,10 @@ namespace ApiVela.Models
 
         [Column("Coste")]
         public decimal? Coste { get; set; }
-      
+
+        [Column("Cantidad")]
+        public int? Cantidad { get; set; }
+
 
     }
 }
