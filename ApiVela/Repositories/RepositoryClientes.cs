@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
@@ -18,7 +19,7 @@ namespace ApiVela.Repository
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Cliente>> GetClientes()
+        public async Task<CustomApiResponse<List<Cliente>>> GetClientes()
         {
             var response = new CustomApiResponse<List<Cliente>>();
             try
@@ -33,7 +34,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cliente> BuscarCliente(Guid idCliente)
+        public async Task<CustomApiResponse<Cliente>>BuscarCliente(Guid idCliente)
         {
             var response = new CustomApiResponse<Cliente>();
             try
@@ -49,7 +50,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cliente> InsertarCliente(Cliente clie)
+        public async Task<CustomApiResponse<Cliente>>InsertarCliente(Cliente clie)
         {
             var response = new CustomApiResponse<Cliente>();
             try
@@ -58,7 +59,7 @@ namespace ApiVela.Repository
                 cliente.IDCliente = Guid.NewGuid();
 
                 context.Cliente.Add(cliente);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Cliente>(cliente);
             }
@@ -69,7 +70,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cliente> ActualizarCliente(Cliente cli)
+        public async Task<CustomApiResponse<Cliente>>ActualizarCliente(Cliente cli)
         {
             var response = new CustomApiResponse<Cliente>();
             try
@@ -83,7 +84,7 @@ namespace ApiVela.Repository
                 if (cli.Telf != cliente.Telf) cliente.Telf = cli.Telf;
                 if (cli.Nombre != cliente.Nombre) cliente.Nombre = cli.Nombre;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Cliente>(cliente);
             }
@@ -94,7 +95,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarCliente(Guid idCliente)
+        public async Task<CustomApiResponse<bool>> EliminarCliente(Guid idCliente)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -110,7 +111,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Cliente>().Remove(Cliente);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

@@ -20,7 +20,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- INSERTAR ----------------------------
-        public CustomApiResponse<Molde> InsertarMolde(Molde mol) 
+        public async Task<CustomApiResponse<Molde>>  InsertarMolde(Molde mol) 
         {
             var response = new CustomApiResponse<Molde>();
 
@@ -40,11 +40,12 @@ namespace ApiVela.Repository
                     IDVela = mol.IDVela,
                     MilAgua = mol.MilAgua,
                     Tipo = mol.Tipo,
-                    Coste = mol.Coste
+                    Coste = mol.Coste,
+                    Image = mol.Image
                 };
 
                 context.Molde.Add(molde);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Molde>(molde);
             }
@@ -57,7 +58,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- ACTUALIZAR ----------------------------
-        public CustomApiResponse<Molde> ActualizarMolde(Molde mol) 
+        public async Task<CustomApiResponse<Molde>>  ActualizarMolde(Molde mol) 
         {
             var response = new CustomApiResponse<Molde>();
 
@@ -84,7 +85,7 @@ namespace ApiVela.Repository
                 existing.MilAgua = mol.MilAgua != default ? mol.MilAgua : existing.MilAgua;
                 existing.Coste = mol.Coste;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Molde>(existing);
             }
@@ -97,7 +98,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- OBTENER TODOS ----------------------------
-        public CustomApiResponse<List<Molde>> GetMoldes() 
+        public async Task<CustomApiResponse<List<Molde>>> GetMoldes() 
         {
             var response = new CustomApiResponse<List<Molde>>();
 
@@ -115,7 +116,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- BUSCAR POR ID ----------------------------
-        public CustomApiResponse<Molde> BuscarMolde(Guid idMolde) 
+        public async Task<CustomApiResponse<Molde>>  BuscarMolde(Guid idMolde) 
         {
             var response = new CustomApiResponse<Molde>();
 
@@ -138,7 +139,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarMolde(Guid idMolde)
+        public async Task<CustomApiResponse<bool>> EliminarMolde(Guid idMolde)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -154,7 +155,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Molde>().Remove(molde);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

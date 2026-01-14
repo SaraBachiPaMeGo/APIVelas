@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetVelas")]
 
-        public IActionResult GetVelas()
+        public async Task<IActionResult> GetVelas()
         {
-            var resultado = repo.GetVelas(); // CustomApiResponse<List<VelaDTO>>
+            var resultado = await repo.GetVelas(); // CustomApiResponse<List<VelaDTO>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Vela/BuscarVela/{idVela}
         [HttpGet]
         [Route("[action]/{idVela}")]
-        public IActionResult BuscarVela(Guid idVela)
+        public async Task<IActionResult> BuscarVela(Guid idVela)
         {
-            var resultado = repo.BuscarVela(idVela);
+            var resultado = await repo.BuscarVela(idVela);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,9 +47,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarVela")]
 
-        public IActionResult InsertarVela( Vela vela)
+        public async Task<IActionResult> InsertarVela( Vela vela)
         {
-            var resultado = repo.InsertarVela(vela);
+            var resultado = await repo.InsertarVela(vela);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -58,12 +60,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarVela/{id}")]
 
-        public IActionResult ActualizarVela(Guid id,  Vela vela)
+        public async Task<IActionResult> ActualizarVela(Guid id,  Vela vela)
         {
             if (id != vela.IDVela)
                 return BadRequest("El ID de la vela no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarVela(vela);
+            var resultado = await repo.ActualizarVela(vela);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -72,9 +74,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Vela/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarVela(id);
+            var eliminado = await repo.EliminarVela(id);
 
             if (!eliminado.Object)
             {

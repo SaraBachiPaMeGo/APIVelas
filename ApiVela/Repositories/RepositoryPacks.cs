@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
@@ -19,7 +20,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- INSERTAR ----------------------------
-        public CustomApiResponse<Pack> InsertarPack(Pack pack) 
+        public async Task<CustomApiResponse<Pack>> InsertarPack(Pack pack) 
         {
             var response = new CustomApiResponse<Pack>();
             try
@@ -36,7 +37,7 @@ namespace ApiVela.Repository
                 };
 
                 context.Pack.Add(packEntity);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Pack>(packEntity);
             }
@@ -49,7 +50,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- ACTUALIZAR ----------------------------
-        public CustomApiResponse<Pack> ActualizarPack(Pack pack) 
+        public async Task<CustomApiResponse<Pack>> ActualizarPack(Pack pack) 
         {
             var response = new CustomApiResponse<Pack>();
             try
@@ -69,7 +70,7 @@ namespace ApiVela.Repository
                 existing.Coste = pack.Coste;
                 existing.Cantidad = pack.Cantidad;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Pack>(existing);
             }
@@ -82,7 +83,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- OBTENER TODOS ----------------------------
-        public CustomApiResponse<List<Pack>> GetPacks() 
+        public async Task<CustomApiResponse<List<Pack>>> GetPacks() 
         {
             var response = new CustomApiResponse<List<Pack>>();
             try
@@ -99,7 +100,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- BUSCAR POR ID ----------------------------
-        public CustomApiResponse<Pack> BuscarPack(Guid idPack) 
+        public async Task<CustomApiResponse<Pack>> BuscarPack(Guid idPack) 
         {
             var response = new CustomApiResponse<Pack>();
             try
@@ -121,7 +122,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPack(Guid idPack)
+        public async Task<CustomApiResponse<bool>> EliminarPack(Guid idPack)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -137,7 +138,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Pack>().Remove(Pack);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

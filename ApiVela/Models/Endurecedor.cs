@@ -15,7 +15,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDEndurecedor")]
-        public Guid? IDEndurecedor { get; set; }
+        public Guid IDEndurecedor { get; set; }
 
         [Column("Firma")]
         public string Firma { get; set; }

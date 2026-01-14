@@ -24,9 +24,9 @@ namespace ApiVela.Controllers
             [HttpGet]
             [Route("GetVelaFinalizadas")]
 
-            public IActionResult GetVelaFinalizadas()
+            public async Task<IActionResult> GetVelaFinalizadas()
             {
-                var resultado = repo.GetVelaFin1();  // CustomApiResponse<List<VelaFinalizada>>
+                var resultado = await repo.GetVelaFin1();  // CustomApiResponse<List<VelaFinalizada>>
                 if (resultado.Error != null)
                     return BadRequest(resultado.Error.Mensaje);
 
@@ -36,9 +36,9 @@ namespace ApiVela.Controllers
             // GET: api/VelaFinalizada/BuscarVelaFinalizada/{idVelaFinalizada}
             [HttpGet]
             [Route("[action]/{idVelaFinalizada}")]
-            public IActionResult BuscarVelaFinalizada(Guid idVelaFinalizada)
+            public async Task<IActionResult> BuscarVelaFinalizada(Guid idVelaFinalizada)
             {
-                var resultado = repo.BuscarVelaFinalizada(idVelaFinalizada);
+                var resultado = await repo.BuscarVelaFinalizada(idVelaFinalizada);
                 if (resultado.Error != null)
                     return NotFound(resultado.Error.Mensaje);
 
@@ -49,9 +49,9 @@ namespace ApiVela.Controllers
             [HttpPost]
             [Route("InsertarVelaFinalizada")]
 
-            public IActionResult InsertarVelaFinalizada(VelaFinalizada mech)
+            public async Task<IActionResult> InsertarVelaFinalizada(VelaFinalizada mech)
             {
-                var resultado = repo.InsertarVelaFinalizada(mech);
+                var resultado = await repo.InsertarVelaFinalizada(mech);
                 if (resultado.Error != null)
                     return BadRequest(resultado.Error.Mensaje);
 
@@ -62,12 +62,12 @@ namespace ApiVela.Controllers
             [HttpPut]
             [Route("ActualizarVelaFinalizada/{id}")]
 
-            public IActionResult ActualizarVelaFinalizada(Guid id, VelaFinalizada mech)
+            public async Task<IActionResult> ActualizarVelaFinalizada(Guid id, VelaFinalizada mech)
             {
                 if (id != mech.IDVelaFin)
                     return BadRequest("El ID de la VelaFinalizada no coincide con el parámetro.");
 
-                var resultado = repo.ActualizarVelaFinalizada(mech);
+                var resultado = await repo.ActualizarVelaFinalizada(mech);
                 if (resultado.Error != null)
                     return BadRequest(resultado.Error.Mensaje);
 
@@ -76,9 +76,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/VelaFinalizada/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarVelaFinalizada(id);
+            var eliminado = await repo.EliminarVelaFinalizada(id);
 
             if (!eliminado.Object)
             {

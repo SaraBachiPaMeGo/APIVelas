@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
@@ -19,9 +20,9 @@ namespace ApiVela.Repository
         }
 
         // ------------------------------------- INSERTAR ---------------------------------------------
-        public CustomApiResponse<T> InsertarPigmento<T>(Pigmento pi)
+        public async Task<CustomApiResponse<Pigmento>>  InsertarPigmento(Pigmento pi)
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Pigmento>();
 
             try
             {
@@ -38,9 +39,9 @@ namespace ApiVela.Repository
                 };
 
                 context.Pigmento.Add(pig);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
-                response.Object = mapper.Map<T>(pig);
+                response.Object = mapper.Map<Pigmento>(pig);
             }
             catch (Exception ex)
             {
@@ -51,9 +52,9 @@ namespace ApiVela.Repository
         }
 
         // ------------------------------------- ACTUALIZAR ---------------------------------------------
-        public CustomApiResponse<T> ActualizarPigmento<T>(Pigmento pi)
+        public async Task<CustomApiResponse<Pigmento>>  ActualizarPigmento(Pigmento pi)
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Pigmento>();
 
             try
             {
@@ -73,9 +74,9 @@ namespace ApiVela.Repository
                 existing.Coste = pi.Coste;
                 existing.Cantidad = pi.Cantidad;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
-                response.Object = mapper.Map<T>(existing);
+                response.Object = mapper.Map<Pigmento>(existing);
             }
             catch (Exception ex)
             {
@@ -86,7 +87,7 @@ namespace ApiVela.Repository
         }
 
         // ------------------------------------- OBTENER TODOS ---------------------------------------------
-        public CustomApiResponse<List<Pigmento>> GetPigmentos()
+        public async Task<CustomApiResponse<List<Pigmento>>> GetPigmentos()
         {
             var response = new CustomApiResponse<List<Pigmento>>();
 
@@ -104,9 +105,9 @@ namespace ApiVela.Repository
         }
 
         // ------------------------------------- BUSCAR POR ID ---------------------------------------------
-        public CustomApiResponse<T> BuscarPigmento<T>(Guid idPig)
+        public async Task<CustomApiResponse<Pigmento>> BuscarPigmento(Guid idPig)
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Pigmento>();
 
             try
             {
@@ -117,7 +118,7 @@ namespace ApiVela.Repository
                     return response;
                 }
 
-                response.Object = mapper.Map<T>(pigmento);
+                response.Object = mapper.Map<Pigmento>(pigmento);
             }
             catch (Exception ex)
             {
@@ -127,7 +128,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPig(Guid idPig)
+        public async Task<CustomApiResponse<bool>> EliminarPig(Guid idPig)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -143,7 +144,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Pigmento>().Remove(Pig);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

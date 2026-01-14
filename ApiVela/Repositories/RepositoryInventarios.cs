@@ -19,7 +19,7 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Inventario>> GetInventarios()
+        public async Task<CustomApiResponse<List<Inventario>>> GetInventarios()
         {
             var response = new CustomApiResponse<List<Inventario>>();
             try
@@ -34,7 +34,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Inventario> BuscarInventario(Guid idInventario)
+        public async Task<CustomApiResponse<Inventario>> BuscarInventario(Guid idInventario)
         {
             var response = new CustomApiResponse<Inventario>();
             try
@@ -50,7 +50,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Inventario> InsertarInventario(Inventario inv)
+        public async Task<CustomApiResponse<Inventario>> InsertarInventario(Inventario inv)
         {
             var response = new CustomApiResponse<Inventario>();
             try
@@ -63,7 +63,7 @@ namespace ApiVela.Repositories
                 Inventario.IDInventario = Guid.NewGuid();
 
                 context.Inventario.Add(Inventario);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Inventario>(Inventario);
             }
@@ -74,7 +74,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Inventario> ActualizarInventario(Inventario inv)
+        public async Task<CustomApiResponse<Inventario>> ActualizarInventario(Inventario inv)
         {
             var response = new CustomApiResponse<Inventario>();
             try
@@ -90,7 +90,7 @@ namespace ApiVela.Repositories
                 if (inv.Cantidad != InventarioExistente.Cantidad) InventarioExistente.Cantidad = inv.Cantidad;
                 if (inv.Coste != InventarioExistente.Coste) InventarioExistente.Coste = inv.Coste;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Inventario>(InventarioExistente);
             }
@@ -101,7 +101,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarInventario(Guid idInventario)
+        public async Task<CustomApiResponse<bool>> EliminarInventario(Guid idInventario)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -117,7 +117,7 @@ namespace ApiVela.Repositories
                 else
                 {
                     context.Set<Inventario>().Remove(Inventario);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

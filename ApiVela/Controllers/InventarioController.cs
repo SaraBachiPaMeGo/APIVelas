@@ -23,9 +23,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetInventarios")]
 
-        public IActionResult GetInventarios()
+        public async Task<IActionResult> GetInventarios()
         {
-            var resultado = repo.GetInventarios();  // CustomApiResponse<List<Inventario>>
+            var resultado = await repo.GetInventarios();  // CustomApiResponse<List<Inventario>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -35,9 +35,9 @@ namespace ApiVela.Controllers
         // GET: api/Inventario/BuscarInventario/{idInventario}
         [HttpGet]
         [Route("[action]/{idInventario}")]
-        public IActionResult BuscarInventario(Guid idInventario)
+        public async Task<IActionResult> BuscarInventario(Guid idInventario)
         {
-            var resultado = repo.BuscarInventario(idInventario);
+            var resultado = await repo.BuscarInventario(idInventario);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -48,9 +48,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarInventario")]
 
-        public IActionResult InsertarInventario(Inventario inv)
+        public async Task<IActionResult> InsertarInventario(Inventario inv)
         {
-            var resultado = repo.InsertarInventario(inv);
+            var resultado = await repo.InsertarInventario(inv);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -61,12 +61,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarInventario/{id}")]
 
-        public IActionResult ActualizarInventario(Guid id, Inventario inv)
+        public async Task<IActionResult> ActualizarInventario(Guid id, Inventario inv)
         {
             if (id != inv.IDInventario)
                 return BadRequest("El ID de la Inventario no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarInventario(inv);
+            var resultado = await repo.ActualizarInventario(inv);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -75,9 +75,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Inventario/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarInventario(id);
+            var eliminado = await repo.EliminarInventario(id);
 
             if (!eliminado.Object)
             {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -21,9 +23,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetFragancias")]
 
-        public IActionResult GetFragancias()
+        public async Task<IActionResult> GetFragancias()
         {
-            var resultado = repo.GetFragancias();
+            var resultado = await repo.GetFragancias();
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -33,9 +35,9 @@ namespace ApiVela.Controllers
         // GET: api/Fragancia/BuscarFragancia/{idFrag}
         [HttpGet]
         [Route("[action]/{idFrag}")]
-        public IActionResult BuscarFragancia(Guid idFrag)
+        public async Task<IActionResult> BuscarFragancia(Guid idFrag)
         {
-            var resultado = repo.BuscarFragancia(idFrag);
+            var resultado = await repo.BuscarFragancia(idFrag);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -46,9 +48,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarFragancia")]
 
-        public IActionResult InsertarFragancia(Fragancia frag)
+        public async Task<IActionResult> InsertarFragancia(Fragancia frag)
         {
-            var resultado = repo.InsertarFragancia(frag);
+            var resultado = await repo.InsertarFragancia(frag);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -59,9 +61,9 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarFragancia/{id}")]
 
-        public IActionResult ActualizarFragancia( Fragancia frag)
+        public async Task<IActionResult> ActualizarFragancia( Fragancia frag)
         {
-            var resultado = repo.ActualizarFragancia(frag);
+            var resultado = await repo.ActualizarFragancia(frag);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -70,9 +72,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Fragancia/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarFrag(id);
+            var eliminado = await repo.EliminarFrag(id);
 
             if (!eliminado.Object)
             {

@@ -20,27 +20,27 @@ namespace ApiVela.Repository
         }
 
         // Insertar Endurecedor
-        public CustomApiResponse<T> InsertarEndurecedor<T>(Endurecedor cer) where T : class
+        public async Task<CustomApiResponse<Endurecedor>> InsertarEndurecedor(Endurecedor end) 
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Endurecedor>();
 
             try
             {
-                var cera = new Endurecedor
+                var enda = new Endurecedor
                 {
                     IDEndurecedor = Guid.NewGuid(),
-                    Tipo = cer.Tipo,
-                    CompradoEn = cer.CompradoEn,
-                    Firma = cer.Firma,
-                    Cantidad = cer.Cantidad,
-                    Coste = cer.Coste,
-                    IDVela = cer.IDVela
+                    Tipo = end.Tipo,
+                    CompradoEn = end.CompradoEn,
+                    Firma = end.Firma,
+                    Cantidad = end.Cantidad,
+                    Coste = end.Coste,
+                    IDVela = end.IDVela
                 };
 
-                context.Endurecedor.Add(cera);
-                context.SaveChanges();
+                context.Endurecedor.Add(enda);
+                await context.SaveChangesAsync();
 
-                response.Object = mapper.Map<T>(cera);
+                response.Object = mapper.Map<Endurecedor>(enda);
             }
             catch (Exception ex)
             {
@@ -51,28 +51,29 @@ namespace ApiVela.Repository
         }
 
         // Actualizar Endurecedor
-        public CustomApiResponse<T> ActualizarEndurecedor<T>(Endurecedor cer) where T : class
+        public async Task<CustomApiResponse<Endurecedor>> ActualizarEndurecedor(Endurecedor end) 
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Endurecedor>();
 
             try
             {
-                var cera = BuscarEndurecedorEntity(cer.IDEndurecedor);
-                if (cera == null)
+                var enda = context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == end.IDEndurecedor);
+
+                if (enda == null)
                 {
                     response.Error = new ErrorViewModel { Mensaje = "Endurecedor no encontrado" };
                     return response;
                 }
 
-                cera.Firma = cer.Firma ?? cera.Firma;
-                cera.Tipo = cer.Tipo ?? cera.Tipo;
-                cera.CompradoEn = cer.CompradoEn ?? cera.CompradoEn;
-                cera.IDVela = cer.IDVela != Guid.Empty ? cer.IDVela : cera.IDVela;
-                cera.Coste = cer.Coste;
-                cera.Cantidad = cer.Cantidad;
+                enda.Firma = end.Firma ?? enda.Firma;
+                enda.Tipo = end.Tipo ?? enda.Tipo;
+                enda.CompradoEn = end.CompradoEn ?? enda.CompradoEn;
+                enda.IDVela = end.IDVela != Guid.Empty ? end.IDVela : enda.IDVela;
+                enda.Coste = end.Coste;
+                enda.Cantidad = end.Cantidad;
 
-                context.SaveChanges();
-                response.Object = mapper.Map<T>(cera);
+                await context.SaveChangesAsync();
+                response.Object = mapper.Map<Endurecedor>(enda);
             }
             catch (Exception ex)
             {
@@ -83,14 +84,14 @@ namespace ApiVela.Repository
         }
 
         // Obtener todos los endurecedores
-        public CustomApiResponse<List<T>> GetEndurecedor<T>() where T : class
+        public async Task<CustomApiResponse<List<Endurecedor>>> GetEndurecedor<Endurecedor>() 
         {
-            var response = new CustomApiResponse<List<T>>();
+            var response = new CustomApiResponse<List<Endurecedor>>();
 
             try
             {
                 var datos = context.Endurecedor.ToList();
-                response.Object = mapper.Map<List<T>>(datos);
+                response.Object = mapper.Map<List<Endurecedor>>(datos);
             }
             catch (Exception ex)
             {
@@ -101,9 +102,9 @@ namespace ApiVela.Repository
         }
 
         // Buscar uno por ID
-        public CustomApiResponse<T> BuscarEndurecedor<T>(Guid idEndurecedor) where T : class
+        public async Task<CustomApiResponse<Endurecedor>> BuscarEndurecedor(Guid idEndurecedor) 
         {
-            var response = new CustomApiResponse<T>();
+            var response = new CustomApiResponse<Endurecedor>();
 
             try
             {
@@ -115,7 +116,7 @@ namespace ApiVela.Repository
                     return response;
                 }
 
-                response.Object = mapper.Map<T>(entidad);
+                response.Object = mapper.Map<Endurecedor>(entidad);
             }
             catch (Exception ex)
             {
@@ -128,10 +129,10 @@ namespace ApiVela.Repository
         // Método privado si quieres reutilizarlo sin mapeo
         private Endurecedor BuscarEndurecedorEntity(Guid? idEndurecedor)
         {
-            return context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
+            return this.context.Endurecedor.SingleOrDefault(x => x.IDEndurecedor == idEndurecedor);
         }
 
-        public CustomApiResponse<bool> EliminarEndurecedor(Guid idEndurecedor)
+        public async Task<CustomApiResponse<bool>> EliminarEndurecedor(Guid idEndurecedor)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -147,7 +148,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Endurecedor>().Remove(Endurecedor);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

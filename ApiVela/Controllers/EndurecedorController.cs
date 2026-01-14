@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
+using System.Threading.Tasks;
+
 using ApiVela.Repository;
 
 namespace ApiVela.Controllers
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetEndurecedores")]
 
-        public IActionResult GetEndurecedores()
+        public async Task<IActionResult> GetEndurecedores()
         {
-            var result = repo.GetEndurecedor<Endurecedor>();  // supongo devuelve CustomApiResponse<List<Endurecedor>>
+            var result = await repo.GetEndurecedor<Endurecedor>();  // supongo devuelve CustomApiResponse<List<Endurecedor>>
             if (result.Error != null)
                 return BadRequest(result.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Endurecedor/BuscarEndurecedor/{idend}
         [HttpGet]
         [Route("[action]/{idend}")]
-        public IActionResult BuscarEndurecedor(Guid idend)
+        public async Task<IActionResult> BuscarEndurecedor(Guid idend)
         {
-            var result = repo.BuscarEndurecedor<Endurecedor>(idend);
+            var result = await repo.BuscarEndurecedor(idend);
             if (result.Error != null)
                 return NotFound(result.Error.Mensaje);
 
@@ -45,9 +47,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarEndurecedor")]
 
-        public IActionResult InsertarEndurecedor( Endurecedor ent)
+        public async Task<IActionResult> InsertarEndurecedor( Endurecedor ent)
         {
-            var result = repo.InsertarEndurecedor<Endurecedor>(ent);
+            var result = await repo.InsertarEndurecedor(ent);
             if (result.Error != null)
                 return BadRequest(result.Error.Mensaje);
 
@@ -58,12 +60,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarEndurecedor/{id}")]
 
-        public IActionResult ActualizarEndurecedor(Guid id,  Endurecedor ent)
+        public async Task<IActionResult> ActualizarEndurecedor(Guid id,  Endurecedor ent)
         {
             if (id != ent.IDEndurecedor)
                 return BadRequest("El ID del endurecedor no coincide con el parámetro.");
 
-            var result = repo.ActualizarEndurecedor<Endurecedor>(ent);
+            var result = await repo.ActualizarEndurecedor(ent);
             if (result.Error != null)
                 return BadRequest(result.Error.Mensaje);
 
@@ -72,9 +74,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Endurecedor/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarEndurecedor(id);
+            var eliminado = await repo.EliminarEndurecedor(id);
 
             if (!eliminado.Object)
             {

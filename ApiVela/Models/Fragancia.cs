@@ -14,7 +14,7 @@ namespace ApiVela.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("IDFrag")]
-        public Guid? IDFrag { get; set; }
+        public Guid IDFrag { get; set; }
 
         [Column("FragNombre")]
         public string FragNombre { get; set; }

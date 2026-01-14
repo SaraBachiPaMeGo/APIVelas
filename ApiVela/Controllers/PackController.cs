@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetPacks")]
 
-        public IActionResult GetPacks()
+        public async Task<IActionResult> GetPacks()
         {
-            var resultado = repo.GetPacks(); // CustomApiResponse<List<Pack>>
+            var resultado = await repo.GetPacks(); // CustomApiResponse<List<Pack>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Pack/BuscarPack/{idPack}
         [HttpGet]
         [Route("[action]/{idPack}")]
-        public IActionResult BuscarPack(Guid idPack)
+        public async Task<IActionResult> BuscarPack(Guid idPack)
         {
-            var resultado = repo.BuscarPack(idPack);
+            var resultado = await repo.BuscarPack(idPack);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,9 +47,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarPack")]
 
-        public IActionResult InsertarPack( Pack pack)
+        public async Task<IActionResult> InsertarPack( Pack pack)
         {
-            var resultado = repo.InsertarPack(pack);
+            var resultado = await repo.InsertarPack(pack);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -58,12 +60,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarPack/{id}")]
 
-        public IActionResult ActualizarPack(Guid id,  Pack pack)
+        public async Task<IActionResult> ActualizarPack(Guid id,  Pack pack)
         {
             if (id != pack.IDPack)
                 return BadRequest("El ID del Pack no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarPack(pack);
+            var resultado = await repo.ActualizarPack(pack);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -72,9 +74,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Pack/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarPack(id);
+            var eliminado = await repo.EliminarPack(id);
 
             if (!eliminado.Object)
             {

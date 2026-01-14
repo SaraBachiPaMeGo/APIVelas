@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
 
 namespace ApiVela.Controllers
 {
@@ -20,9 +21,9 @@ namespace ApiVela.Controllers
         // GET: api/Cera
         [HttpGet]
         [Route("GetCeras")]
-        public IActionResult GetCeras()
+        public async Task<IActionResult> GetCeras()
         {
-            var resultado = repo.GetCeras();  // supongo que devuelve CustomApiResponse<List>
+            var resultado = await repo.GetCeras();  // supongo que devuelve CustomApiResponse<List>
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -33,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Cera/BuscarCera/{idCera}
         [HttpGet]
         [Route("[action]/{idCera}")]
-        public IActionResult BuscarCera(Guid idCera)
+        public async Task<IActionResult> BuscarCera(Guid idCera)
         {
-            var resultado = repo.BuscarCera(idCera);
+            var resultado = await repo.BuscarCera(idCera);
 
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
@@ -47,9 +48,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarCera")]
 
-        public IActionResult InsertarCera( Cera cera)
+        public async Task<IActionResult> InsertarCera( Cera cera)
         {
-            var resultado = repo.InsertarCera(cera);
+            var resultado = await repo.InsertarCera(cera);
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -61,12 +62,12 @@ namespace ApiVela.Controllers
         // PUT: api/Cera/{id}
         [HttpPut("ActualizarCera/{id}")]
 
-        public IActionResult ActualizarCera(Guid id,  Cera cera)
+        public async Task<IActionResult> ActualizarCera(Guid id,  Cera cera)
         {
             if (id != cera.IDCera)
                 return BadRequest("El ID de la Cera no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarCera(cera);
+            var resultado = await repo.ActualizarCera(cera);
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -76,9 +77,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Cera/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarCera(id);
+            var eliminado = await repo.EliminarCera(id);
 
             if (!eliminado.Object)
             {

@@ -20,7 +20,7 @@ namespace ApiVela.Repository
         }
 
         // Insertar Fragancia
-        public CustomApiResponse<Fragancia> InsertarFragancia(Fragancia fragan) 
+        public async Task<CustomApiResponse<Fragancia>> InsertarFragancia(Fragancia fragan) 
         {
             var response = new CustomApiResponse<Fragancia>();
 
@@ -39,7 +39,7 @@ namespace ApiVela.Repository
                 };
 
                 context.Fragancia.Add(frag);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Fragancia>(frag);
             }
@@ -52,13 +52,13 @@ namespace ApiVela.Repository
         }
 
         // Actualizar Fragancia
-        public CustomApiResponse<Fragancia> ActualizarFragancia(Fragancia fragan) 
+        public async Task<CustomApiResponse<Fragancia>> ActualizarFragancia(Fragancia fragan) 
         {
             var response = new CustomApiResponse<Fragancia>();
 
             try
             {
-                var frag = BuscarFraganciaEntity(fragan.IDFrag);
+                var frag = context.Fragancia.SingleOrDefault(x => x.IDFrag == fragan.IDFrag);
                 if (frag == null)
                 {
                     response.Error = new ErrorViewModel { Mensaje = "Fragancia no encontrada" };
@@ -73,7 +73,7 @@ namespace ApiVela.Repository
                 frag.Coste = fragan.Coste;
                 frag.Cantidad = fragan.Cantidad;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 response.Object = mapper.Map<Fragancia>(frag);
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace ApiVela.Repository
         }
 
         // Obtener todas las fragancias
-        public CustomApiResponse<List<Fragancia>> GetFragancias() 
+        public async Task<CustomApiResponse<List<Fragancia>>> GetFragancias() 
         {
             var response = new CustomApiResponse<List<Fragancia>>();
 
@@ -103,7 +103,7 @@ namespace ApiVela.Repository
         }
 
         // Buscar una fragancia por ID
-        public CustomApiResponse<Fragancia> BuscarFragancia(Guid idFragancia) 
+        public async Task<CustomApiResponse<Fragancia>> BuscarFragancia(Guid idFragancia) 
         {
             var response = new CustomApiResponse<Fragancia>();
 
@@ -126,14 +126,8 @@ namespace ApiVela.Repository
 
             return response;
         }
-
-        // Método interno privado (sin mapeo)
-        private Fragancia BuscarFraganciaEntity(Guid? idFragancia)
-        {
-            return context.Fragancia.SingleOrDefault(x => x.IDFrag == idFragancia);
-        }
-
-        public CustomApiResponse<bool> EliminarFrag(Guid idFrag)
+                
+        public async Task<CustomApiResponse<bool>> EliminarFrag(Guid idFrag)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -149,7 +143,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Fragancia>().Remove(Frag);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

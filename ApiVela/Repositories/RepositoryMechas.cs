@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
@@ -18,7 +19,7 @@ namespace ApiVela.Repository
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Mecha>> GetMechas()
+        public async Task<CustomApiResponse<List<Mecha>>> GetMechas()
         {
             var response = new CustomApiResponse<List<Mecha>>();
             try
@@ -33,7 +34,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Mecha> BuscarMecha(Guid idMecha)
+        public async Task<CustomApiResponse<Mecha>>BuscarMecha(Guid idMecha)
         {
             var response = new CustomApiResponse<Mecha>();
             try
@@ -49,7 +50,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Mecha> InsertarMecha(Mecha mech)
+        public async Task<CustomApiResponse<Mecha>>InsertarMecha(Mecha mech)
         {
             var response = new CustomApiResponse<Mecha>();
             try
@@ -62,7 +63,7 @@ namespace ApiVela.Repository
                 mecha.IDMecha = Guid.NewGuid();
 
                 context.Mecha.Add(mecha);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Mecha>(mecha);
             }
@@ -73,7 +74,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Mecha> ActualizarMecha(Mecha mech)
+        public async Task<CustomApiResponse<Mecha>>ActualizarMecha(Mecha mech)
         {
             var response = new CustomApiResponse<Mecha>();
             try
@@ -89,7 +90,7 @@ namespace ApiVela.Repository
                 if (mech.Cantidad != mechaExistente.Cantidad) mechaExistente.Cantidad = mech.Cantidad;
                 if (mech.Coste != mechaExistente.Coste) mechaExistente.Coste = mech.Coste;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Mecha>(mechaExistente);
             }
@@ -100,7 +101,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarMecha(Guid idMecha)
+        public async Task<CustomApiResponse<bool>> EliminarMecha(Guid idMecha)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -116,7 +117,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Mecha>().Remove(Mecha);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

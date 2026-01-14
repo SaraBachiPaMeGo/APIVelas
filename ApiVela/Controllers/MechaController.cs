@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetMechas")]
 
-        public IActionResult GetMechas()
+        public async Task<IActionResult> GetMechas()
         {
-            var resultado = repo.GetMechas();  // CustomApiResponse<List<Mecha>>
+            var resultado = await repo.GetMechas();  // CustomApiResponse<List<Mecha>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Mecha/BuscarMecha/{idMecha}
         [HttpGet]
         [Route("[action]/{idMecha}")]
-        public IActionResult BuscarMecha(Guid idMecha)
+        public async Task<IActionResult> BuscarMecha(Guid idMecha)
         {
-            var resultado = repo.BuscarMecha(idMecha);
+            var resultado = await repo.BuscarMecha(idMecha);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,9 +47,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarMecha")]
 
-        public IActionResult InsertarMecha( Mecha mech)
+        public async Task<IActionResult> InsertarMecha( Mecha mech)
         {
-            var resultado = repo.InsertarMecha(mech);
+            var resultado = await repo.InsertarMecha(mech);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -58,12 +60,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarMecha/{id}")]
 
-        public IActionResult ActualizarMecha(Guid id,  Mecha mech)
+        public async Task<IActionResult> ActualizarMecha(Guid id,  Mecha mech)
         {
             if (id != mech.IDMecha)
                 return BadRequest("El ID de la Mecha no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarMecha(mech);
+            var resultado = await repo.ActualizarMecha(mech);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -72,9 +74,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Mecha/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarMecha(id);
+            var eliminado = await repo.EliminarMecha(id);
 
             if (!eliminado.Object)
             {

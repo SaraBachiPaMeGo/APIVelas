@@ -21,9 +21,9 @@ namespace ApiVela.Controllers
         // GET: api/Documento
         [HttpGet]
         [Route("GetDocumentos")]
-        public IActionResult GetDocumentos()
+        public async Task<IActionResult> GetDocumentos()
         {
-            var resultado = repo.GetDocumentos();  // supongo que devuelve CustomApiResponse<List>
+            var resultado = await repo.GetDocumentos();  // supongo que devuelve CustomApiResponse<List>
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -34,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Documento/BuscarDocumento/{IDDoc}
         [HttpGet]
         [Route("[action]/{IDDoc}")]
-        public IActionResult BuscarDocumento(Guid IDDoc)
+        public async Task<IActionResult> BuscarDocumento(Guid IDDoc)
         {
-            var resultado = repo.BuscarDocumento(IDDoc);
+            var resultado = await repo.BuscarDocumento(IDDoc);
 
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
@@ -48,9 +48,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarDocumento")]
 
-        public IActionResult InsertarDocumento(Documento Documento)
+        public async Task<IActionResult> InsertarDocumento(Documento Documento)
         {
-            var resultado = repo.InsertarDocumento(Documento);
+            var resultado = await repo.InsertarDocumento(Documento);
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -62,12 +62,12 @@ namespace ApiVela.Controllers
         // PUT: api/Documento/{id}
         [HttpPut("ActualizarDocumento/{id}")]
 
-        public IActionResult ActualizarDocumento(Guid id, Documento Documento)
+        public async Task<IActionResult> ActualizarDocumento(Guid id, Documento Documento)
         {
             if (id != Documento.IDDoc)
                 return BadRequest("El ID de la Documento no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarDocumento(Documento);
+            var resultado = await repo.ActualizarDocumento(Documento);
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
@@ -77,9 +77,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Documento/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarDocumento(id);
+            var eliminado = await repo.EliminarDocumento(id);
 
             if (!eliminado.Object)
             {

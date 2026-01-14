@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using ApiVela.Models.DTO;
@@ -19,7 +20,7 @@ namespace ApiVela.Repository
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<VelaDTO>> GetVelas1()
+        public async Task<CustomApiResponse<List<VelaDTO>>> GetVelas1()
         {
             var response = new CustomApiResponse<List<VelaDTO>>();
             try
@@ -34,7 +35,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<List<VelaDTO>> GetVelas()
+        public async Task<CustomApiResponse<List<VelaDTO>>> GetVelas()
         {
             var response = new CustomApiResponse<List<VelaDTO>>();
 
@@ -84,7 +85,7 @@ namespace ApiVela.Repository
         }
 
 
-        public CustomApiResponse<VelaDTO> BuscarVela(Guid idVela)
+        public async Task<CustomApiResponse<VelaDTO>> BuscarVela(Guid idVela)
         {
             var response = new CustomApiResponse<VelaDTO>();
             try
@@ -100,7 +101,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<VelaDTO> InsertarVela(Vela vel)
+        public async Task<CustomApiResponse<VelaDTO>> InsertarVela(Vela vel)
         {
             var response = new CustomApiResponse<VelaDTO>();
             try
@@ -117,7 +118,7 @@ namespace ApiVela.Repository
                     vela.VelaFragancias.ForEach(vf => vf.IDVela = vela.IDVela);
 
                 context.Vela.Add(vela);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<VelaDTO>(vela);
             }
@@ -128,7 +129,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<VelaDTO> ActualizarVela(Vela vel)
+        public async Task<CustomApiResponse<VelaDTO>> ActualizarVela(Vela vel)
         {
             var response = new CustomApiResponse<VelaDTO>();
             try
@@ -186,7 +187,7 @@ namespace ApiVela.Repository
                     }
                 }
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<VelaDTO>(vela);
             }
@@ -197,7 +198,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarVela(Guid idVela)
+        public async Task<CustomApiResponse<bool>> EliminarVela(Guid idVela)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -213,7 +214,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Vela>().Remove(Vela);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

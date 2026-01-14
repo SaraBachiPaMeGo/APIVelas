@@ -19,7 +19,7 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Documento>> GetDocumentos()
+        public async Task<CustomApiResponse<List<Documento>>> GetDocumentos()
         {
             var response = new CustomApiResponse<List<Documento>>();
             try
@@ -34,7 +34,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Documento> BuscarDocumento(Guid idDocumento)
+        public async Task<CustomApiResponse<Documento>> BuscarDocumento(Guid idDocumento)
         {
             var response = new CustomApiResponse<Documento>();
             try
@@ -50,7 +50,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Documento> InsertarDocumento(Documento doc)
+        public async Task<CustomApiResponse<Documento>> InsertarDocumento(Documento doc)
         {
             var response = new CustomApiResponse<Documento>();
             try
@@ -59,7 +59,7 @@ namespace ApiVela.Repositories
                 Documento.IDDoc = Guid.NewGuid();
 
                 context.Documento.Add(Documento);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Documento>(Documento);
             }
@@ -70,7 +70,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<Documento> ActualizarDocumento(Documento doc)
+        public async Task<CustomApiResponse<Documento>> ActualizarDocumento(Documento doc)
         {
             var response = new CustomApiResponse<Documento>();
             try
@@ -88,7 +88,7 @@ namespace ApiVela.Repositories
                 if (doc.TipoDoc != DocumentoExistente.TipoDoc) DocumentoExistente.TipoDoc = doc.TipoDoc;
                 if (doc.Datos != DocumentoExistente.Datos) DocumentoExistente.Datos = doc.Datos;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Documento>(DocumentoExistente);
             }
@@ -99,7 +99,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarDocumento(Guid idDocumento)
+        public async Task<CustomApiResponse<bool>> EliminarDocumento(Guid idDocumento)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -115,7 +115,7 @@ namespace ApiVela.Repositories
                 else
                 {
                     context.Set<Documento>().Remove(Documento);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

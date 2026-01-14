@@ -2,6 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ApiVela.Controllers
 {
@@ -10,19 +15,21 @@ namespace ApiVela.Controllers
     public class MoldeController : ControllerBase
     {
         private readonly RepositoryMoldes repo;
+        private readonly IWebHostEnvironment _env;
 
-        public MoldeController(RepositoryMoldes repo)
+        public MoldeController(RepositoryMoldes repo, IWebHostEnvironment env)
         {
             this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _env = env;
         }
 
         // GET: api/Molde
         [HttpGet]
         [Route("GetMoldes")]
 
-        public IActionResult GetMoldes()
+        public async Task<IActionResult> GetMoldes()
         {
-            var resultado = repo.GetMoldes();  // CustomApiResponse<List<Molde>>
+            var resultado = await repo.GetMoldes();  // CustomApiResponse<List<Molde>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +39,9 @@ namespace ApiVela.Controllers
         // GET: api/Molde/BuscarMolde/{idMolde}
         [HttpGet]
         [Route("[action]/{idMolde}")]
-        public IActionResult BuscarMolde(Guid idMolde)
+        public async Task<IActionResult> BuscarMolde(Guid idMolde)
         {
-            var resultado = repo.BuscarMolde(idMolde);
+            var resultado = await repo.BuscarMolde(idMolde);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,9 +52,40 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarMolde")]
 
-        public IActionResult InsertarMolde(Molde molde)
+        public async Task<IActionResult> InsertarMolde(Molde molde, IFormFile file)
         {
-            var resultado = repo.InsertarMolde(molde);
+            var resultado = await repo.InsertarMolde(molde);
+
+            if (file == null || file.Length == 0)
+                return BadRequest("No se ha enviado ninguna imagen.");
+
+            // Validación básica de extensión
+            var ext = Path.GetExtension(file.FileName).ToLower();
+
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            if (!allowed.Contains(ext))
+            {
+                resultado.Error.Mensaje = "Tipo de archivo no permitido.";
+                return BadRequest();
+
+            }
+
+            // Carpeta donde se guardan las imágenes
+            var uploadsFolder = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            // Nombre único para el archivo
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var relativePath = $"/uploads/{fileName}";
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -57,12 +95,12 @@ namespace ApiVela.Controllers
         // PUT: api/Molde/{id}
         [HttpPut("ActualizarMolde/{id}")]
 
-        public IActionResult ActualizarMolde(Guid id, Molde molde)
+        public async Task<IActionResult> ActualizarMolde(Guid id, Molde molde)
         {
             if (id != molde.IDMolde)
                 return BadRequest("El ID del molde no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarMolde(molde);
+            var resultado = await repo.ActualizarMolde(molde);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -71,9 +109,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Molde/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarMolde(id);
+            var eliminado = await repo.EliminarMolde(id);
 
             if (!eliminado.Object)
             {

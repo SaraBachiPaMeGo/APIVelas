@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -19,9 +21,9 @@ namespace ApiVela.Controllers
         // GET: api/Cliente
         [HttpGet]
         [Route("GetClientes")]
-        public IActionResult GetClientes()
+        public async Task<IActionResult> GetClientes()
         {
-            var resultado = repo.GetClientes();  // debería devolver CustomApiResponse<List<Cliente>>
+            var resultado = await repo.GetClientes();  // debería devolver CustomApiResponse<List<Cliente>>
             if (resultado.Error != null)
             {
                 return BadRequest(resultado.Error.Mensaje);
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Cliente/BuscarCliente/{idCliente}
         [HttpGet]
         [Route("[action]/{idCliente}")]
-        public IActionResult BuscarCliente(Guid idCliente)
+        public async Task<IActionResult> BuscarCliente(Guid idCliente)
         {
-            var resultado = repo.BuscarCliente(idCliente);  // CustomApiResponse<Cliente>
+            var resultado = await repo.BuscarCliente(idCliente);  // CustomApiResponse<Cliente>
             if (resultado.Error != null)
             {
                 return NotFound(resultado.Error.Mensaje);
@@ -46,9 +48,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarCliente")]
 
-        public IActionResult InsertarCliente( Cliente cli)
+        public async Task<IActionResult> InsertarCliente( Cliente cli)
         {
-            var resultado = repo.InsertarCliente(cli);  // CustomApiResponse<Cliente>
+            var resultado = await repo.InsertarCliente(cli);  // CustomApiResponse<Cliente>
             if (resultado.Error != null)
             {
                 return BadRequest(resultado.Error.Mensaje);
@@ -61,14 +63,14 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarCliente/{id}")]
 
-        public IActionResult ActualizarCliente(Guid id,  Cliente cli)
+        public async Task<IActionResult> ActualizarCliente(Guid id,  Cliente cli)
         {
             if (id != cli.IDCliente)
             {
                 return BadRequest("El ID del cliente no coincide.");
             }
 
-            var resultado = repo.ActualizarCliente(cli);  // CustomApiResponse<Cliente>
+            var resultado = await repo.ActualizarCliente(cli);  // CustomApiResponse<Cliente>
             if (resultado.Error != null)
             {
                 return BadRequest(resultado.Error.Mensaje);
@@ -78,9 +80,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Cliente/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarCliente(id);
+            var eliminado = await repo.EliminarCliente(id);
 
             if (!eliminado.Object)
             {

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
 using ApiVela.Repositories;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -18,63 +20,64 @@ namespace ApiVela.Controllers
             this.repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        // GET: api/VelaPigmento/GetPigmentosPorVela/{idVela}
-        [HttpGet]
-        [Route("[action]/{idVela}")]
-        public IActionResult GetVelaPigmentosPorVela(Guid idVela)
-        {
-            var resultado = repo.GetPigmentosPorVela(idVela); // CustomApiResponse<List<Pigmento>>
-            if (resultado.Error != null)
-                return BadRequest(resultado.Error.Mensaje);
-
-            return Ok(resultado.Object);
-        }
-
-        // GET: api/BuscarVelaFragancia/{idVela}
-        [HttpGet]
-        [Route("[action]/{idVela}")]
-        public IActionResult BuscarVelaPigmentoPorVela(Guid idVela)
-        {
-            var resultado = repo.BuscarVelaPigmento(idVela);
-            if (resultado.Error != null)
-                return BadRequest(resultado.Error.Mensaje);
-
-            return Ok(resultado.Object);
-        }
-
-        // POST: api/VelaPigmento
-        [HttpPost]
-        [Route("InsertarVelaPigmento")]
-
-        public IActionResult InsertarVelaPigmento(Guid idVela, Guid idPig)
-        {
-            var resultado = repo.InsertarVelaPigmento(idVela, idPig);
-            if (resultado.Error != null)
-                return BadRequest(resultado.Error.Mensaje);
-
-            return Ok(resultado.Object);
-        }
-
-        // PUT: api/VelaPigmento/{id}
-        //[HttpPut("{id}")]
-        //public IActionResult ActualizarVelaPigmento(VelaPigmento velaPigmento)
+        //// GET: api/VelaPigmento/GetPigmentosPorVela/{idVela}
+        //[HttpGet]
+        //[Route("[action]/{idVela}")]
+        //public async Task<IActionResult> GetVelaPigmentosPorVela(Guid idVela)
         //{
-        //        var resultado = repo.ActualizarVelaPigmento(velaPigmento);
+        //    var resultado = await repo.GetPigmentosPorVela(idVela); // CustomApiResponse<List<Pigmento>>
         //    if (resultado.Error != null)
         //        return BadRequest(resultado.Error.Mensaje);
 
         //    return Ok(resultado.Object);
         //}
 
-    // DELETE: api/VelaPigmento/{id}
-    [HttpDelete("[action]/{idvelaPigmento}")]
-        public IActionResult EliminarVelaPigmento(Guid id)
-        {
-            var resultado = repo.EliminarRelacionesPigmentos(id);
-            if (resultado.Error != null)
-                return BadRequest(resultado.Error.Mensaje);
+        //// GET: api/BuscarVelaFragancia/{idVela}
+        //[HttpGet]
+        //[Route("[action]/{idVela}")]
+        //public async Task<IActionResult> BuscarVelaPigmentoPorVela(Guid idVela)
+        //{
+        //    var resultado = await repo.BuscarVelaPigmento(idVela);
+        //    if (resultado.Error != null)
+        //        return BadRequest(resultado.Error.Mensaje);
 
-            return Ok(resultado.Object);
-        }
+        //    return Ok(resultado.Object);
+        //}
+
+        //// POST: api/VelaPigmento
+        //[HttpPost]
+        //[Route("InsertarVelaPigmento")]
+
+        //public async Task<IActionResult> InsertarVelaPigmento(Guid idVela, Guid idPig)
+        //{
+        //    var resultado = await repo.InsertarVelaPigmento(idVela, idPig);
+        //    if (resultado.Error != null)
+        //        return BadRequest(resultado.Error.Mensaje);
+
+        //    return Ok(resultado.Object);
+        //}
+
+        // PUT: api/VelaPigmento/{id}
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> ActualizarVelaPigmento(VelaPigmento velaPigmento)
+        //{
+        //        var resultado = await repo.ActualizarVelaPigmento(velaPigmento);
+        //    if (resultado.Error != null)
+        //        return BadRequest(resultado.Error.Mensaje);
+
+        //    return Ok(resultado.Object);
+        //}
+
+        // DELETE: api/VelaPigmento/{id}
+        //[HttpDelete("[action]/{idvelaPigmento}")]
+        //    public async Task<IActionResult> EliminarVelaPigmento(Guid id)
+        //    {
+        //        var resultado = await repo.EliminarRelacionesPigmentos(id);
+        //        if (resultado.Error != null)
+        //            return BadRequest(resultado.Error.Mensaje);
+
+        //        return Ok(resultado.Object);
+        //    }
+        //}
     }
 }

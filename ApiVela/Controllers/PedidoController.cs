@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
+using System.Threading.Tasks;
+
 
 namespace ApiVela.Controllers
 {
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetPedidos")]
 
-        public IActionResult GetPedidos()
+        public async Task<IActionResult> GetPedidos()
         {
-            var resultado = repo.GetPedidos();  // CustomApiResponse<List<Pedido>>
+            var resultado = await repo.GetPedidos();  // CustomApiResponse<List<Pedido>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Pedido/BuscarPedido/{idPedido}
         [HttpGet]
         [Route("[action]/{idPedido}")]
-        public IActionResult BuscarPedido(Guid idPedido)
+        public async Task<IActionResult> BuscarPedido(Guid idPedido)
         {
-            var resultado = repo.BuscarPedido(idPedido);
+            var resultado = await repo.BuscarPedido(idPedido);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,10 +47,10 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarPedido")]
 
-        public IActionResult InsertarPedido( Pedido pedi)
+        public async Task<IActionResult> InsertarPedido( Pedido pedi)
         {
             // Supongo que haces un DTO o Request object para recibir los datos
-            var resultado = repo.InsertarPedido(pedi);
+            var resultado = await repo.InsertarPedido(pedi);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -60,13 +62,13 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarPedido/{id}")]
 
-        public IActionResult ActualizarPedido(Guid id, Pedido pedi)
+        public async Task<IActionResult> ActualizarPedido(Guid id, Pedido pedi)
         {
 
             if (id != pedi.IDPedido)
                 return BadRequest("El ID del pedido no coincide.");
 
-            var resultado = repo.ActualizarPedido(pedi);
+            var resultado = await repo.ActualizarPedido(pedi);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -75,9 +77,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Pedido/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarPedido(id);
+            var eliminado = await repo.EliminarPedido(id);
 
             if (!eliminado.Object)
             {

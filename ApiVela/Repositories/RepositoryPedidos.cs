@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ApiVela.Data;
 using ApiVela.Models;
 using AutoMapper;
@@ -20,7 +21,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- INSERTAR ----------------------------
-        public CustomApiResponse<Pedido> InsertarPedido(Pedido pedid) 
+        public async Task<CustomApiResponse<Pedido>>  InsertarPedido(Pedido pedid) 
         {
             var response = new CustomApiResponse<Pedido>();
 
@@ -44,7 +45,7 @@ namespace ApiVela.Repository
                     response.Error.Mensaje = "No se encontró el cliente con ID" + pedi.IDCliente;
 
                 context.Pedido.Add(pedi);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Pedido>(pedi);
             }
@@ -57,7 +58,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- ACTUALIZAR ----------------------------
-        public CustomApiResponse<Pedido> ActualizarPedido(Pedido pedi)
+        public async Task<CustomApiResponse<Pedido>>  ActualizarPedido(Pedido pedi)
         {
             var response = new CustomApiResponse<Pedido>();
 
@@ -101,7 +102,7 @@ namespace ApiVela.Repository
                     }
                 }
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Pedido>(existing);
             }
@@ -115,7 +116,7 @@ namespace ApiVela.Repository
 
 
         // ---------------------------- OBTENER TODOS ----------------------------
-        public CustomApiResponse<List<Pedido>> GetPedidos() 
+        public async Task<CustomApiResponse<List<Pedido>>> GetPedidos() 
         {
             var response = new CustomApiResponse<List<Pedido>>();
 
@@ -133,7 +134,7 @@ namespace ApiVela.Repository
         }
 
         // ---------------------------- BUSCAR POR ID ----------------------------
-        public CustomApiResponse<Pedido> BuscarPedido(Guid idPedido) 
+        public async Task<CustomApiResponse<Pedido>>  BuscarPedido(Guid idPedido) 
         {
             var response = new CustomApiResponse<Pedido>();
 
@@ -156,7 +157,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarPedido(Guid idPedido)
+        public async Task<CustomApiResponse<bool>> EliminarPedido(Guid idPedido)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -172,7 +173,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Pedido>().Remove(Pedido);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

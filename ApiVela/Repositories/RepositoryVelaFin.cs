@@ -22,7 +22,7 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<VelaFinalizada>> GetVelaFin1()
+        public async Task<CustomApiResponse<List<VelaFinalizada>>> GetVelaFin1()
         {
             var response = new CustomApiResponse<List<VelaFinalizada>>();
             try
@@ -37,7 +37,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<List<VelaFinDTO>> GetVelasFinalizadas()
+        public async Task<CustomApiResponse<List<VelaFinDTO>>> GetVelasFinalizadas()
         {
             var response = new CustomApiResponse<List<VelaFinDTO>>();
 
@@ -99,7 +99,7 @@ namespace ApiVela.Repositories
 
 
 
-        public CustomApiResponse<VelaFinalizada> BuscarVelaFinalizada(Guid idVelaFinalizada)
+        public async Task<CustomApiResponse<VelaFinalizada>>  BuscarVelaFinalizada(Guid idVelaFinalizada)
         {
             var response = new CustomApiResponse<VelaFinalizada>();
             try
@@ -115,7 +115,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<VelaFinalizada> InsertarVelaFinalizada(VelaFinalizada vel)
+        public async Task<CustomApiResponse<VelaFinalizada>>  InsertarVelaFinalizada(VelaFinalizada vel)
         {
             var response = new CustomApiResponse<VelaFinalizada>();
             try
@@ -146,7 +146,7 @@ namespace ApiVela.Repositories
 
 
                 context.VelaFinalizada.Add(VelaFinalizada);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<VelaFinalizada>(VelaFinalizada);
             }
@@ -157,7 +157,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<VelaFinalizada> ActualizarVelaFinalizada(VelaFinalizada vel)
+        public async Task<CustomApiResponse<VelaFinalizada>>  ActualizarVelaFinalizada(VelaFinalizada vel)
         {
             var response = new CustomApiResponse<VelaFinalizada>();
             try
@@ -173,7 +173,7 @@ namespace ApiVela.Repositories
                 if (vel.IDPedido != velaFin.IDPedido) velaFin.IDPedido = vel.IDPedido;
                 if (vel.IDPack != velaFin.IDPack) velaFin.IDPack = vel.IDPack;
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<VelaFinalizada>(velaFin);
             }
@@ -184,7 +184,7 @@ namespace ApiVela.Repositories
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarVelaFinalizada(Guid idVelaFinalizada)
+        public async Task<CustomApiResponse<bool>> EliminarVelaFinalizada(Guid idVelaFinalizada)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -200,7 +200,7 @@ namespace ApiVela.Repositories
                 else
                 {
                     context.Set<VelaFinalizada>().Remove(VelaFinalizada);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

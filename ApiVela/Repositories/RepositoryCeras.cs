@@ -19,7 +19,7 @@ namespace ApiVela.Repository
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<List<Cera>> GetCeras() 
+        public async Task<CustomApiResponse<List<Cera>>> GetCeras() 
         {
             var response = new CustomApiResponse<List<Cera>>();
             try
@@ -34,7 +34,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cera> BuscarCera(Guid idCera) 
+        public async Task<CustomApiResponse<Cera>> BuscarCera(Guid idCera) 
         {
             var response = new CustomApiResponse<Cera>();
             try
@@ -50,7 +50,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cera> InsertarCera(Cera cer) 
+        public async Task<CustomApiResponse<Cera>>  InsertarCera(Cera cer) 
         {
             var response = new CustomApiResponse<Cera>();
             try
@@ -59,7 +59,7 @@ namespace ApiVela.Repository
                 cera.IDCera = Guid.NewGuid();
 
                 context.Cera.Add(cera);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Cera>(cera);
             }
@@ -70,7 +70,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<Cera> ActualizarCera(Cera cer) 
+        public async Task<CustomApiResponse<Cera>>  ActualizarCera(Cera cer) 
         {
             var response = new CustomApiResponse<Cera>();
             try
@@ -90,7 +90,7 @@ namespace ApiVela.Repository
                 if (cer.Coste != ceraExistente.Coste) ceraExistente.Coste = cer.Coste;
                 if (cer.Cantidad != ceraExistente.Cantidad) ceraExistente.Cantidad = cer.Cantidad;
 
-                context.SaveChanges();
+                                await context.SaveChangesAsync();
 
                 response.Object = mapper.Map<Cera>(ceraExistente);
             }
@@ -101,7 +101,7 @@ namespace ApiVela.Repository
             return response;
         }
 
-        public CustomApiResponse<bool> EliminarCera(Guid idCera)
+        public async Task<CustomApiResponse<bool>> EliminarCera(Guid idCera)
         {
             var response = new CustomApiResponse<bool>();
 
@@ -117,7 +117,7 @@ namespace ApiVela.Repository
                 else
                 {
                     context.Set<Cera>().Remove(cera);
-                    context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     response.Object = true;
 
                 }

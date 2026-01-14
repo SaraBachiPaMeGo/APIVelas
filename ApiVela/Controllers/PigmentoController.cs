@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
+using System.Threading.Tasks;
+
 using ApiVela.Repository;
 
 namespace ApiVela.Controllers
@@ -20,9 +22,9 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetPigmentos")]
 
-        public IActionResult GetPigmentos()
+        public async Task<IActionResult> GetPigmentos()
         {
-            var resultado = repo.GetPigmentos();  // Debe devolver CustomApiResponse<List<Pigmento>>
+            var resultado = await repo.GetPigmentos();  // Debe devolver CustomApiResponse<List<Pigmento>>
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -32,9 +34,9 @@ namespace ApiVela.Controllers
         // GET: api/Pigmento/BuscarPigmento/{idPigmento}
         [HttpGet]
         [Route("[action]/{idPigmento}")]
-        public IActionResult BuscarPigmento(Guid idPigmento)
+        public async Task<IActionResult> BuscarPigmento(Guid idPigmento)
         {
-            var resultado = repo.BuscarPigmento<Pigmento>(idPigmento);
+            var resultado = await repo.BuscarPigmento(idPigmento);
             if (resultado.Error != null)
                 return NotFound(resultado.Error.Mensaje);
 
@@ -45,9 +47,9 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarPigmento")]
 
-        public IActionResult InsertarPigmento( Pigmento pigmento)
+        public async Task<IActionResult> InsertarPigmento( Pigmento pigmento)
         {
-            var resultado = repo.InsertarPigmento<Pigmento>(pigmento);
+            var resultado = await repo.InsertarPigmento(pigmento);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -58,12 +60,12 @@ namespace ApiVela.Controllers
         [HttpPut]
         [Route("ActualizarPigmento/{id}")]
 
-        public IActionResult ActualizarPigmento(Guid id,  Pigmento pigmento)
+        public async Task<IActionResult> ActualizarPigmento(Guid id,  Pigmento pigmento)
         {
             if (id != pigmento.IDPig)
                 return BadRequest("El ID del pigmento no coincide con el parámetro.");
 
-            var resultado = repo.ActualizarPigmento<Pigmento>(pigmento);
+            var resultado = await repo.ActualizarPigmento(pigmento);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -72,9 +74,9 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Pigmento/{id}
         [HttpDelete("Eliminar/{id}")]
-        public IActionResult Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id)
         {
-            var eliminado = repo.EliminarPig(id);
+            var eliminado = await repo.EliminarPig(id);
 
             if (!eliminado.Object)
             {

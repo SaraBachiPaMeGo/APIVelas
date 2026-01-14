@@ -18,86 +18,86 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public CustomApiResponse<VelaFragancia> BuscarVelaFragancia(Guid idVela)
-        {
-            var response = new CustomApiResponse<VelaFragancia>();
-            try
-            {
-                var vela = context.VelaFragancia.SingleOrDefault(x => x.IDVela == idVela);
-                if (vela == null) throw new Exception("VelaFragancia no encontrada");
-                response.Object = mapper.Map<VelaFragancia>(vela);
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorViewModel { Mensaje = ex.Message };
-            }
-            return response;
-        }
+    //    public async Task<CustomApiResponse<VelaFragancia> BuscarVelaFragancia(Guid idVela)
+    //    {
+    //        var response = new CustomApiResponse<VelaFragancia>();
+    //        try
+    //        {
+    //            var vela = context.VelaFragancia.SingleOrDefault(x => x.IDVela == idVela);
+    //            if (vela == null) throw new Exception("VelaFragancia no encontrada");
+    //            response.Object = mapper.Map<VelaFragancia>(vela);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            response.Error = new ErrorViewModel { Mensaje = ex.Message };
+    //        }
+    //        return response;
+    //    }
 
-        // ---------------------------- INSERTAR RELACIÓN ----------------------------
-        public CustomApiResponse<VelaFragancia> InsertarVelaFragancia(Guid idVela, Guid idFrag) 
-        {
-            var response = new CustomApiResponse<VelaFragancia>();
+    //    // ---------------------------- INSERTAR RELACIÓN ----------------------------
+    //    public async Task<CustomApiResponse<VelaFragancia> InsertarVelaFragancia(Guid idVela, Guid idFrag) 
+    //    {
+    //        var response = new CustomApiResponse<VelaFragancia>();
 
-            try
-            {
-                var vf = new VelaFragancia { IDVela = idVela, IDFrag = idFrag };
-                context.VelaFragancia.Add(vf);
-                context.SaveChanges();
+    //        try
+    //        {
+    //            var vf = new VelaFragancia { IDVela = idVela, IDFrag = idFrag };
+    //            context.VelaFragancia.Add(vf);
+    //            await context.SaveChangesAsync();
 
-                // Mapear el objeto agregado, si quieres devolver la entidad de unión
-                response.Object = mapper.Map<VelaFragancia>(vf);
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorViewModel { Mensaje = ex.Message };
-            }
+    //            // Mapear el objeto agregado, si quieres devolver la entidad de unión
+    //            response.Object = mapper.Map<VelaFragancia>(vf);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            response.Error = new ErrorViewModel { Mensaje = ex.Message };
+    //        }
 
-            return response;
-        }
+    //        return response;
+    //    }
 
-        // ---------------------------- ELIMINAR RELACIONES EXISTENTES ----------------------------
-        public CustomApiResponse<bool> EliminarRelacionesFragancias(Guid idVela)
-        {
-            var response = new CustomApiResponse<bool>();
+    //    // ---------------------------- ELIMINAR RELACIONES EXISTENTES ----------------------------
+    //    public async Task<CustomApiResponse<bool>> EliminarRelacionesFragancias(Guid idVela)
+    //    {
+    //        var response = new CustomApiResponse<bool>();
 
-            try
-            {
-                var rels = context.VelaFragancia.Where(vf => vf.IDVela == idVela).ToList();
-                context.VelaFragancia.RemoveRange(rels);
-                context.SaveChanges();
+    //        try
+    //        {
+    //            var rels = context.VelaFragancia.Where(vf => vf.IDVela == idVela).ToList();
+    //            context.VelaFragancia.RemoveRange(rels);
+    //            await context.SaveChangesAsync();
 
-                response.Object = true;
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorViewModel { Mensaje = ex.Message };
-                response.Object = false;
-            }
+    //            response.Object = true;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            response.Error = new ErrorViewModel { Mensaje = ex.Message };
+    //            response.Object = false;
+    //        }
 
-            return response;
-        }
+    //        return response;
+    //    }
 
-        // ---------------------------- OBTENER FRAGANCIAS POR VELA ----------------------------
-        public CustomApiResponse<List<Fragancia>> GetFraganciasPorVela(Guid idVela)
-        {
-            var response = new CustomApiResponse<List<Fragancia>>();
+    //    // ---------------------------- OBTENER FRAGANCIAS POR VELA ----------------------------
+    //    public async Task<CustomApiResponse<List<Fragancia>> GetFraganciasPorVela(Guid idVela)
+    //    {
+    //        var response = new CustomApiResponse<List<Fragancia>>();
 
-            try
-            {
-                var fragancias = context.VelaFragancia
-                    .Where(vf => vf.IDVela == idVela)
-                    .Select(vf => vf.Fragancia)
-                    .ToList();
+    //        try
+    //        {
+    //            var fragancias = context.VelaFragancia
+    //                .Where(vf => vf.IDVela == idVela)
+    //                .Select(vf => vf.Fragancia)
+    //                .ToList();
 
-                response.Object = mapper.Map<List<Fragancia>>(fragancias);
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorViewModel { Mensaje = ex.Message };
-            }
+    //            response.Object = mapper.Map<List<Fragancia>>(fragancias);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            response.Error = new ErrorViewModel { Mensaje = ex.Message };
+    //        }
 
-            return response;
-        }
+    //        return response;
+    //    }
     }
 }
