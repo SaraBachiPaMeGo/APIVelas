@@ -55,6 +55,9 @@ namespace ApiVela.Models
         [Column("Cantidad")]
         public int? Cantidad { get; set; }
 
+        [Column("Image")]
+
+        public string Image { get; set; }
 
     }
 }

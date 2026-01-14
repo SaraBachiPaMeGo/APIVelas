@@ -45,7 +45,7 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarMolde")]
 
-        public IActionResult InsertarMolde( Molde molde)
+        public IActionResult InsertarMolde(Molde molde)
         {
             var resultado = repo.InsertarMolde(molde);
             if (resultado.Error != null)
@@ -57,7 +57,7 @@ namespace ApiVela.Controllers
         // PUT: api/Molde/{id}
         [HttpPut("ActualizarMolde/{id}")]
 
-        public IActionResult ActualizarMolde(Guid id,  Molde molde)
+        public IActionResult ActualizarMolde(Guid id, Molde molde)
         {
             if (id != molde.IDMolde)
                 return BadRequest("El ID del molde no coincide con el parámetro.");
@@ -88,5 +88,34 @@ namespace ApiVela.Controllers
                 mensaje = "Registro eliminado correctamente"
             });
         }
+
+        //[HttpPost("upload")]
+        //public async Task<IActionResult> Upload([FromForm] IFormFile file, [FromForm] string nombre, [FromForm] string? descripcion)
+        //{
+        //    if (file == null || file.Length == 0)
+        //        return BadRequest("No se ha enviado ninguna imagen.");
+
+        //    // Validación básica de extensión
+        //    var ext = Path.GetExtension(file.FileName).ToLower();
+        //    var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+        //    if (!allowed.Contains(ext))
+        //        return BadRequest("Tipo de archivo no permitido.");
+
+        //    // Carpeta donde se guardan las imágenes
+        //    var uploadsFolder = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
+        //    if (!Directory.Exists(uploadsFolder))
+        //        Directory.CreateDirectory(uploadsFolder);
+
+        //    // Nombre único para el archivo
+        //    var fileName = $"{Guid.NewGuid()}{ext}";
+        //    var filePath = Path.Combine(uploadsFolder, fileName);
+
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await file.CopyToAsync(stream);
+        //    }
+
+        //    var relativePath = $"/uploads/{fileName}";
+        //}
     }
 }
