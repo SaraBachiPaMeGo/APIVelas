@@ -41,7 +41,8 @@ namespace ApiVela.Repository
                     MilAgua = mol.MilAgua,
                     Tipo = mol.Tipo,
                     Coste = mol.Coste,
-                    Image = mol.Image
+                    Image = mol.Image,
+                    ImagenContentType = mol.ImagenContentType
                 };
 
                 context.Molde.Add(molde);
@@ -167,5 +168,7 @@ namespace ApiVela.Repository
 
             return response;
         }
+
+
     }
 }

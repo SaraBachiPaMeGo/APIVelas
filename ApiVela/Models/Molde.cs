@@ -56,8 +56,10 @@ namespace ApiVela.Models
         public int? Cantidad { get; set; }
 
         [Column("Image")]
+        public byte[] Image { get; set; }          // 🔥 BYTES
 
-        public string Image { get; set; }
+        [Column("ImagenContentType")]
+        public string ImagenContentType { get; set; } // opcional (muy recomendable)
 
     }
 }

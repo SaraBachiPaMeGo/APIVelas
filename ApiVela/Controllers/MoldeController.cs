@@ -51,41 +51,36 @@ namespace ApiVela.Controllers
         // POST: api/Molde
         [HttpPost]
         [Route("InsertarMolde")]
-
-        public async Task<IActionResult> InsertarMolde(Molde molde, IFormFile file)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> InsertarMolde([FromForm]Molde molde, IFormFile file)
         {
-            var resultado = await repo.InsertarMolde(molde);
+            var resultado = new CustomApiResponse<Molde>();
 
-            if (file == null || file.Length == 0)
-                return BadRequest("No se ha enviado ninguna imagen.");
-
-            // Validación básica de extensión
-            var ext = Path.GetExtension(file.FileName).ToLower();
-
-            var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-
-            if (!allowed.Contains(ext))
+            if (file != null && file.Length != 0)
             {
-                resultado.Error.Mensaje = "Tipo de archivo no permitido.";
-                return BadRequest();
+                // Validación básica de extensión
+                var ext = Path.GetExtension(file.FileName).ToLower();
 
-            }
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
 
-            // Carpeta donde se guardan las imágenes
-            var uploadsFolder = Path.Combine(_env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"), "uploads");
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
+                if (!allowed.Contains(ext))
+                {
+                    resultado.Error.Mensaje = "Tipo de archivo no permitido.";
+                    return BadRequest();
+                }
 
-            // Nombre único para el archivo
-            var fileName = $"{Guid.NewGuid()}{ext}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
+                // 🔹 Convertir a bytes (FORMA EFICIENTE)
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
 
-            var relativePath = $"/uploads/{fileName}";
+                molde.Image = ms.ToArray();
+                molde.ImagenContentType = file.ContentType;
+            }            
+
+            resultado = await repo.InsertarMolde(molde);
+
+
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
