@@ -89,13 +89,38 @@ namespace ApiVela.Controllers
 
         // PUT: api/Molde/{id}
         [HttpPut("ActualizarMolde/{id}")]
-
-        public async Task<IActionResult> ActualizarMolde(Guid id, Molde molde)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> ActualizarMolde(Guid id, [FromForm] Molde molde, IFormFile file)
         {
-            if (id != molde.IDMolde)
-                return BadRequest("El ID del molde no coincide con el parámetro.");
+            var resultado = new CustomApiResponse<Molde>();
 
-            var resultado = await repo.ActualizarMolde(molde);
+            if (file != null && file.Length != 0)
+            {
+                // Validación básica de extensión
+                var ext = Path.GetExtension(file.FileName).ToLower();
+
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+                if (!allowed.Contains(ext))
+                {
+                    resultado.Error.Mensaje = "Tipo de archivo no permitido.";
+                    return BadRequest();
+                }
+
+                // 🔹 Convertir a bytes (FORMA EFICIENTE)
+
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
+
+                molde.Image = ms.ToArray();
+                molde.ImagenContentType = file.ContentType;
+            }
+
+            if (id != molde.IDMolde)
+                return BadRequest("El ID del molde no coincide con el parámetro id.");
+
+            resultado = await repo.ActualizarMolde(molde);
+
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 

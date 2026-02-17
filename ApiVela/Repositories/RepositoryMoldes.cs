@@ -85,6 +85,8 @@ namespace ApiVela.Repository
                 existing.Observ = mol.Observ ?? existing.Observ;
                 existing.MilAgua = mol.MilAgua != default ? mol.MilAgua : existing.MilAgua;
                 existing.Coste = mol.Coste;
+                existing.Image = mol.Image;
+                existing.ImagenContentType = mol.ImagenContentType;
 
                 await context.SaveChangesAsync();
 
