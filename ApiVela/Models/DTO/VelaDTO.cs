@@ -9,6 +9,7 @@ namespace ApiVela.Models.DTO
     {
         public Guid IDVela { get; set; }
 
+
         public string VelaNombre { get; set; }
 
         public string Image { get; set; }
@@ -23,10 +24,10 @@ namespace ApiVela.Models.DTO
 
         public decimal? CantidadEnd { get; set; }
 
-        public ICollection<Documento>? Documentos { get; set; }
+        //public List<Documento>? Documentos { get; set; }
 
-        public List<VelaPigmentoDTO> Pigmentos { get; set; }
+        public List<VelaPigmentoDTO> VelaPigmentos { get; set; }
 
-        public List<VelaFraganciaDTO> Fragancias { get; set; }
+        public List<VelaFraganciaDTO> VelaFragancias { get; set; }
     }
 }

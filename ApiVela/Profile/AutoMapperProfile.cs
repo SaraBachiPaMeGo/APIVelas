@@ -58,6 +58,15 @@ namespace ApiVela.Profile
             CreateMap<VelaDTO, CustomApiResponse<VelaDTO>>();
             CreateMap<List<VelaDTO>, CustomApiResponse<List<VelaDTO>>>();
 
+            CreateMap<Vela, VelaDTO>();
+            CreateMap<VelaDTO, Vela>();
+
+            CreateMap<VelaPigmento, VelaPigmentoDTO>();
+            CreateMap<VelaPigmentoDTO, VelaPigmento>();
+
+            CreateMap<VelaFragancia, VelaFraganciaDTO>();
+            CreateMap<VelaFraganciaDTO, VelaFragancia>();
+
             // 🕯️ Vela Fin
             CreateMap<VelaFinalizada, CustomApiResponse<VelaFinalizada>>();
             CreateMap<List<VelaFinalizada>, CustomApiResponse<List<VelaFinalizada>>>();
@@ -74,11 +83,7 @@ namespace ApiVela.Profile
             CreateMap<List<Inventario>, CustomApiResponse<List<Inventario>>>();
 
             // Puedes añadir más mapeos según tus modelos y DTOs
+
         }
     }
-    //var pedido = context.Pedido
-    //.Include(p => p.Cliente)
-    //.Include(p => p.Velas)
-    //.FirstOrDefault(p => p.IDPedido == id);
-
 }

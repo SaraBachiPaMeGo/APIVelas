@@ -16,8 +16,8 @@ namespace ApiVela.Models
         [Column("IDVela")]
         public Guid IDVela { get; set; }
 
-        [Column("IDVelaFin")]
-        public Guid IDVelaFin { get; set; }
+        //[Column("IDVelaFin")]
+        //public Guid IDVelaFin { get; set; }
 
         [Column("VelaNombre")]
         public string VelaNombre { get; set; }
@@ -61,7 +61,7 @@ namespace ApiVela.Models
         [Column("IDCera")]
         public Guid IDCera { get; set; }
 
-       [Column("CantidadCera")]
+        [Column("CantidadCera")]
         public decimal? CantidadCera { get; set; }
 
         [Column("CantidadMecha")]
@@ -76,8 +76,8 @@ namespace ApiVela.Models
         [Column("CantidadEnd")]
         public decimal? CantidadEnd { get; set; }
 
-        [ForeignKey(nameof(IDVelaFin))]
-        public virtual VelaFinalizada? VelaFinalizada { get; set; }
+        //[ForeignKey(nameof(IDVelaFin))]
+        //public virtual VelaFinalizada? VelaFinalizada { get; set; }
 
       
 

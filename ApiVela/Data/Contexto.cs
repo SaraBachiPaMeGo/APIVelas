@@ -72,12 +72,12 @@ namespace ApiVela.Data
             //    .WithMany(p => p.VelaPigmentos) // si tienes la colección en Pigmento
             //    .HasForeignKey(vp => vp.IDPig);
 
-            // VelaFinalizada -> Velas (1 - N)
-            modelBuilder.Entity<VelaFinalizada>()
-                .HasMany(vf => vf.Velas)
-                .WithOne(v => v.VelaFinalizada)
-                .HasForeignKey(v => v.IDVelaFin)
-                .OnDelete(DeleteBehavior.SetNull); // o Cascade según tu lógica
+            //// VelaFinalizada -> Velas (1 - N)
+            //modelBuilder.Entity<VelaFinalizada>()
+            //    .HasMany(vf => vf.Velas)
+            //    .WithOne(v => v.VelaFinalizada)
+            //    .HasForeignKey(v => v.IDVelaFin)
+            //    .OnDelete(DeleteBehavior.SetNull); // o Cascade según tu lógica
 
             // VelaFinalizada -> Packs (1 - N)
             //modelBuilder.Entity<VelaFinalizada>()

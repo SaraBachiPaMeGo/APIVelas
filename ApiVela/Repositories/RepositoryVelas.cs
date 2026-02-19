@@ -6,6 +6,8 @@ using ApiVela.Data;
 using ApiVela.Models;
 using ApiVela.Models.DTO;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiVela.Repository
 {
@@ -54,7 +56,7 @@ namespace ApiVela.Repository
                         CantidadMecha = v.CantidadMecha,
                         CantidadEnd = v.CantidadEnd,
 
-                        Pigmentos = v.VelaPigmentos
+                        VelaPigmentos = v.VelaPigmentos
                             .Select(vp => new VelaPigmentoDTO
                             {
                                 IDPig = vp.IDPig,
@@ -63,7 +65,7 @@ namespace ApiVela.Repository
                                 Coste = vp.Coste
                             }).ToList(),
 
-                        Fragancias = v.VelaFragancias
+                        VelaFragancias = v.VelaFragancias
                             .Select(vf => new VelaFraganciaDTO
                             {
                                 IDFrag = vf.IDFrag,
@@ -90,7 +92,11 @@ namespace ApiVela.Repository
             var response = new CustomApiResponse<VelaDTO>();
             try
             {
-                var vela = context.Vela.SingleOrDefault(x => x.IDVela == idVela);
+                var vela = await context.Vela
+                .Where(x => x.IDVela == idVela)
+                .ProjectTo<VelaDTO>(mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+
                 if (vela == null) throw new Exception("Vela no encontrada");
                 response.Object = mapper.Map<VelaDTO>(vela);
             }
@@ -139,7 +145,7 @@ namespace ApiVela.Repository
 
                 // Actualizar pigmentos
                 var pigmentosActuales = context.VelaPigmento.Where(vp => vp.IDVela == vela.IDVela).ToList();
-                var pigmentos = vela.VelaPigmentos ?? new List<VelaPigmento>();
+                var pigmentos = vel.VelaPigmentos ?? new List<VelaPigmento>();
 
                 // Eliminar pigmentos removidos
                 var pigmentosAEliminar = pigmentosActuales
@@ -165,7 +171,7 @@ namespace ApiVela.Repository
 
                 // Actualizar fragancias
                 var fraganciasActuales = context.VelaFragancia.Where(vf => vf.IDVela == vela.IDVela).ToList();
-                var fragancias = vela.VelaFragancias ?? new List<VelaFragancia>();
+                var fragancias = vel.VelaFragancias ?? new List<VelaFragancia>();
 
                 var fraganciasAEliminar = fraganciasActuales
                     .Where(f => !fragancias.Any(fd => fd.IDFrag == f.IDFrag)).ToList();
@@ -189,6 +195,12 @@ namespace ApiVela.Repository
 
                 await context.SaveChangesAsync();
 
+                vela = await context.Vela
+                .Include(v => v.VelaPigmentos)
+                .Include(v => v.VelaFragancias)
+                .FirstOrDefaultAsync(v => v.IDVela == vel.IDVela);
+
+
                 response.Object = mapper.Map<VelaDTO>(vela);
             }
             catch (Exception ex)
@@ -204,16 +216,19 @@ namespace ApiVela.Repository
 
             try
             {
-                var Vela = context.Vela.SingleOrDefault(x => x.IDVela == idVela);
+                var vela = await context.Vela
+                    .Include(v => v.VelaPigmentos)
+                    .Include(v => v.VelaFragancias)
+                    .FirstOrDefaultAsync(v => v.IDVela == idVela);
 
-                if (Vela == null)
+                if (vela == null)
                 {
                     response.Error = new ErrorViewModel { Mensaje = "Vela no encontrado" };
                     response.Object = false;
                 }
                 else
                 {
-                    context.Set<Vela>().Remove(Vela);
+                    context.Set<Vela>().Remove(vela);
                     await context.SaveChangesAsync();
                     response.Object = true;
 
