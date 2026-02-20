@@ -15,11 +15,13 @@ namespace ApiVela.Repository
     {
         private readonly Contexto context;
         private readonly IMapper mapper;
+        private readonly RepositoryCeras _repocera;
 
-        public RepositoryVelas(Contexto context, IMapper mapper)
+        public RepositoryVelas(Contexto context, IMapper mapper, RepositoryCeras repocera)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this._repocera = repocera ?? throw new ArgumentNullException(nameof(_repocera));
         }
 
         public async Task<CustomApiResponse<List<VelaDTO>>> GetVelas1()
@@ -51,7 +53,7 @@ namespace ApiVela.Repository
                         Image = v.Image,
                         FechaReal = v.FechaReal,
                         Coste = v.Coste,
-
+                        NombreCera = "_repocera.BuscarCera(v.IDCera).Result.Object.Firma",
                         CantidadCera = v.CantidadCera,
                         CantidadMecha = v.CantidadMecha,
                         CantidadEnd = v.CantidadEnd,
@@ -86,7 +88,6 @@ namespace ApiVela.Repository
             return response;
         }
 
-
         public async Task<CustomApiResponse<VelaDTO>> BuscarVela(Guid idVela)
         {
             var response = new CustomApiResponse<VelaDTO>();
@@ -115,7 +116,7 @@ namespace ApiVela.Repository
                 var vela = mapper.Map<Vela>(vel);
                 vela.IDVela = Guid.NewGuid();
                 vela.FechaReal = DateTime.Now;
-                                
+
                 // Asegurar FK en pigmentos y fragancias
                 if (vela.VelaPigmentos != null)
                     vela.VelaPigmentos.ForEach(vp => vp.IDVela = vela.IDVela);
@@ -138,77 +139,93 @@ namespace ApiVela.Repository
         public async Task<CustomApiResponse<VelaDTO>> ActualizarVela(Vela vel)
         {
             var response = new CustomApiResponse<VelaDTO>();
+
+            using var transaction = await context.Database.BeginTransactionAsync();
+
             try
             {
-                var vela = context.Vela.SingleOrDefault(v => v.IDVela == vel.IDVela);
-                if (vela == null) throw new Exception("La vela no existe");
+                var existing = await context.Vela
+                    .Include(v => v.VelaPigmentos)
+                    .Include(v => v.VelaFragancias)
+                    .FirstOrDefaultAsync(v => v.IDVela == vel.IDVela);
 
-                // Actualizar pigmentos
-                var pigmentosActuales = context.VelaPigmento.Where(vp => vp.IDVela == vela.IDVela).ToList();
-                var pigmentos = vel.VelaPigmentos ?? new List<VelaPigmento>();
+                if (existing == null)
+                    throw new Exception("La vela no existe");
 
-                // Eliminar pigmentos removidos
-                var pigmentosAEliminar = pigmentosActuales
-                    .Where(p => !pigmentos.Any(pd => pd.IDPig == p.IDPig)).ToList();
-                context.VelaPigmento.RemoveRange(pigmentosAEliminar);
+                // 🔹 Actualizar propiedades simples dinámicamente
+                context.Entry(existing).CurrentValues.SetValues(vel);
 
-                // Agregar o actualizar pigmentos
-                foreach (var pig in pigmentos)
-                {
-                    var existente = pigmentosActuales.FirstOrDefault(p => p.IDPig == pig.IDPig);
-                    if (existente != null)
+                // 🔥 ---------- PIGMENTOS ----------
+                ActualizarRelacion(
+                    existing.VelaPigmentos,
+                    vel.VelaPigmentos,
+                    p => p.IDPig,
+                    (dest, src) =>
                     {
-                        existente.Cantidad = pig.Cantidad;
-                        existente.Coste = pig.Coste;
-                    }
-                    else
-                    {
-                        var nuevo = mapper.Map<VelaPigmento>(pig);
-                        nuevo.IDVela = vela.IDVela;
-                        context.VelaPigmento.Add(nuevo);
-                    }
-                }
+                        dest.Cantidad = src.Cantidad;
+                        dest.Coste = src.Coste;
+                    },
+                    (nuevo) => nuevo.IDVela = existing.IDVela
+                );
 
-                // Actualizar fragancias
-                var fraganciasActuales = context.VelaFragancia.Where(vf => vf.IDVela == vela.IDVela).ToList();
-                var fragancias = vel.VelaFragancias ?? new List<VelaFragancia>();
-
-                var fraganciasAEliminar = fraganciasActuales
-                    .Where(f => !fragancias.Any(fd => fd.IDFrag == f.IDFrag)).ToList();
-                context.VelaFragancia.RemoveRange(fraganciasAEliminar);
-
-                foreach (var frag in fragancias)
-                {
-                    var existente = fraganciasActuales.FirstOrDefault(f => f.IDFrag == frag.IDFrag);
-                    if (existente != null)
+                // 🔥 ---------- FRAGANCIAS ----------
+                ActualizarRelacion(
+                    existing.VelaFragancias,
+                    vel.VelaFragancias,
+                    f => f.IDFrag,
+                    (dest, src) =>
                     {
-                        existente.Cantidad = frag.Cantidad;
-                        existente.Coste = frag.Coste;
-                    }
-                    else
-                    {
-                        var nueva = mapper.Map<VelaFragancia>(frag);
-                        nueva.IDVela = vela.IDVela;
-                        context.VelaFragancia.Add(nueva);
-                    }
-                }
+                        dest.Cantidad = src.Cantidad;
+                        dest.Coste = src.Coste;
+                    },
+                    (nuevo) => nuevo.IDVela = existing.IDVela
+                );
 
                 await context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
-                vela = await context.Vela
-                .Include(v => v.VelaPigmentos)
-                .Include(v => v.VelaFragancias)
-                .FirstOrDefaultAsync(v => v.IDVela == vel.IDVela);
-
-
-                response.Object = mapper.Map<VelaDTO>(vela);
+                response.Object = mapper.Map<VelaDTO>(existing);
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 response.Error = new ErrorViewModel { Mensaje = ex.Message };
             }
+
             return response;
         }
+
+        private void ActualizarRelacion<T, TKey>(ICollection<T> actuales, ICollection<T> nuevas,
+        Func<T, TKey> keySelector, Action<T, T> actualizarCampos, Action<T> prepararNuevo) where T : class
+        {
+            nuevas ??= new List<T>();
+
+            // Eliminar los que ya no existen
+            var eliminar = actuales
+                .Where(a => !nuevas.Any(n => keySelector(n).Equals(keySelector(a))))
+                .ToList();
+
+            foreach (var item in eliminar)
+                actuales.Remove(item);
+
+            // Agregar o actualizar
+            foreach (var nuevo in nuevas)
+            {
+                var existente = actuales
+                    .FirstOrDefault(a => keySelector(a).Equals(keySelector(nuevo)));
+
+                if (existente != null)
+                {
+                    actualizarCampos(existente, nuevo);
+                }
+                else
+                {
+                    prepararNuevo(nuevo);
+                    actuales.Add(nuevo);
+                }
+            }
+        }
+
 
         public async Task<CustomApiResponse<bool>> EliminarVela(Guid idVela)
         {

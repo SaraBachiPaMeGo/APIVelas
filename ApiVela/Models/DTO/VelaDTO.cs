@@ -12,11 +12,11 @@ namespace ApiVela.Models.DTO
 
         public string VelaNombre { get; set; }
 
-        public string Image { get; set; }
-
         public DateTime FechaReal { get; set; }
 
         public decimal? Coste { get; set; }
+
+        public string NombreCera { get; set; }
 
         public decimal? CantidadCera { get; set; }
 
@@ -26,8 +26,13 @@ namespace ApiVela.Models.DTO
 
         //public List<Documento>? Documentos { get; set; }
 
+        public byte[] Image { get; set; }          // 🔥 BYTES
+
+        public string ImagenContentType { get; set; } // opcional (muy recomendable)
+
         public List<VelaPigmentoDTO> VelaPigmentos { get; set; }
 
         public List<VelaFraganciaDTO> VelaFragancias { get; set; }
+
     }
 }

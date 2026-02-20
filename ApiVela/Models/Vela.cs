@@ -22,9 +22,6 @@ namespace ApiVela.Models
         [Column("VelaNombre")]
         public string VelaNombre { get; set; }
 
-        [Column("Image")]
-        public string Image { get; set; }
-
         [Column("Observ")]
         public string Observ { get; set; }
 
@@ -79,8 +76,14 @@ namespace ApiVela.Models
         //[ForeignKey(nameof(IDVelaFin))]
         //public virtual VelaFinalizada? VelaFinalizada { get; set; }
 
-      
 
+        [Column("Image")]
+        public byte[] Image { get; set; }          // 🔥 BYTES
+
+        [Column("ImagenContentType")]
+        public string ImagenContentType { get; set; } // opcional (muy recomendable)
+
+        
         public List<VelaPigmento> VelaPigmentos { get; set; }
 
         public List<VelaFragancia> VelaFragancias { get; set; }

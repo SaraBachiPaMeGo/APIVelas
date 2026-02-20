@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using ApiVela.Models;
 using ApiVela.Repository;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Linq;
+using ApiVela.Models.DTO;
 
 namespace ApiVela.Controllers
 {
@@ -22,7 +25,7 @@ namespace ApiVela.Controllers
         [HttpGet]
         [Route("GetVelas")]
 
-        public async Task<IActionResult> GetVelas()
+        public async Task<IActionResult> GetVelas() // CustomApiResponse<List<VelaDTO>>
         {
             var resultado = await repo.GetVelas(); // CustomApiResponse<List<VelaDTO>>
             if (resultado.Error != null)
@@ -41,15 +44,40 @@ namespace ApiVela.Controllers
                 return NotFound(resultado.Error.Mensaje);
 
             return Ok(resultado.Object);
-        }
+        } // CustomApiResponse<VelaDTO>
 
         // POST: api/Vela
         [HttpPost]
         [Route("InsertarVela")]
-
-        public async Task<IActionResult> InsertarVela( Vela vela)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> InsertarVela([FromForm]Vela vela, IFormFile file) // CustomApiResponse<VelaDTO>
         {
-            var resultado = await repo.InsertarVela(vela);
+            var resultado = new CustomApiResponse<VelaDTO>();
+
+            if (file != null && file.Length != 0)
+            {
+                // Validación básica de extensión
+                var ext = Path.GetExtension(file.FileName).ToLower();
+
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+                if (!allowed.Contains(ext))
+                {
+                    resultado.Error.Mensaje = "Tipo de archivo no permitido.";
+                    return BadRequest();
+                }
+
+                // 🔹 Convertir a bytes (FORMA EFICIENTE)
+
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
+
+                vela.Image = ms.ToArray();
+                vela.ImagenContentType = file.ContentType;
+            }
+
+             resultado = await repo.InsertarVela(vela);
+
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -59,13 +87,36 @@ namespace ApiVela.Controllers
         // PUT: api/Vela/{id}
         [HttpPut]
         [Route("ActualizarVela/{id}")]
-
-        public async Task<IActionResult> ActualizarVela(Guid id,  Vela vela)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> ActualizarVela(Guid id, [FromForm]Vela vela, IFormFile file) // CustomApiResponse<VelaDTO>
         {
+            var resultado = new CustomApiResponse<Molde>();
+
+            if (file != null && file.Length != 0)
+            {
+                // Validación básica de extensión
+                var ext = Path.GetExtension(file.FileName).ToLower();
+
+                var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+                if (!allowed.Contains(ext))
+                {
+                    resultado.Error.Mensaje = "Tipo de archivo no permitido.";
+                    return BadRequest();
+                }
+
+                // 🔹 Convertir a bytes (FORMA EFICIENTE)
+
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
+
+                vela.Image = ms.ToArray();
+                vela.ImagenContentType = file.ContentType;
+            }
+
             if (id != vela.IDVela)
                 return BadRequest("El ID de la vela no coincide con el parámetro.");
 
-            var resultado = await repo.ActualizarVela(vela);
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
@@ -74,7 +125,7 @@ namespace ApiVela.Controllers
 
         // DELETE: api/Vela/{id}
         [HttpDelete("Eliminar/{id}")]
-        public async Task<IActionResult> Eliminar(Guid id)
+        public async Task<IActionResult> Eliminar(Guid id) // CustomApiResponse<bool>
         {
             var eliminado = await repo.EliminarVela(id);
 
