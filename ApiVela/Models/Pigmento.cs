@@ -36,9 +36,7 @@ namespace ApiVela.Models
 
         [Column("Coste")]
         public decimal?  Coste { get; set; }
-      
 
-
-      //  public List<VelaPigmento> VelaPigmentos { get; set; }
+        public List<VelaPigmento> VelaPigmento { get; set; }
     }
 }

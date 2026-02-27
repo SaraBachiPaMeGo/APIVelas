@@ -36,9 +36,9 @@ namespace ApiVela.Models
 
         [Column("Coste")]
         public decimal?  Coste { get; set; }
-      
 
-       //  public List<VelaFragancia> VelaFragancia { get; set; }
+
+        public List<VelaFragancia> VelaFragancia { get; set; }
 
     }
 }

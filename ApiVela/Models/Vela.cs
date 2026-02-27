@@ -40,14 +40,14 @@ namespace ApiVela.Models
         [Column("GradPig")]
         public decimal? GradPig { get; set; }
 
-        [Column("IDFrag")]
-        public Guid? IDFrag { get; set; }
+        //[Column("IDFrag")]
+        //public Guid? IDFrag { get; set; }
 
         [Column("IDMolde")]
         public Guid? IDMolde { get; set; }
 
-        [Column("IDPig")]
-        public Guid? IDPig { get; set; }
+        //[Column("IDPig")]
+        //public Guid? IDPig { get; set; }
         
         [Column("Coste")]
         public decimal? Coste { get; set; }

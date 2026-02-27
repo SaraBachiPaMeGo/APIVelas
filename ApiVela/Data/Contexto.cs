@@ -46,26 +46,40 @@ namespace ApiVela.Data
                 .HasForeignKey(v => v.IDPedido)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<VelaFragancia>()
-                .HasKey(vf => new { vf.IDVela, vf.IDFrag });
+            // ================= VELA PIGMENTO =================
 
             modelBuilder.Entity<VelaPigmento>()
                 .HasKey(vp => new { vp.IDVela, vp.IDPig });
 
-                        
-            //// VelaFinalizada -> Velas (1 - N)
-            //modelBuilder.Entity<VelaFinalizada>()
-            //    .HasMany(vf => vf.Velas)
-            //    .WithOne(v => v.VelaFinalizada)
-            //    .HasForeignKey(v => v.IDVelaFin)
-            //    .OnDelete(DeleteBehavior.SetNull); // o Cascade según tu lógica
+            modelBuilder.Entity<VelaPigmento>()
+                .HasOne(vp => vp.Vela)
+                .WithMany(v => v.VelaPigmentos)
+                .HasForeignKey(vp => vp.IDVela)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // VelaFinalizada -> Packs (1 - N)
-            //modelBuilder.Entity<VelaFinalizada>()
-            //    .HasMany(vf => vf.Packs)
-            //    .WithOne(p => p.VelaFinalizada)
-            //    .HasForeignKey(p => p.IDVelaFin)
-            //    .OnDelete(DeleteBehavior.SetNull); // o Cascade
+            modelBuilder.Entity<VelaPigmento>()
+                .HasOne(vp => vp.Pigmento)
+                .WithMany(p => p.VelaPigmento)
+                .HasForeignKey(vp => vp.IDPig)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            // ================= VELA FRAGANCIA =================
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasKey(vf => new { vf.IDVela, vf.IDFrag });
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasOne(vf => vf.Vela)
+                .WithMany(v => v.VelaFragancias)
+                .HasForeignKey(vf => vf.IDVela)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<VelaFragancia>()
+                .HasOne(vf => vf.Fragancia)
+                .WithMany(f => f.VelaFragancia)
+                .HasForeignKey(vf => vf.IDFrag)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
