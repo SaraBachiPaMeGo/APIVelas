@@ -35,7 +35,7 @@ namespace ApiVela.Controllers
         // GET: api/BuscarVelaFragancia/GetFraganciasPorVela/{idVela}
         [HttpGet]
         [Route("[action]/{idVela}")]
-        public async Task<IActionResult> BuscarVelaFraganciasPorVela(Guid idVela)
+        public async Task<IActionResult> BuscarVelaFragancia(Guid idVela)
         {
             var resultado = await repo.BuscarVelaFragancia(idVela); // CustomApiResponse<List<Fragancia>>
             if (resultado.Error != null)

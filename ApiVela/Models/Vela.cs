@@ -16,9 +16,6 @@ namespace ApiVela.Models
         [Column("IDVela")]
         public Guid IDVela { get; set; }
 
-        //[Column("IDVelaFin")]
-        //public Guid IDVelaFin { get; set; }
-
         [Column("VelaNombre")]
         public string VelaNombre { get; set; }
 
@@ -31,29 +28,11 @@ namespace ApiVela.Models
         [Column("FechaReal")]
         public DateTime FechaReal { get; set; }
 
-        [Column("GradFrag")]
-        public decimal? GradFrag { get; set; }
-
-        [Column("GradEnd")]
-        public decimal? GradEnd { get; set; }
-
-        [Column("GradPig")]
-        public decimal? GradPig { get; set; }
-
-        //[Column("IDFrag")]
-        //public Guid? IDFrag { get; set; }
-
         [Column("IDMolde")]
         public Guid? IDMolde { get; set; }
-
-        //[Column("IDPig")]
-        //public Guid? IDPig { get; set; }
-        
+                
         [Column("Coste")]
         public decimal? Coste { get; set; }
-
-        [Column("IDMecha")]
-        public Guid IDMecha { get; set; }
 
         [Column("IDCera")]
         public Guid IDCera { get; set; }
@@ -61,21 +40,8 @@ namespace ApiVela.Models
         [Column("CantidadCera")]
         public decimal? CantidadCera { get; set; }
 
-        [Column("CantidadMecha")]
-        public decimal? CantidadMecha { get; set; }
-
-        [Column("CantidadFrag")]
-        public decimal? CantidadFrag { get; set; }
-
-        [Column("CantidadPig")]
-        public decimal? CantidadPig { get; set; }
-
         [Column("CantidadEnd")]
         public decimal? CantidadEnd { get; set; }
-
-        //[ForeignKey(nameof(IDVelaFin))]
-        //public virtual VelaFinalizada? VelaFinalizada { get; set; }
-
 
         [Column("Image")]
         public byte[] Image { get; set; }          // 🔥 BYTES

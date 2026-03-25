@@ -22,19 +22,20 @@ namespace ApiVela.Repositories
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<CustomApiResponse<VelaFragancia>> BuscarVelaFragancia(Guid idVela)
+        public async Task<CustomApiResponse<VelaFragancia>> BuscarVelaFragancia(Guid idFrag)
         {
             var response = new CustomApiResponse<VelaFragancia>();
 
             try
             {
-                var vela = await context.VelaFragancia
-                    .FirstOrDefaultAsync(x => x.IDVela == idVela);
+                var frag = await context.Fragancia
+                    .FirstOrDefaultAsync(x => x.IDFrag == idFrag);
 
-                if (vela == null)
+                if (frag == null)
                     throw new Exception("VelaFragancia no encontrada");
 
-                response.Object = vela;
+                response.Object = mapper.Map<VelaFragancia>(frag);
+                
             }
             catch (Exception ex)
             {

@@ -64,7 +64,6 @@ namespace ApiVela.Repositories
                             FechaReal = v.FechaReal,
                             Coste = v.Coste,
                             CantidadCera = v.CantidadCera,
-                            CantidadMecha = v.CantidadMecha,
                             CantidadEnd = v.CantidadEnd,
                     // NO incluyas Documentos binarios enteros si no los necesitas aquí
                 }).ToList(),

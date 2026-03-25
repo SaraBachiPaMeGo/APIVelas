@@ -50,7 +50,7 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarVela")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> InsertarVela([FromForm]Vela vela, IFormFile file) // CustomApiResponse<VelaDTO>
+        public async Task<IActionResult> InsertarVela([FromForm]Vela vela, IFormFile file) // CustomApiResponse<Vela>
         {
             var resultado = new CustomApiResponse<VelaDTO>();
 
@@ -81,7 +81,7 @@ namespace ApiVela.Controllers
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
 
-            return CreatedAtAction(nameof(BuscarVela), new { idVela = resultado.Object.IDVela }, resultado.Object);
+            return Ok(resultado.Object);
         }
 
         // PUT: api/Vela/{id}

@@ -55,7 +55,6 @@ namespace ApiVela.Repository
                         Coste = v.Coste,
                         NombreCera = "_repocera.BuscarCera(v.IDCera).Result.Object.Firma",
                         CantidadCera = v.CantidadCera,
-                        CantidadMecha = v.CantidadMecha,
                         CantidadEnd = v.CantidadEnd,
 
                         VelaPigmentos = v.VelaPigmentos
@@ -113,21 +112,34 @@ namespace ApiVela.Repository
             var response = new CustomApiResponse<VelaDTO>();
             try
             {
-                var vela = mapper.Map<Vela>(vel);
-                vela.IDVela = Guid.NewGuid();
-                vela.FechaReal = DateTime.Now;
+                vel.IDVela = Guid.NewGuid();
+                vel.FechaReal = DateTime.Now;
 
-                // Asegurar FK en pigmentos y fragancias
-                if (vela.VelaPigmentos != null)
-                    vela.VelaPigmentos.ForEach(vp => vp.IDVela = vela.IDVela);
+                if (vel.VelaFragancias != null)
+                {
+                    foreach (var vf in vel.VelaFragancias)
+                    {
+                        vf.IDVela = vel.IDVela;
 
-                if (vela.VelaFragancias != null)
-                    vela.VelaFragancias.ForEach(vf => vf.IDVela = vela.IDVela);
 
-                context.Vela.Add(vela);
+                        // ✔ Solo asigna la FK
+                        vf.Fragancia = null;
+                    }
+                }
+
+                if (vel.VelaPigmentos != null)
+                {
+                    foreach (var vp in vel.VelaPigmentos)
+                    {
+                        vp.IDVela = vel.IDVela;
+                        vp.Pigmento = null;
+                    }
+                }
+
+                context.Vela.Add(vel);
                 await context.SaveChangesAsync();
 
-                response.Object = mapper.Map<VelaDTO>(vela);
+                response.Object = mapper.Map<VelaDTO>(vel);
             }
             catch (Exception ex)
             {
