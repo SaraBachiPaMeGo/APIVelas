@@ -83,6 +83,11 @@ namespace ApiVela.Profile
             CreateMap<List<Inventario>, CustomApiResponse<List<Inventario>>>();
 
             // Puedes añadir más mapeos según tus modelos y DTOs
+            CreateMap<Vela, VelaDTO>()
+            .ForMember(
+                dest => dest.NombreCera,
+                opt => opt.MapFrom(src => src.Cera.Firma)
+            );
 
         }
     }
