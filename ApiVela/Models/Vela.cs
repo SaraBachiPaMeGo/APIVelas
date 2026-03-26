@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiVela.Models
 {
@@ -49,9 +50,12 @@ namespace ApiVela.Models
         [Column("ImagenContentType")]
         public string ImagenContentType { get; set; } // opcional (muy recomendable)
 
-        
+        [NotMapped]
+        [JsonIgnore]
         public List<VelaPigmento> VelaPigmentos { get; set; }
 
+        [NotMapped]
+        [JsonIgnore]
         public List<VelaFragancia> VelaFragancias { get; set; }
     }
 }

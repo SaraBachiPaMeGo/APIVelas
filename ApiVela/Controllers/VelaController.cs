@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Linq;
 using ApiVela.Models.DTO;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ApiVela.Controllers
 {
@@ -50,7 +52,11 @@ namespace ApiVela.Controllers
         [HttpPost]
         [Route("InsertarVela")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> InsertarVela([FromForm]Vela vela, IFormFile file) // CustomApiResponse<Vela>
+        public async Task<IActionResult> InsertarVela(
+            [FromForm]Vela vela, 
+            [FromForm] string vf,
+            [FromForm] string vp,
+            [FromForm] IFormFile file) // CustomApiResponse<Vela>
         {
             var resultado = new CustomApiResponse<VelaDTO>();
 
@@ -76,7 +82,25 @@ namespace ApiVela.Controllers
                 vela.ImagenContentType = file.ContentType;
             }
 
-             resultado = await repo.InsertarVela(vela);
+            if (!string.IsNullOrEmpty(vf))
+            {
+                vela.VelaFragancias = JsonConvert.DeserializeObject<List<VelaFragancia>>(vf);
+            }
+            else
+            {
+                vela.VelaFragancias = new List<VelaFragancia>();
+            }
+
+            if (!string.IsNullOrEmpty(vp))
+            {
+                vela.VelaPigmentos = JsonConvert.DeserializeObject<List<VelaPigmento>>(vp);
+            }
+            else
+            {
+                vela.VelaPigmentos = new List<VelaPigmento>();
+            }
+
+            resultado = await repo.InsertarVela(vela);
 
             if (resultado.Error != null)
                 return BadRequest(resultado.Error.Mensaje);
