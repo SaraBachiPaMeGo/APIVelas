@@ -86,7 +86,6 @@ namespace ApiVela.Repository
                 if (cer.Firma != ceraExistente.Firma) ceraExistente.Firma = cer.Firma;
                 if (cer.Tipo != ceraExistente.Tipo) ceraExistente.Tipo = cer.Tipo;
                 if (cer.CompradoEn != ceraExistente.CompradoEn) ceraExistente.CompradoEn = cer.CompradoEn;
-                if (cer.IDVela != ceraExistente.IDVela) ceraExistente.IDVela = cer.IDVela;
                 if (cer.Coste != ceraExistente.Coste) ceraExistente.Coste = cer.Coste;
                 if (cer.Cantidad != ceraExistente.Cantidad) ceraExistente.Cantidad = cer.Cantidad;
 

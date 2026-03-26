@@ -31,11 +31,6 @@ namespace ApiVela.Models
         [Column("Coste")]
         public  decimal? Coste { get; set; }
 
-        [Column("IDVela")]
-        public Guid? IDVela { get; set; }
-
-      
-
     }
 
 }

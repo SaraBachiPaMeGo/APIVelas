@@ -57,5 +57,8 @@ namespace ApiVela.Models
         [NotMapped]
         [JsonIgnore]
         public List<VelaFragancia> VelaFragancias { get; set; }
+
+        [ForeignKey("IDCera")]
+        public Cera Cera { get; set; }
     }
 }

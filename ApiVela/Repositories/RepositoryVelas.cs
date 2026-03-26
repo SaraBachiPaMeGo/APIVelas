@@ -46,6 +46,11 @@ namespace ApiVela.Repository
             try
             {
                 var velas = context.Vela
+                        .Include(v => v.Cera)
+                    .Include(v => v.VelaPigmentos)
+                        .ThenInclude(vp => vp.Pigmento)
+                    .Include(v => v.VelaFragancias)
+                        .ThenInclude(vf => vf.Fragancia)    
                     .Select(v => new VelaDTO
                     {
                         IDVela = v.IDVela,
@@ -53,31 +58,14 @@ namespace ApiVela.Repository
                         Image = v.Image,
                         FechaReal = v.FechaReal,
                         Coste = v.Coste,
-                        NombreCera = "_repocera.BuscarCera(v.IDCera).Result.Object.Firma",
+                        NombreCera = v.Cera.Firma,
                         CantidadCera = v.CantidadCera,
                         CantidadEnd = v.CantidadEnd,
 
-                        VelaPigmentos = v.VelaPigmentos
-                            .Select(vp => new VelaPigmentoDTO
-                            {
-                                IDPig = vp.IDPig,
-                                NombrePigmento = vp.Pigmento.ColorNombre, // 👈 NOMBRE
-                                Cantidad = vp.Cantidad,
-                                Coste = vp.Coste
-                            }).ToList(),
-
-                        VelaFragancias = v.VelaFragancias
-                            .Select(vf => new VelaFraganciaDTO
-                            {
-                                IDFrag = vf.IDFrag,
-                                NombreFragancia = vf.Fragancia.FragNombre, // 👈 NOMBRE
-                        Cantidad = vf.Cantidad,
-                                Coste = vf.Coste
-                            }).ToList()
                     })
-                    .ToList();
+                    .ToListAsync();
 
-                response.Object = velas;
+                response.Object = velas.Result;
             }
             catch (Exception ex)
             {
