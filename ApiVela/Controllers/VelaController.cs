@@ -114,7 +114,7 @@ namespace ApiVela.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> ActualizarVela(Guid id, [FromForm]Vela vela, IFormFile file) // CustomApiResponse<VelaDTO>
         {
-            var resultado = new CustomApiResponse<Molde>();
+            var resultado = new CustomApiResponse<VelaDTO>();
 
             if (file != null && file.Length != 0)
             {
@@ -137,6 +137,9 @@ namespace ApiVela.Controllers
                 vela.Image = ms.ToArray();
                 vela.ImagenContentType = file.ContentType;
             }
+
+            resultado = await repo.ActualizarVela(vela);
+
 
             if (id != vela.IDVela)
                 return BadRequest("El ID de la vela no coincide con el parámetro.");
