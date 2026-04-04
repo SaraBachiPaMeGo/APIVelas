@@ -40,7 +40,7 @@ namespace ApiVela
 
             String candena = Configuration.GetConnectionString("proyektVelas");
             services.AddDbContext<Contexto>(options => options.UseSqlServer(candena));
-            
+
             services.AddSwaggerGen(swagger =>
             {
                 swagger.SwaggerDoc(name: "v1",

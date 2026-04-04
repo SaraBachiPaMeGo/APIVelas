@@ -89,6 +89,13 @@ namespace ApiVela.Profile
                 opt => opt.MapFrom(src => src.Cera.Firma)
             );
 
+            CreateMap<VelaFragancia, VelaFraganciaDTO>()
+                .ForMember(dest => dest.NombreFragancia,
+                           opt => opt.MapFrom(src => src.Fragancia.FragNombre));
+
+            CreateMap<VelaPigmento, VelaPigmentoDTO>()
+               .ForMember(dest => dest.NombrePigmento,
+               opt => opt.MapFrom(src => src.Pigmento.ColorNombre));
         }
     }
 }

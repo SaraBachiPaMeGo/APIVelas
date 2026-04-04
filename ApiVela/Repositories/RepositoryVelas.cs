@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiVela.Data;
@@ -7,6 +8,7 @@ using ApiVela.Models;
 using ApiVela.Models.DTO;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiVela.Repository
@@ -16,27 +18,17 @@ namespace ApiVela.Repository
         private readonly Contexto context;
         private readonly IMapper mapper;
         private readonly RepositoryCeras _repocera;
+        private readonly RepositoryFragancias _repovf;
+        private readonly RepositoryPigmentos _repovp;
 
-        public RepositoryVelas(Contexto context, IMapper mapper, RepositoryCeras repocera)
+        public RepositoryVelas(Contexto context, IMapper mapper, RepositoryCeras repocera,
+            RepositoryFragancias repovf, RepositoryPigmentos repovp)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this._repocera = repocera ?? throw new ArgumentNullException(nameof(_repocera));
-        }
-
-        public async Task<CustomApiResponse<List<VelaDTO>>> GetVelas1()
-        {
-            var response = new CustomApiResponse<List<VelaDTO>>();
-            try
-            {
-                var velas = context.Vela.ToList();
-                response.Object = mapper.Map<List<VelaDTO>>(velas);
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorViewModel { Mensaje = ex.Message };
-            }
-            return response;
+            this._repovf = repovf ?? throw new ArgumentNullException(nameof(_repovf));
+            this._repovp = repovp ?? throw new ArgumentNullException(nameof(_repovp));
         }
 
         public async Task<CustomApiResponse<List<VelaDTO>>> GetVelas()
@@ -45,7 +37,7 @@ namespace ApiVela.Repository
 
             try
             {
-                var velas = context.Vela
+                var velas = await context.Vela
                         .Include(v => v.Cera)
                     .Include(v => v.VelaPigmentos)
                         .ThenInclude(vp => vp.Pigmento)
@@ -61,11 +53,25 @@ namespace ApiVela.Repository
                         NombreCera = v.Cera.Firma,
                         CantidadCera = v.CantidadCera,
                         CantidadEnd = v.CantidadEnd,
+                        VelaFragancias = v.VelaFragancias.Select(vf => new VelaFraganciaDTO
+                        {
+                            IDFrag = vf.IDFrag,
+                            NombreFragancia = vf.Fragancia != null ? vf.Fragancia.FragNombre : null,
+                            Cantidad = vf.Cantidad,
+                            Coste = vf.Coste
+                        }).ToList(),
 
-                    })
-                    .ToListAsync();
+                        // 🔥 PIGMENTOS
+                        VelaPigmentos = v.VelaPigmentos.Select(vp => new VelaPigmentoDTO
+                        {
+                            IDPig = vp.IDPig,
+                            NombrePigmento = vp.Pigmento != null ? vp.Pigmento.ColorNombre : null,
+                            Cantidad = vp.Cantidad,
+                            Coste = vp.Coste
+                        }).ToList()
+                    }).ToListAsync();
 
-                response.Object = velas.Result;
+                response.Object = velas;
             }
             catch (Exception ex)
             {
@@ -83,10 +89,11 @@ namespace ApiVela.Repository
                 var vela = await context.Vela
                 .Where(x => x.IDVela == idVela)
                 .ProjectTo<VelaDTO>(mapper.ConfigurationProvider)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
                 if (vela == null) throw new Exception("Vela no encontrada");
-                response.Object = mapper.Map<VelaDTO>(vela);
+                response.Object = vela;
             }
             catch (Exception ex)
             {
@@ -109,9 +116,6 @@ namespace ApiVela.Repository
                     {
                         vf.IDVela = vel.IDVela;
 
-
-                        // ✔ Solo asigna la FK
-                        vf.Fragancia = null;
                     }
                 }
 
@@ -120,14 +124,22 @@ namespace ApiVela.Repository
                     foreach (var vp in vel.VelaPigmentos)
                     {
                         vp.IDVela = vel.IDVela;
-                        vp.Pigmento = null;
                     }
                 }
 
                 context.Vela.Add(vel);
                 await context.SaveChangesAsync();
 
-                response.Object = mapper.Map<VelaDTO>(vel);
+                var costeTotal = await CalcularCosteVelaAsync(vel.IDVela);
+
+                var velaCompleta = await context.Vela
+                   .Include(v => v.VelaFragancias)
+                       .ThenInclude(vf => vf.Fragancia)
+                   .Include(v => v.VelaPigmentos)
+                       .ThenInclude(vp => vp.Pigmento)
+                   .FirstOrDefaultAsync(v => v.IDVela == vel.IDVela);
+
+                response.Object = mapper.Map<VelaDTO>(velaCompleta);
             }
             catch (Exception ex)
             {
@@ -180,6 +192,8 @@ namespace ApiVela.Repository
                     },
                     (nuevo) => nuevo.IDVela = existing.IDVela
                 );
+                
+                await CalcularCosteVelaAsync(vel.IDVela);
 
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -257,6 +271,72 @@ namespace ApiVela.Repository
             }
 
             return response;
+        }
+
+        public async Task<CustomApiResponse<decimal>> CalcularCosteVelaAsync(Guid idVela)
+        {
+            var costeTotal = new CustomApiResponse<decimal>();
+
+            try
+            {
+                using (var connection = new SqlConnection("Data Source=LAPTOP-SLC643FH;Initial Catalog=ProyektVelas;Persist Security Info=True;User ID=SA;Password=P@ssw0rdVelas1"))
+                {
+                    await connection.OpenAsync();
+
+                    using (var command = new SqlCommand("sp_CalcularCoste_Vela", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // 🔹 INPUT
+                        command.Parameters.Add(new SqlParameter("@IDVela", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = idVela
+                        });
+
+                        // 🔹 OUTPUT
+                        var outputParam = new SqlParameter
+                        {
+                            ParameterName = "@CosteOut",
+                            SqlDbType = SqlDbType.Decimal,
+                            Precision = 10,
+                            Scale = 2,
+                            Direction = ParameterDirection.Output,
+                            Value = DBNull.Value
+                        };
+
+                        command.Parameters.Add(outputParam);
+
+                        try
+                        {
+
+                            // 🔥 EJECUTAR PRIMERO
+                            var sp = await command.ExecuteNonQueryAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            costeTotal.Error = new ErrorViewModel { Mensaje = ex.Message };
+                            return costeTotal;
+                        }
+                        Console.WriteLine($"OUTPUT RAW: {outputParam.Value}");
+
+                        // 🔥 LUEGO LEER OUTPUT
+                        if (outputParam.Value != DBNull.Value)
+                        {
+                            costeTotal.Object = Convert.ToDecimal(outputParam.Value);
+                        }
+                        else
+                        {
+                            costeTotal.Object = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                costeTotal.Error = new ErrorViewModel { Mensaje = ex.Message };
+            }
+
+            return costeTotal;
         }
     }
 }
