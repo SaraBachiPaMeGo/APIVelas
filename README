@@ -1,0 +1,45 @@
+# 🧾 Product Management API
+
+## 📌 Overview
+RESTful API for managing products with full CRUD operations (Create, Read, Update, Delete).  
+Includes automatic business logic calculations executed via SQL Server Stored Procedures.
+
+## 🏗️ Architecture
+- Backend: ASP.NET Core 3.1
+- Database: SQL Server
+- API Style: REST
+- Documentation: Swagger (OpenAPI)
+
+## 🚀 Features
+- CRUD operations for product management
+- Automatic calculations via Stored Procedures (SP)
+- Data validation and error handling
+- Clean separation between controller, service, and data layers
+- Interactive API documentation with Swagger
+
+## 📦 Key Technologies
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server
+- Swagger / Swashbuckle
+
+## 🔌 API Endpoints
+| Method | Endpoint        | Description              |
+|--------|----------------|--------------------------|
+| GET    | /api/products  | Get all products         |
+| GET    | /api/products/{id} | Get product by ID   |
+| POST   | /api/products  | Create new product       |
+| PUT    | /api/products/{id} | Update product      |
+| DELETE | /api/products/{id} | Delete product      |
+
+## ⚙️ Business Logic
+Product-related calculations are handled at database level using Stored Procedures to ensure:
+- Data consistency
+- Centralized logic
+- Optimized performance
+
+## ▶️ How to Run
+1. Clone repository  
+  bash
+    git clone <https://github.com/SaraBachiller/APIVelas.git>
+2. Configure database connection in appsettings.json  
